@@ -1,0 +1,110 @@
+﻿<Window x:Class="main_1._0.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:self="clr-namespace:main_1._0"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" Background="gray">
+
+    
+    <!-- komendy chowania/pokazywania paneli-->
+    <Window.CommandBindings>
+        <CommandBinding Command="self:KGPcommands.WidokShowHide" CanExecute="ShowHide" Executed="ShowHide_Executed"/>
+        <CommandBinding Command="self:KGPcommands.HorizontalStyleSwitch" CanExecute="ShowHide" Executed="HorizontalStyleSwitch_Executed"/>
+        <CommandBinding Command="self:KGPcommands.HighlightChosen" CanExecute="ShowHide" Executed="HighlightChosen_Executed"/>
+        <CommandBinding Command="self:KGPcommands.ResetHighlight" CanExecute="ShowHide" Executed="ResetHighlight_Executed"/>
+        <CommandBinding Command="self:KGPcommands.ViewContent" CanExecute="ShowHide" Executed="ViewContent_Executed" />
+        <!--do usuniecia komendy ponizej-->
+        <CommandBinding Command="self:KGPcommands.Jakas" CanExecute="ShowHide" Executed="testkol" />
+    </Window.CommandBindings>
+
+    <Grid>
+
+        <!-- DRZEWO -->
+        <!-- ramka okna drzewa-->
+        <Grid Name="RamkaDrzewa" Background="DarkCyan" Margin="0,15,190,61">
+            <TextBlock FontSize="7" Text="Ramka okna drzewa" Margin="0,10,0.6,0"/>
+            <!-- okno drzewa-->
+            <Grid Background="Silver"  Margin="10,10,10,10">
+                <TextBlock Margin="0,0,0.2,0.2">Okno drzewa</TextBlock>
+                <ScrollViewer Name="drzewo" CanContentScroll="True" HorizontalScrollBarVisibility="Auto" Background="LightGray">
+                    <Grid Name="ResTree">
+                        <Grid Name="can">
+                            <TextBlock Name="yas" FontSize="15" Foreground="Black" Margin="0,0,504.4,294"></TextBlock>
+                            <Button Name="ResetHighlight" Opacity="0" Command="self:KGPcommands.ResetHighlight"></Button>
+                        </Grid>
+                    </Grid>
+
+                </ScrollViewer>
+            </Grid>
+
+        </Grid>
+
+        <!-- OPCJE EDYCJI DRZEWA -->
+        <Canvas Name="EdycjaDrzewa" Background="Aquamarine" HorizontalAlignment="Right" Margin="0,15,0,0" RenderTransformOrigin="0.5,0.5" Width="190">
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Canvas.RenderTransform>
+            <TextBlock FontSize="15" Canvas.Left="69">Edycja drzewa</TextBlock>
+            <Button Command="self:KGPcommands.Jakas">opcja 1</Button>
+            <!-- do usuniecia -->
+            <Button Canvas.Top="19" Background="#FFDDDDDD">opcja 2</Button>
+            <Button Canvas.Top="38">opcja 3</Button>
+            <Button Canvas.Top="58">opcja 4</Button>
+            <Button Canvas.Top="77">opcja 5</Button>
+            <Button Canvas.Top="96" Command="self:KGPcommands.HorizontalStyleSwitch">opcja 6</Button>
+        </Canvas>
+        <!-- OPCJE EDYCJI FOLDERU-->
+        <Canvas Name="EdycjaFolderu" Background="DarkSeaGreen" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="59" RenderTransformOrigin="0.5,0.5" Width="419">
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleY="1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Canvas.RenderTransform>
+            <TextBlock Canvas.Left="150">Edycja folderu</TextBlock>
+            <Button>Opcja 1</Button>
+            <Button Canvas.Top="30">Opcja 2</Button>
+        </Canvas>
+
+        <!-- KOMENDY UZYTKOWNIKA -->
+        <Grid Name="KomendyUzytkownika" Background="ForestGreen" VerticalAlignment="Bottom" Margin="420,0,190,0" Height="58">
+            <TextBlock HorizontalAlignment="Center">Komendy uzytkownika</TextBlock>
+            <Grid  Margin="5,17,5,20" Background="GreenYellow">
+                <TextBox Name="userCommand"/>
+            </Grid>
+            <WrapPanel Margin="0,38,-0.4,0">
+                <TextBlock Text="{Binding Path=Text, ElementName=userCommand}" Width="173" Foreground="Black"/>
+            </WrapPanel>
+        </Grid>
+
+        <!-- pasek plik/edytuj/widok/itd-->
+        <Grid Background="DarkMagenta" VerticalAlignment="Top" Height="15" Margin="0,0,0,0">
+            <Button FontSize="10" Margin="0" Width="50" HorizontalAlignment="Left" Command="self:KGPcommands.WidokShowHide" CommandParameter="{Binding ElementName=PanelPliku}" >Plik</Button>
+            <Button FontSize="10" Margin="50,0,0,0" Width="50"  HorizontalAlignment="Left">Edytuj</Button>
+            <Button FontSize="10" Margin="100,0,0,0" Width="50"  HorizontalAlignment="Left" Command="self:KGPcommands.WidokShowHide" CommandParameter="{Binding ElementName=PanelWidoku}">Widok</Button>
+            <!-- panel widoku -->
+            <StackPanel Name="PanelWidoku" VerticalAlignment="Top" HorizontalAlignment="Left" Background="Aqua" Height="75" Margin="100,15,0,-75" Width="108">
+                <Button>Opcja 1</Button>
+                <Button>Opcja 2</Button>
+                <Button>Opcja 3</Button>
+            </StackPanel>
+            <StackPanel Name="PanelPliku" VerticalAlignment="Top" HorizontalAlignment="Left" Background="Maroon" Height="75" Margin="0,15,0,-75" Width="108">
+                <Button>Opcja 1</Button>
+                <Button>Opcja 2</Button>
+                <Button>Opcja 3</Button>
+            </StackPanel>
+            <TextBlock Foreground="Yellow" Margin="150,0,0,0">Ten właśnie pasek od takich rzeczy</TextBlock>
+        </Grid>
+
+    </Grid>
+
+</Window>
