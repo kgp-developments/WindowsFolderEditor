@@ -8,6 +8,7 @@ namespace ReFolder.Dir
     {
         public IMutableSystemObjectDescription Description { get; set; }
         public bool IsMarked { get; set; } = false;
+        public bool ShowContent { get; set; } = true;
 
         public Dir() { }
         public Dir(IMutableSystemObjectDescription description) {

@@ -63,6 +63,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="code\KGPcommands.cs" />
+    <Compile Include="code\Sorteritno.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -95,13 +97,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="icons8-folder-48.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\ReFolder\ReFolder.csproj">
       <Project>{513d6407-e987-4bb4-abfc-4347803c8659}</Project>
       <Name>ReFolder</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons8-folder-48.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
