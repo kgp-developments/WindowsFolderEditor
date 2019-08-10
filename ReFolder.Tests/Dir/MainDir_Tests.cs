@@ -147,8 +147,55 @@ namespace ReFolder.Tests
             Assert.AreEqual(2, size);
         }
 
+        [Test]
+        public void AutoGenerateChildrenFullName_RenameChildren_WhenMaindDirFullNameNotChange()
+        {
+            string[] nameList = new string[] {"firek","pirek","irek" };
+            string mainDirName = "c:\\Cats\\BlueCats";
+            //arrange
+            IMutableSystemObjectDescription desc = Mock.Of<IMutableSystemObjectDescription>(x =>
+            x.FullName == mainDirName);
+            IEditableDirWithChildren mainDir = new MainDir(desc);
+            IEditableDirWithChildrenAndParrent childDir1 = new ChildDir(nameList[0], mainDir);
+            IEditableDirWithChildrenAndParrent childDir11 = new ChildDir(nameList[1], childDir1);
+            IEditableDirWithChildrenAndParrent childDir12 = new ChildDir(nameList[2], childDir1);
 
+            mainDir.AddChildToChildrenList(childDir1);
+            childDir1.AddChildToChildrenList(childDir11);
+            childDir1.AddChildToChildrenList(childDir12);
 
+            //act
+            MainDir.AutoGenerateChildrenFullName(mainDir);
+            //assert
+            Assert.AreEqual($"{mainDirName}\\{nameList[0]}", childDir1.Description.FullName);
+            Assert.AreEqual($"{mainDirName}\\{nameList[0]}\\{nameList[1]}", childDir11.Description.FullName);
+            Assert.AreEqual($"{mainDirName}\\{nameList[0]}\\{nameList[2]}", childDir12.Description.FullName);
+        }
+        [Test]
+        public void AutoGenerateChildrenFullName_RenameChildren_WhenMaindDirFullNameChange()
+        {
+            string[] nameList = new string[] { "firek", "pirek", "irek" };
+            string mainDirFullName = "c:\\Cats\\RedCats";
+            string mainDirName = "RedCats";
+            //arrange
+            IMutableSystemObjectDescription desc = new DirDescription("c:\\Cats\\BlueCats", "BlueCats");
+            IEditableDirWithChildren mainDir = new MainDir(desc);
+            IEditableDirWithChildrenAndParrent childDir1 = new ChildDir(nameList[0], mainDir);
+            IEditableDirWithChildrenAndParrent childDir11 = new ChildDir(nameList[1], childDir1);
+            IEditableDirWithChildrenAndParrent childDir12 = new ChildDir(nameList[2], childDir1);
+            mainDir.Description.FullName = mainDirFullName;
+            mainDir.Description.Name = mainDirName;
+
+            mainDir.AddChildToChildrenList(childDir1);
+            childDir1.AddChildToChildrenList(childDir11);
+            childDir1.AddChildToChildrenList(childDir12);
+            //act
+            MainDir.AutoGenerateChildrenFullName(mainDir);
+            //assert
+            Assert.AreEqual($"{mainDirFullName}\\{nameList[0]}", childDir1.Description.FullName);
+            Assert.AreEqual($"{mainDirFullName}\\{nameList[0]}\\{nameList[1]}", childDir11.Description.FullName);
+            Assert.AreEqual($"{mainDirFullName}\\{nameList[0]}\\{nameList[2]}", childDir12.Description.FullName);
+        }
 
 
 
