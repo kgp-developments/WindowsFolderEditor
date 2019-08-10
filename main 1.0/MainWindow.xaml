@@ -11,6 +11,7 @@
     <!-- komendy chowania/pokazywania paneli-->
     <Window.CommandBindings>
         <CommandBinding Command="self:KGPcommands.WidokShowHide" CanExecute="ShowHide" Executed="ShowHide_Executed"/>
+        <CommandBinding Command="self:KGPcommands.GenerateDirs" CanExecute="ShowHide" Executed="GenerateDirs_Executed"/>
         <CommandBinding Command="self:KGPcommands.HorizontalStyleSwitch" CanExecute="ShowHide" Executed="HorizontalStyleSwitch_Executed"/>
         <CommandBinding Command="self:KGPcommands.HighlightChosen" CanExecute="ShowHide" Executed="HighlightChosen_Executed"/>
         <CommandBinding Command="self:KGPcommands.ResetHighlight" CanExecute="ShowHide" Executed="ResetHighlight_Executed"/>
@@ -54,7 +55,7 @@
             <TextBlock FontSize="15" Canvas.Left="69">Edycja drzewa</TextBlock>
             <Button Command="self:KGPcommands.Jakas">opcja 1</Button>
             <!-- do usuniecia -->
-            <Button Canvas.Top="19" Background="#FFDDDDDD">opcja 2</Button>
+            <Button Canvas.Top="19" Command="self:KGPcommands.GenerateDirs" Background="#FFDDDDDD">generuj</Button>
             <Button Canvas.Top="38">opcja 3</Button>
             <Button Canvas.Top="58">opcja 4</Button>
             <Button Canvas.Top="77">opcja 5</Button>

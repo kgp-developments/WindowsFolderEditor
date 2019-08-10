@@ -14,7 +14,7 @@ namespace ReFolder.Dir
         public Dir(IMutableSystemObjectDescription description) {
             Description = description;
         }    
-        public Dir getDir()
+        public Dir GetDir()
         {
             return this;
         }

@@ -35,6 +35,12 @@ namespace main_1._0
             "HighlightChosen",
             typeof(KGPcommands)
         );
+        public static readonly RoutedUICommand GenerateDirs = new RoutedUICommand
+       (
+           "GenerateDirs",
+           "GenerateDirs",
+           typeof(KGPcommands)
+       );
         public static readonly RoutedUICommand ResetHighlight = new RoutedUICommand
         (
         "ResetHighlight",

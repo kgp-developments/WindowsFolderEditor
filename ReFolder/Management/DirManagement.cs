@@ -64,7 +64,7 @@ namespace ReFolder.Management
 
         }
         // tworzy nowy MainDir na podstawie ścieżki 
-        public MainDir getFolderAsNewMainDir(string fullName)
+        public MainDir GetFolderAsNewMainDir(string fullName)
         {
             return dirRead.GetMainDirFolder(fullName);
         }

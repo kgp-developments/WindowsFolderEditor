@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ReFolder.Dir;
 using ReFolder.Dir.Description;
+using ReFolder.Management;
 
 namespace main_1._0
 {
@@ -24,6 +25,8 @@ namespace main_1._0
         
     public partial class MainWindow : Window
     {
+        // folder główny z którego rozpoczyna się dziedziczenie 
+        IEditableDirWithChildren mainn;
         List<StackPanel> Panele = new List<StackPanel>(); // lista paneli z gornego paska, np. plik, widok
         bool rightHandedView = true; // zmienna okreslajaca widok (leworeczny/praworeczny)
         Canvas CurrentlyChosen = null;
@@ -40,7 +43,7 @@ namespace main_1._0
 
             #region inicjalizacja  ChildDirów do testu
 
-            IEditableDirWithChildren mainn = new MainDir(new DirDescription(@"C:\Users\Klakier\Desktop\kociFolderek","kociFolderek"));
+            mainn = new MainDir(new DirDescription(@"C:\Users\Klakier\Desktop\kociFolderek","kociFolderek"));
             seed = mainn;
 
             ChildDir f1 = new ChildDir("f1", mainn);
@@ -107,6 +110,13 @@ namespace main_1._0
         private void ShowHide(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
+        }
+        private void GenerateDirs_Executed(object sender,ExecutedRoutedEventHandler e)
+        {
+            DirManagement management = DirManagement.GetDefaultInstance();
+            DirManagement.MemoryDirs memoryDirs = DirManagement.MemoryDirs.GetInstance();
+            memoryDirs.InitializeAllChildren(mainn);
+            management.GenerateAllChildrenDirsAsFolders();
         }
         private void ViewContent_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
