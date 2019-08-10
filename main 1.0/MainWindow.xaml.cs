@@ -111,7 +111,7 @@ namespace main_1._0
         {
             e.CanExecute = true;
         }
-        private void GenerateDirs_Executed(object sender,ExecutedRoutedEventHandler e)
+        private void GenerateDirs_Executed(object sender,ExecutedRoutedEventArgs e)
         {
             DirManagement management = DirManagement.GetDefaultInstance();
             DirManagement.MemoryDirs memoryDirs = DirManagement.MemoryDirs.GetInstance();
