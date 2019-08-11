@@ -43,7 +43,7 @@ namespace main_1._0
 
             #region inicjalizacja  ChildDirów do testu
 
-            mainn = new MainDir(new DirDescription(@"C:\Users\Klakier\Desktop\kociFolderek","kociFolderek"));
+            mainn = new MainDir(new DirDescription(@"C:\Users\Klakier\Desktop\kociFolderek1","kociFolderek"));
             seed = mainn;
 
             ChildDir f1 = new ChildDir("f1", mainn);

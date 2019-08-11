@@ -21,8 +21,7 @@ namespace ReFolder.Tests
 
             //assert    
             Assert.Throws<ArgumentNullException>(action);
-        }
-        
+        }       
         [Test]
         public void DeleteChildDirFromList_DeleteChild_WhenAcceptableObjectIsDelivered()
         {
@@ -48,7 +47,6 @@ namespace ReFolder.Tests
             //assert    
             Assert.AreEqual(0,num);
         }
-
         [Test]
         public void DeleteChildrenDirFromList_ThrowsArgumentNullException_WhenChildIsNull()
         {
@@ -85,7 +83,6 @@ namespace ReFolder.Tests
             //assert    
             Assert.AreEqual(0, num);
         }
-
         [Test]
         public void AddChildToChildrenList_ThrowsArgumentNullException_WhenChildIsNull()
         {
@@ -114,7 +111,6 @@ namespace ReFolder.Tests
             //assert    
             Assert.AreEqual(2,size) ;
         }
-
         [Test]
         public void AddChildrenToChildrenList_ThrowsArgumentNullException_WhenChildIsNull()
         {
@@ -146,58 +142,45 @@ namespace ReFolder.Tests
             //assert    
             Assert.AreEqual(2, size);
         }
-
-        [Test]
-        public void AutoGenerateChildrenFullName_RenameChildren_WhenMaindDirFullNameNotChange()
+        public void AutoGenerateChildrenFullName_ChangeChildrenFullName_WhenParrentFullNameChange()
         {
-            string[] nameList = new string[] {"firek","pirek","irek" };
-            string mainDirName = "c:\\Cats\\BlueCats";
-            //arrange
-            IMutableSystemObjectDescription desc = Mock.Of<IMutableSystemObjectDescription>(x =>
-            x.FullName == mainDirName);
-            IEditableDirWithChildren mainDir = new MainDir(desc);
-            IEditableDirWithChildrenAndParrent childDir1 = new ChildDir(nameList[0], mainDir);
-            IEditableDirWithChildrenAndParrent childDir11 = new ChildDir(nameList[1], childDir1);
-            IEditableDirWithChildrenAndParrent childDir12 = new ChildDir(nameList[2], childDir1);
-
-            mainDir.AddChildToChildrenList(childDir1);
-            childDir1.AddChildToChildrenList(childDir11);
-            childDir1.AddChildToChildrenList(childDir12);
-
+            string fullName = "c:\\cats\\RedCats";
+            string[] nameList = new string[] { "kuszek", "puszek", "muszek" };
+            //arange
+            IEditableDirWithChildren mainDir = new MainDir(new DirDescription("c:\\cats\\BlueCats", "BlueCats"));
+            ChildDir child1 = new ChildDir(nameList[0], mainDir);
+            ChildDir child11 = new ChildDir(nameList[1], child1);
+            ChildDir child12 = new ChildDir(nameList[2], child1);
+            mainDir.AddChildToChildrenList(child1);
+            child1.AddChildToChildrenList(child11);
+            child1.AddChildToChildrenList(child12);
             //act
-            MainDir.AutoGenerateChildrenFullName(mainDir);
+            mainDir.Description.FullName = fullName;
+            mainDir.AutoGenerateChildrenFullName(mainDir);
             //assert
-            Assert.AreEqual($"{mainDirName}\\{nameList[0]}", childDir1.Description.FullName);
-            Assert.AreEqual($"{mainDirName}\\{nameList[0]}\\{nameList[1]}", childDir11.Description.FullName);
-            Assert.AreEqual($"{mainDirName}\\{nameList[0]}\\{nameList[2]}", childDir12.Description.FullName);
+            Assert.AreEqual($"{fullName}\\{nameList[0]}", child1.Description.FullName);
+            Assert.AreEqual($"{fullName}\\{nameList[0]}\\{nameList[1]}", child11.Description.FullName);
+            Assert.AreEqual($"{fullName}\\{nameList[0]}\\{nameList[2]}", child12.Description.FullName);
         }
         [Test]
-        public void AutoGenerateChildrenFullName_RenameChildren_WhenMaindDirFullNameChange()
+        public void AutoGenerateChildrenFullName_ChangeChildrenFullName_WhenParrentFullNameNotChange()
         {
-            string[] nameList = new string[] { "firek", "pirek", "irek" };
-            string mainDirFullName = "c:\\Cats\\RedCats";
-            string mainDirName = "RedCats";
-            //arrange
-            IMutableSystemObjectDescription desc = new DirDescription("c:\\Cats\\BlueCats", "BlueCats");
-            IEditableDirWithChildren mainDir = new MainDir(desc);
-            IEditableDirWithChildrenAndParrent childDir1 = new ChildDir(nameList[0], mainDir);
-            IEditableDirWithChildrenAndParrent childDir11 = new ChildDir(nameList[1], childDir1);
-            IEditableDirWithChildrenAndParrent childDir12 = new ChildDir(nameList[2], childDir1);
-            mainDir.Description.FullName = mainDirFullName;
-            mainDir.Description.Name = mainDirName;
-
-            mainDir.AddChildToChildrenList(childDir1);
-            childDir1.AddChildToChildrenList(childDir11);
-            childDir1.AddChildToChildrenList(childDir12);
+            string fullName = "c:\\cats\\BlueCats";
+            string[] nameList = new string[] { "kuszek", "puszek", "muszek" };
+            //arange
+            IEditableDirWithChildren mainDir = new MainDir(new DirDescription(fullName, "BlueCats"));
+            ChildDir child1 = new ChildDir(nameList[0], mainDir);
+            ChildDir child11 = new ChildDir(nameList[1], child1);
+            ChildDir child12 = new ChildDir(nameList[2], child1);
+            mainDir.AddChildToChildrenList(child1);
+            child1.AddChildToChildrenList(child11);
+            child1.AddChildToChildrenList(child12);
             //act
-            MainDir.AutoGenerateChildrenFullName(mainDir);
+            mainDir.AutoGenerateChildrenFullName(mainDir);
             //assert
-            Assert.AreEqual($"{mainDirFullName}\\{nameList[0]}", childDir1.Description.FullName);
-            Assert.AreEqual($"{mainDirFullName}\\{nameList[0]}\\{nameList[1]}", childDir11.Description.FullName);
-            Assert.AreEqual($"{mainDirFullName}\\{nameList[0]}\\{nameList[2]}", childDir12.Description.FullName);
+            Assert.AreEqual($"{fullName}\\{nameList[0]}", child1.Description.FullName);
+            Assert.AreEqual($"{fullName}\\{nameList[0]}\\{nameList[1]}", child11.Description.FullName);
+            Assert.AreEqual($"{fullName}\\{nameList[0]}\\{nameList[2]}", child12.Description.FullName);
         }
-
-
-
     }
 }
