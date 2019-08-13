@@ -26,32 +26,32 @@ namespace main_1._0
     public partial class MainWindow : Window
     {
         // folder główny z którego rozpoczyna się dziedziczenie 
-        IEditableDirWithChildren mainn;
-        List<StackPanel> Panele = new List<StackPanel>(); // lista paneli z gornego paska, np. plik, widok
+        IEditableDirWithChildren Main;
+        List<StackPanel> Panels = new List<StackPanel>(); // lista paneli z gornego paska, np. plik, widok
         bool rightHandedView = true; // zmienna okreslajaca widok (leworeczny/praworeczny)
         Canvas CurrentlyChosen = null;
-        IEditableDirWithChildren seed;
+        IEditableDirWithChildren Seed;
 
         // zawiera inicjalizację Dirów do testu
         public MainWindow()
         {
             InitializeComponent();
 
-            Panele.Add(PanelPliku);
-            Panele.Add(PanelWidoku);
+            Panels.Add(PanelPliku);
+            Panels.Add(PanelWidoku);
             HideAllPanels();
 
             #region inicjalizacja  ChildDirów do testu
 
-            mainn = new MainDir(new DirDescription(@"C:\Users\Klakier\Desktop\kociFolderek1","kociFolderek"));
-            seed = mainn;
+            Main = new MainDir(new DirDescription(@"C:\Users\Klakier\Desktop\kociFolderek","kociFolderek"));
+            Seed = Main;
 
-            ChildDir f1 = new ChildDir("f1", mainn);
-            mainn.Children.Add(f1);
-            ChildDir f2 = new ChildDir("f2", mainn);
-            mainn.Children.Add(f2);
-            ChildDir f3 = new ChildDir("f3", mainn);
-            mainn.Children.Add(f3);
+            ChildDir f1 = new ChildDir("f1", Main);
+            Main.Children.Add(f1);
+            ChildDir f2 = new ChildDir("f2", Main);
+            Main.Children.Add(f2);
+            ChildDir f3 = new ChildDir("f3", Main);
+            Main.Children.Add(f3);
 
             ChildDir f31 = new ChildDir("f31", f3);
             f3.Children.Add(f31);
@@ -94,11 +94,13 @@ namespace main_1._0
             #endregion
 
 
-            Sorteritno x = new Sorteritno();
-            x.Create(can, 30, 0, seed);
+            Sorteritno sorteritno = new Sorteritno();
+            sorteritno.Create(ResTree, 30, 0, Seed);
             //yas.Text = f13.name;
 
-            x.Sort(seed, can, 0, 30);
+            sorteritno.Sort(Seed, ResTree, 0, 30);
+
+
 
         }
 
@@ -107,7 +109,7 @@ namespace main_1._0
         #region funkcje komend
 
         // ukryj/pokaz panel
-        private void ShowHide(object sender, CanExecuteRoutedEventArgs e)
+        private void AlwaysTrueForExecuted(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
         }
@@ -115,15 +117,15 @@ namespace main_1._0
         {
             DirManagement management = DirManagement.GetDefaultInstance();
             DirManagement.MemoryDirs memoryDirs = DirManagement.MemoryDirs.GetInstance();
-            memoryDirs.InitializeAllChildren(mainn);
+            memoryDirs.InitializeAllChildren(Main);
             management.GenerateAllChildrenDirsAsFolders();
         }
         private void ViewContent_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            Button xyz = (Button)e.Parameter;
-            Canvas zyx = (Canvas)xyz.Parent;
-            IEditableDirWithChildren fff = (IEditableDirWithChildren)zyx.Tag;
-            if (fff.Children.Count == 0)
+            Button ViewContentButton = (Button)e.Parameter;
+            Canvas MainLayer = (Canvas)ViewContentButton.Parent;
+            IEditableDirWithChildren FolderContained = (IEditableDirWithChildren)MainLayer.Tag;
+            if (FolderContained.Children.Count == 0)
             {
                 e.CanExecute = false;
             }
@@ -135,7 +137,7 @@ namespace main_1._0
 
         private void HideAllPanels()
         {
-            foreach(StackPanel element in Panele)
+            foreach(StackPanel element in Panels)
             {
                 element.Visibility = Visibility.Collapsed;
             }
@@ -143,17 +145,17 @@ namespace main_1._0
 
         private void ShowHide_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            StackPanel kurwa = (StackPanel)e.Parameter;
-            if (kurwa.IsVisible)
+            StackPanel PanelGiven = (StackPanel)e.Parameter;
+            if (PanelGiven.IsVisible)
             {
-                kurwa.Visibility = Visibility.Collapsed;
+                PanelGiven.Visibility = Visibility.Collapsed;
             }
             else
             {
-                kurwa.Visibility = Visibility.Visible;
-                foreach(StackPanel element in Panele)
+                PanelGiven.Visibility = Visibility.Visible;
+                foreach(StackPanel element in Panels)
                 {
-                    if (element.Name != kurwa.Name)
+                    if (element.Name != PanelGiven.Name)
                     {
                         element.Visibility = Visibility.Collapsed;
                     }
@@ -190,15 +192,15 @@ namespace main_1._0
 
         private void HighlightChosen_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Button xyz = (Button)e.Parameter;
-            Canvas zyx = (Canvas)xyz.Parent;
+            Button HiddenButton = (Button)e.Parameter;
+            Canvas MainLayer = (Canvas)HiddenButton.Parent;
             if(CurrentlyChosen != null)
             {
                 CurrentlyChosen.Background = Brushes.LightGray;
             }
             
-            zyx.Background = Brushes.Blue;
-            CurrentlyChosen = zyx;
+            MainLayer.Background = Brushes.Blue;
+            CurrentlyChosen = MainLayer;
         }
 
         private void ResetHighlight_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -211,19 +213,19 @@ namespace main_1._0
         }
         private void ViewContent_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Button xyz = (Button)e.Parameter;
-            Canvas zyx = (Canvas)xyz.Parent;
-            IEditableDirWithChildren fff = (IEditableDirWithChildren)zyx.Tag;
-            if (fff.ShowContent)
+            Button ViewContentButton = (Button)e.Parameter;
+            Canvas MainLayer = (Canvas)ViewContentButton.Parent;
+            IEditableDirWithChildren FolderContained = (IEditableDirWithChildren)MainLayer.Tag;
+            if (FolderContained.ShowContent)
             {
-                fff.ShowContent = false;
+                FolderContained.ShowContent = false;
             }
             else
             {
-                fff.ShowContent = true;
+                FolderContained.ShowContent = true;
             }
-            Sorteritno x = new Sorteritno();
-            x.ResetTree(can, ResetHighlight, ResTree, seed);
+            Sorteritno Temporary = new Sorteritno();
+            Temporary.ResetTree(ResTree, ResetHighlight, Seed, drzewo);
         }
         #endregion
     }

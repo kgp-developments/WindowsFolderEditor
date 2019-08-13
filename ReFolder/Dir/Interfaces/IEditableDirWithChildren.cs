@@ -14,8 +14,5 @@ namespace ReFolder.Dir
         void DeleteChildrenDirsFromList(List<IEditableDirWithChildrenAndParrent> children);
         void AddChildToChildrenList(IEditableDirWithChildrenAndParrent child);
         void AddChildrenToChildrenList(List<IEditableDirWithChildrenAndParrent> children);
-
-        void AutoGenerateChildrenFullName(IEditableDirWithChildren dir);
-
     }
 }

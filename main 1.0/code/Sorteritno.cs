@@ -9,31 +9,32 @@ namespace main_1._0
 {
     public class Sorteritno
     {
-            public void ResetTree(Grid lol, Button res, Grid lol2, IEditableDirWithChildren seed)
+            public void ResetTree(Grid SwitchedGrid, Button ResetButton, IEditableDirWithChildren Seed, ScrollViewer TreeSV)
             {
-                lol2.Children.Remove(lol);
-                lol = new Grid();
-                lol.Margin = new Thickness(10);
-                lol.Background = Brushes.LightGray;
-                res = new Button();
-                res.Opacity = 0;
-                res.Command = KGPcommands.ResetHighlight;
-                lol.Children.Add(res);
-                lol2.Children.Add(lol);
+                TreeSV.Content = null;
+                SwitchedGrid = new Grid();
 
-                Sorteritno x = new Sorteritno();
-                x.Create(lol, 30, 0, seed);
-                x.Sort(seed, lol, 0, 30);
+                SwitchedGrid.Margin = new Thickness(20);
+                SwitchedGrid.Background = Brushes.LightGray;
+                ResetButton = new Button();
+                ResetButton.Opacity = 0;
+                ResetButton.Command = KGPcommands.ResetHighlight;
+                SwitchedGrid.Children.Add(ResetButton);
+                TreeSV.Content = SwitchedGrid;
+
+                Sorteritno Temporary = new Sorteritno();
+                Temporary.Create(SwitchedGrid, 30, 0, Seed);
+                Temporary.Sort(Seed, SwitchedGrid, 0, 30);
             }
 
-            public void Pionowa(int start, int end, Grid lol, int parX)
+            public void Pionowa(int start, int end, Grid TheGrid, int parX)
             {
-                Canvas n = new Canvas();
-                n.Background = Brushes.Red;
-                n.VerticalAlignment = VerticalAlignment.Top;
-                n.HorizontalAlignment = HorizontalAlignment.Center;
-                n.Width = 2;
-                n.Height = end;
+                Canvas Line = new Canvas();
+                Line.Background = Brushes.Red;
+                Line.VerticalAlignment = VerticalAlignment.Top;
+                Line.HorizontalAlignment = HorizontalAlignment.Center;
+                Line.Width = 2;
+                Line.Height = end;
                 Thickness marg = new Thickness();
                 marg.Top = start;
                 if (parX < 0)
@@ -44,18 +45,18 @@ namespace main_1._0
                 {
                     marg.Right = parX;
                 }
-                n.Margin = marg;
-                lol.Children.Add(n);
+                Line.Margin = marg;
+                TheGrid.Children.Add(Line);
             }
-            public void Pozioma(int start, int end, int parY, Grid lol)
+            public void Pozioma(int start, int end, int parY, Grid TheGrid)
             {
-                Canvas n = new Canvas();
-                n.Background = Brushes.Red;
-                n.VerticalAlignment = VerticalAlignment.Top;
-                n.HorizontalAlignment = HorizontalAlignment.Center;
+                Canvas Line = new Canvas();
+                Line.Background = Brushes.Red;
+                Line.VerticalAlignment = VerticalAlignment.Top;
+                Line.HorizontalAlignment = HorizontalAlignment.Center;
                 int difference = end - start;
-                n.Width = Math.Abs(difference / 2);
-                n.Height = 2;
+                Line.Width = Math.Abs(difference / 2);
+                Line.Height = 2;
                 Thickness marg = new Thickness();
                 marg.Top = parY;
                 if (start < 0)
@@ -67,30 +68,30 @@ namespace main_1._0
                     marg.Right = start + difference / 2;
 
                 }
-                n.Margin = marg;
-                lol.Children.Add(n);
+                Line.Margin = marg;
+                TheGrid.Children.Add(Line);
             }
 
-            public void Create(Grid lol, int up, int parX, IEditableDirWithChildren f)
+            public void Create(Grid SwitchedGrid, int up, int parX, IEditableDirWithChildren Folder)
             {
+                                // Ustawienia obrazka
                 BitmapImage carBitmap = new BitmapImage(new Uri(@"icons8-folder-48.png", UriKind.Relative));
-                Image m = new Image();
-                m.Source = carBitmap;
-                Thickness obrazek = m.Margin;
-                obrazek.Top = 2;
+                Image Icon = new Image();
+                Icon.Source = carBitmap;
+                Thickness obrazek = new Thickness();
+                obrazek.Top = 1;
                 obrazek.Bottom = 2;
-                obrazek.Left = 2;
-                obrazek.Right = 2;
-                m.Margin = obrazek;
-
-                Canvas n = new Canvas();
-                n.HorizontalAlignment = HorizontalAlignment.Center;
-                n.VerticalAlignment = VerticalAlignment.Top;
-                n.Width = 32;
-                n.Height = 32;
-                n.Background = Brushes.LightGray;
-
-                Thickness marg = n.Margin;
+                obrazek.Left = 3;
+                obrazek.Right = 3;
+                Icon.Margin = obrazek;
+                                // Ustawienia glownej warstwy (podswietlenia)
+                Canvas MainLayer = new Canvas();
+                MainLayer.HorizontalAlignment = HorizontalAlignment.Center;
+                MainLayer.VerticalAlignment = VerticalAlignment.Top;
+                MainLayer.Width = 36;
+                MainLayer.Height = 36;
+                MainLayer.Background = Brushes.LightGray;
+                Thickness marg = MainLayer.Margin;
                 marg.Top = up;
                 if (parX < 0)
                 {
@@ -100,43 +101,56 @@ namespace main_1._0
                 {
                     marg.Right = parX;
                 }
-                n.Children.Add(m);
-                n.Margin = marg;
-
-                Button v = new Button();
-                v.Height = 12;
-                v.Width = 12;
+                MainLayer.Children.Add(Icon);
+                MainLayer.Margin = marg;
+                                //Ustawienia przycisku view content
+                Button VCbutton = new Button();  //view content button
+                VCbutton.Height = 12;
+                VCbutton.Width = 12;
                 Thickness vmarg = new Thickness();
                 vmarg.Left = -10;
-                v.HorizontalAlignment = HorizontalAlignment.Left;
-                v.VerticalAlignment = VerticalAlignment.Top;
-                v.Margin = vmarg;
-                v.Command = KGPcommands.ViewContent;
-                v.CommandParameter = v;
-                n.Children.Add(v);
+                VCbutton.HorizontalAlignment = HorizontalAlignment.Left;
+                VCbutton.VerticalAlignment = VerticalAlignment.Top;
+                VCbutton.Margin = vmarg;
+                VCbutton.Command = KGPcommands.ViewContent;
+                VCbutton.CommandParameter = VCbutton;
+                MainLayer.Children.Add(VCbutton);
+                                     // ustawienia przycisku do resetu highlightu
+                Button HLRbutton = new Button();
+                HLRbutton.Opacity = 0;
+                HLRbutton.Height = 30;
+                HLRbutton.Width = 30;
+                HLRbutton.Margin = obrazek;
+                HLRbutton.CommandParameter = HLRbutton;
+                HLRbutton.Command = KGPcommands.HighlightChosen;
+                MainLayer.Tag = Folder;
+                MainLayer.Children.Add(HLRbutton);
+                                 // Ustawienia wyswietlania nazwy folderu
+                TextBlock FolderText = new TextBlock();
+                FolderText.Text = Folder.Description.Name;
+                FolderText.FontSize = 10;
+                Canvas.SetTop(FolderText ,25);
+                Canvas.SetLeft(FolderText, 18 - 5 * Folder.Description.Name.Length/2);
+                //FolderText.Width = 40;
 
-                Button o = new Button();
-                o.Opacity = 0;
-                o.Height = 30;
-                o.Width = 30;
-                o.Margin = obrazek;
-                o.CommandParameter = o;
-                o.Command = KGPcommands.HighlightChosen;
-                n.Tag = f;
-                n.Children.Add(o);
+                //Thickness Tmarg = new Thickness();
+                //Tmarg.Bottom = 36;
+                //Tmarg.Left = 16;
+                //FolderText.Margin = Tmarg;
+                MainLayer.Children.Add(FolderText);
 
-                lol.Children.Add(n);
+                SwitchedGrid.Children.Add(MainLayer);
             }
 
-            public int GetSize(IEditableDirWithChildren f) //szerokosc galezi 
+            public int GetSize(IEditableDirWithChildren Folder) //szerokosc galezi 
             {
                 int size = 0;
 
-                if (f.Children.Count != 0)
+                if (Folder.Children.Count != 0)
                 {
-                    foreach (IEditableDirWithChildren g in f.Children)
+                    foreach (IEditableDirWithChildren Child in Folder.Children)
                     {
-                        size += GetSize(g);
+                        size += GetSize(Child);
                     }
                 }
                 else
@@ -147,43 +161,43 @@ namespace main_1._0
             }
 
 
-            public int GetSideSize(IEditableDirWithChildren f, int s) //szerokosc stron 1- lewej, 0 - prawej
+            public int GetSideSize(IEditableDirWithChildren Folder, int parameter) //szerokosc stron 1- lewej, 0 - prawej
             {
                 int size = 0;
-                int mid = f.Children.Count / 2;
-                if (f.Children.Count == 0)
+                int mid = Folder.Children.Count / 2;
+                if (Folder.Children.Count == 0)
                 {
                     size += 90;
                 }
-                else if (f.Children.Count != 0)
+                else if (Folder.Children.Count != 0)
                 {
-                    if (s == 1) //lewa strona
+                    if (parameter == 1) //lewa strona
                     {
                         for (int i = mid - 1; i >= 0; i--)
                         {
-                            size += 2 * GetSize(f.Children[i]);
+                            size += 2 * GetSize(Folder.Children[i]);
                         }
-                        if (f.Children.Count % 2 != 0)
+                        if (Folder.Children.Count % 2 != 0)
                         {
-                            size += GetSideSize(f.Children[mid], s) - 45;
+                            size += GetSideSize(Folder.Children[mid], parameter) - 45;
                         }
                     }
-                    else if (s == 0) //prawa strona
+                    else if (parameter == 0) //prawa strona
                     {
-                        if (f.Children.Count % 2 == 0)
+                        if (Folder.Children.Count % 2 == 0)
                         {
-                            for (int i = mid; i < f.Children.Count; i++)
+                            for (int i = mid; i < Folder.Children.Count; i++)
                             {
-                                size += 2 * GetSize(f.Children[i]);
+                                size += 2 * GetSize(Folder.Children[i]);
                             }
                         }
                         else
                         {
-                            for (int i = mid + 1; i < f.Children.Count; i++)
+                            for (int i = mid + 1; i < Folder.Children.Count; i++)
                             {
-                                size += 2 * GetSize(f.Children[i]);
+                                size += 2 * GetSize(Folder.Children[i]);
                             }
-                            size += GetSideSize(f.Children[mid], s) - 45;
+                            size += GetSideSize(Folder.Children[mid], parameter) - 45;
                         }
                     }
                 }
@@ -191,11 +205,11 @@ namespace main_1._0
                 return size;
             }
 
-            public void Sort(IEditableDirWithChildren IEditableDirWithChildren, Grid lol, int parX, int parY)
+            public void Sort(IEditableDirWithChildren IEditableDirWithChildren, Grid Switched, int parX, int parY)
             {
                 if (IEditableDirWithChildren.Children.Count != 0)
                 {
-                    Pionowa(parY + 30, 15, lol, parX);
+                    Pionowa(parY + 38, 8, Switched, parX);
                     int mid; //indeks srodkowego
                     int k;   //krok  ;; faktyczny odstep
                     int x;   //parametr do obliczen
@@ -206,11 +220,11 @@ namespace main_1._0
                         for (int i = mid; i >= 0; i--)  //od srodkowego w lewo
                         {
                             x = GetSideSize(IEditableDirWithChildren.Children[i], 0);
-                            Create(lol, parY + 60, x + k, IEditableDirWithChildren.Children[i]);
-                            Pionowa(parY + 45, 15, lol, x + k);
-                            Pozioma(parX, x + k, parY + 45, lol);
+                            Create(Switched, parY + 60, x + k, IEditableDirWithChildren.Children[i]);
+                            Pionowa(parY + 45, 15, Switched, x + k);
+                            Pozioma(parX, x + k, parY + 45, Switched);
 
-                            Sort(IEditableDirWithChildren.Children[i], lol, x + k, parY + 60);
+                            Sort(IEditableDirWithChildren.Children[i], Switched, x + k, parY + 60);
                             k += 2 * GetSize(IEditableDirWithChildren.Children[i]);
 
 
@@ -219,11 +233,11 @@ namespace main_1._0
                         for (int i = mid + 1; i < IEditableDirWithChildren.Children.Count; i++)
                         {
                             x = -1 * GetSideSize(IEditableDirWithChildren.Children[i], 1);
-                            Create(lol, parY + 60, x + k, IEditableDirWithChildren.Children[i]);
-                            Pionowa(parY + 45, 15, lol, x + k);
-                            Pozioma(parX, x + k, parY + 45, lol);
+                            Create(Switched, parY + 60, x + k, IEditableDirWithChildren.Children[i]);
+                            Pionowa(parY + 45, 15, Switched, x + k);
+                            Pozioma(parX, x + k, parY + 45, Switched);
 
-                            Sort(IEditableDirWithChildren.Children[i], lol, x + k, parY + 60);
+                            Sort(IEditableDirWithChildren.Children[i], Switched, x + k, parY + 60);
                             k -= 2 * GetSize(IEditableDirWithChildren.Children[i]);
 
                         }
@@ -232,18 +246,18 @@ namespace main_1._0
                     {
                         mid = IEditableDirWithChildren.Children.Count / 2;
                         k = parX + GetSideSize(IEditableDirWithChildren.Children[mid], 1);
-                        Pionowa(parY + 45, 15, lol, parX);
-                        Create(lol, parY + 60, parX, IEditableDirWithChildren.Children[mid]); //srodkowy
-                        Sort(IEditableDirWithChildren.Children[mid], lol, parX, parY + 60);
+                        Pionowa(parY + 45, 15, Switched, parX);
+                        Create(Switched, parY + 60, parX, IEditableDirWithChildren.Children[mid]); //srodkowy
+                        Sort(IEditableDirWithChildren.Children[mid], Switched, parX, parY + 60);
                         for (int i = mid - 1; i >= 0; i--)
                         {
 
                             x = GetSideSize(IEditableDirWithChildren.Children[i], 0);
-                            Pionowa(parY + 45, 15, lol, x + k);
-                            Create(lol, parY + 60, x + k, IEditableDirWithChildren.Children[i]);
-                            Pozioma(parX, x + k, parY + 45, lol);
+                            Pionowa(parY + 45, 15, Switched, x + k);
+                            Create(Switched, parY + 60, x + k, IEditableDirWithChildren.Children[i]);
+                            Pozioma(parX, x + k, parY + 45, Switched);
 
-                            Sort(IEditableDirWithChildren.Children[i], lol, x + k, parY + 60);
+                            Sort(IEditableDirWithChildren.Children[i], Switched, x + k, parY + 60);
                             k += 2 * GetSize(IEditableDirWithChildren.Children[i]);
                         }//dla drugiej strony podobnie, ale w druga strone ;
                         k = parX - GetSideSize(IEditableDirWithChildren.Children[mid], 0);
@@ -251,10 +265,10 @@ namespace main_1._0
                         for (int i = mid + 1; i < IEditableDirWithChildren.Children.Count; i++)
                         {
                             x = -1 * GetSideSize(IEditableDirWithChildren.Children[i], 1);
-                            Create(lol, parY + 60, x + k, IEditableDirWithChildren.Children[i]);
-                            Pionowa(parY + 45, 15, lol, x + k);
-                            Pozioma(parX, x + k, parY + 45, lol);
-                            Sort(IEditableDirWithChildren.Children[i], lol, x + k, parY + 60);
+                            Create(Switched, parY + 60, x + k, IEditableDirWithChildren.Children[i]);
+                            Pionowa(parY + 45, 15, Switched, x + k);
+                            Pozioma(parX, x + k, parY + 45, Switched);
+                            Sort(IEditableDirWithChildren.Children[i], Switched, x + k, parY + 60);
                             k -= 2 * GetSize(IEditableDirWithChildren.Children[i]);
                         }
                     }
