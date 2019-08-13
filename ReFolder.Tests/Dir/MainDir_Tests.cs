@@ -146,7 +146,47 @@ namespace ReFolder.Tests
             //assert    
             Assert.AreEqual(2, size);
         }
-
+        [Test]
+        public void AutoGenerateChildrenFullName_ChangeChildrenFullName_WhenParrentFullNameChange()
+        {
+            string fullName = "c:\\cats\\RedCats";
+            string[] nameList = new string[] { "kuszek", "puszek", "muszek" };
+            //arange
+            IEditableDirWithChildren mainDir = new MainDir(new DirDescription("c:\\cats\\BlueCats", "BlueCats"));
+            ChildDir child1 = new ChildDir(nameList[0], mainDir);
+            ChildDir child11 = new ChildDir(nameList[1], child1);
+            ChildDir child12 = new ChildDir(nameList[2], child1);
+            mainDir.AddChildToChildrenList(child1);
+            child1.AddChildToChildrenList(child11);
+            child1.AddChildToChildrenList(child12);
+            //act
+            mainDir.Description.FullName = fullName;
+            mainDir.AutoGenerateChildrenFullName(mainDir);
+            //assert
+            Assert.AreEqual($"{fullName}\\{nameList[0]}", child1.Description.FullName);
+            Assert.AreEqual($"{fullName}\\{nameList[0]}\\{nameList[1]}", child11.Description.FullName);
+            Assert.AreEqual($"{fullName}\\{nameList[0]}\\{nameList[2]}", child12.Description.FullName);
+        }
+        [Test]
+        public void AutoGenerateChildrenFullName_ChangeChildrenFullName_WhenParrentFullNameNotChange()
+        {
+            string fullName = "c:\\cats\\BlueCats";
+            string[] nameList = new string[] { "kuszek", "puszek", "muszek" };
+            //arange
+            IEditableDirWithChildren mainDir = new MainDir(new DirDescription(fullName, "BlueCats"));
+            ChildDir child1 = new ChildDir(nameList[0], mainDir);
+            ChildDir child11 = new ChildDir(nameList[1], child1);
+            ChildDir child12 = new ChildDir(nameList[2], child1);
+            mainDir.AddChildToChildrenList(child1);
+            child1.AddChildToChildrenList(child11);
+            child1.AddChildToChildrenList(child12);
+            //act
+            mainDir.AutoGenerateChildrenFullName(mainDir);
+            //assert
+            Assert.AreEqual($"{fullName}\\{nameList[0]}", child1.Description.FullName);
+            Assert.AreEqual($"{fullName}\\{nameList[0]}\\{nameList[1]}", child11.Description.FullName);
+            Assert.AreEqual($"{fullName}\\{nameList[0]}\\{nameList[2]}", child12.Description.FullName);
+        }
 
 
 
