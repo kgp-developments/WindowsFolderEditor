@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Background="gray">
 
-    
+
     <!-- komendy chowania/pokazywania paneli-->
     <Window.CommandBindings>
         <CommandBinding Command="self:KGPcommands.WidokShowHide" CanExecute="AlwaysTrueForExecuted" Executed="ShowHide_Executed"/>
@@ -16,16 +16,18 @@
         <CommandBinding Command="self:KGPcommands.HighlightChosen" CanExecute="AlwaysTrueForExecuted" Executed="HighlightChosen_Executed"/>
         <CommandBinding Command="self:KGPcommands.ResetHighlight" CanExecute="AlwaysTrueForExecuted" Executed="ResetHighlight_Executed"/>
         <CommandBinding Command="self:KGPcommands.ViewContent" CanExecute="ViewContent_CanExecute" Executed="ViewContent_Executed" />
-        <!--do usuniecia komendy ponizej-->
-        <CommandBinding Command="self:KGPcommands.Jakas" CanExecute="AlwaysTrueForExecuted" Executed="testkol" />
+        <CommandBinding Command="self:KGPcommands.DefaultAddition" CanExecute="ChosenNotNullDepended" Executed="DefaultAddition_Executed" />
+        <CommandBinding Command="self:KGPcommands.CopyChildrenDirs" CanExecute="ChosenNotNullDepended" Executed="CopyChildrenDirs_Executed" />
+        <CommandBinding Command="self:KGPcommands.PasteChildrenDirs" CanExecute="PasteChildrenDirs_CanExecute" Executed="PasteChildrenDirs_Executed" />
+
     </Window.CommandBindings>
 
-    <Grid>
+    <Grid Background="#FF373837">
 
         <!-- DRZEWO -->
         <!-- ramka okna drzewa-->
-        <Grid Name="RamkaDrzewa" Background="DarkCyan" Margin="0,15,190,61">
-            <TextBlock FontSize="7" Text="Ramka okna drzewa" Margin="0,10,0.6,0"/>
+        <Grid Name="RamkaDrzewa" Background="#FF0F1487" Margin="0,15,190,61">
+            <TextBlock FontSize="7" Text="Ramka okna drzewa" Margin="0,10,0.6,0" Background="#FF0F1487"/>
             <!-- okno drzewa-->
             <Grid Background="Silver"  Margin="10,10,10,10">
                 <TextBlock Margin="0,0,0.2,0.2">Okno drzewa</TextBlock>
@@ -41,7 +43,7 @@
         </Grid>
 
         <!-- OPCJE EDYCJI DRZEWA -->
-        <Canvas Name="EdycjaDrzewa" Background="Aquamarine" HorizontalAlignment="Right" Margin="0,15,0,0" RenderTransformOrigin="0.5,0.5" Width="190">
+        <Canvas Name="EdycjaDrzewa"  HorizontalAlignment="Right" Margin="0,15,0,0" RenderTransformOrigin="0.5,0.5" Width="190">
             <Canvas.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform ScaleX="1"/>
@@ -50,17 +52,30 @@
                     <TranslateTransform/>
                 </TransformGroup>
             </Canvas.RenderTransform>
-            <TextBlock FontSize="15" Canvas.Left="69">Edycja drzewa</TextBlock>
-            <Button Command="self:KGPcommands.Jakas">opcja 1</Button>
-            <!-- do usuniecia -->
-            <Button Canvas.Top="19" Command="self:KGPcommands.GenerateDirs" Background="#FFDDDDDD">generuj</Button>
-            <Button Canvas.Top="38">opcja 3</Button>
-            <Button Canvas.Top="58">opcja 4</Button>
-            <Button Canvas.Top="77">opcja 5</Button>
-            <Button Canvas.Top="96" Command="self:KGPcommands.HorizontalStyleSwitch">opcja 6</Button>
+            <Canvas.Background>
+                <LinearGradientBrush>
+                    <GradientStop Color="White" Offset="1.9"/>
+                    <GradientStop Color="Black"/>
+                </LinearGradientBrush>
+            </Canvas.Background>
+            <TextBlock FontSize="15" Canvas.Left="47" Foreground="AliceBlue" ><Bold>Edycja drzewa</Bold></TextBlock>
+            <Button Name="DefaultAddbtn" Width="160" Height="20" Canvas.Top="25" Canvas.Left="15" Background="DarkGray" Command="self:KGPcommands.DefaultAddition">Dodaj nowy folder</Button>
+            <Button Name="ComplexAddbtn" Width="160" Height="20" Canvas.Top="50" Canvas.Left="15" Background="DarkGray">Dodaj złożoną gałąź</Button>
+            <Button Name="Copybtn" Width="160" Height="20" Canvas.Top="95" Canvas.Left="15" Background="DarkGray" Command="self:KGPcommands.CopyChildrenDirs" >Kopiuj wnętrze gałęzi</Button>
+            <Button Name="Pastebtn" Width="160" Height="20" Canvas.Top="120" Canvas.Left="15" Background="DarkGray" Command="self:KGPcommands.PasteChildrenDirs">Wklej fragment gałęzi</Button>
+            <Button Name="DefaultDeletebtn" Width="160" Height="20" Canvas.Top="165" Canvas.Left="15" Background="DarkGray">Usuń fragment gałęzi</Button>
+            <Button Name="DeleteMiddlebtn" Width="160" Height="20" Canvas.Top="190" Canvas.Left="15" Background="DarkGray">Usuń pośredni folder</Button>
+
         </Canvas>
         <!-- OPCJE EDYCJI FOLDERU-->
-        <Canvas Name="EdycjaFolderu" Background="DarkSeaGreen" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="60" RenderTransformOrigin="0.5,0.5" Width="419">
+        <Canvas Name="EdycjaFolderu"  HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="61
+                " RenderTransformOrigin="0.5,0.5" Width="419">
+            <Canvas.Background>
+                <LinearGradientBrush>
+                    <GradientStop Color="White" Offset="4"/>
+                    <GradientStop Color="Black" Offset="-0.5"/>
+                </LinearGradientBrush>
+            </Canvas.Background>
             <Canvas.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform ScaleY="1"/>
@@ -69,13 +84,13 @@
                     <TranslateTransform/>
                 </TransformGroup>
             </Canvas.RenderTransform>
-            <TextBlock Canvas.Left="150">Edycja folderu</TextBlock>
+            <TextBlock Canvas.Left="158" Foreground="AliceBlue"><Bold>Edycja folderu</Bold></TextBlock>
             <Button>Opcja 1</Button>
             <Button Canvas.Top="30">Opcja 2</Button>
         </Canvas>
 
         <!-- KOMENDY UZYTKOWNIKA -->
-        <Grid Name="KomendyUzytkownika" Background="ForestGreen" VerticalAlignment="Bottom" Margin="420,0,191,0" Height="60">
+        <Grid Name="KomendyUzytkownika" Background="#FF373837" VerticalAlignment="Bottom" Margin="420,0,191,0" Height="60">
             <TextBlock HorizontalAlignment="Center">Komendy uzytkownika</TextBlock>
             <Grid  Margin="5,17,5,20" Background="GreenYellow">
                 <TextBox Name="userCommand"/>
@@ -91,7 +106,7 @@
             <Button FontSize="10" Margin="50,0,0,0" Width="50"  HorizontalAlignment="Left">Edytuj</Button>
             <Button FontSize="10" Margin="100,0,0,0" Width="50"  HorizontalAlignment="Left" Command="self:KGPcommands.WidokShowHide" CommandParameter="{Binding ElementName=PanelWidoku}">Widok</Button>
             <!-- panel widoku -->
-            <StackPanel Name="PanelWidoku" VerticalAlignment="Top" HorizontalAlignment="Left" Background="Aqua" Height="75" Margin="100,15,0,-75" Width="108">
+            <StackPanel Name="PanelWidoku" VerticalAlignment="Top" HorizontalAlignment="Left" Background="#FF0F1487" Height="75" Margin="100,15,0,-75" Width="108">
                 <Button>Opcja 1</Button>
                 <Button>Opcja 2</Button>
                 <Button>Opcja 3</Button>
@@ -101,7 +116,13 @@
                 <Button>Opcja 2</Button>
                 <Button>Opcja 3</Button>
             </StackPanel>
-            <TextBlock Foreground="Yellow" Margin="150,0,0,0">Ten właśnie pasek od takich rzeczy</TextBlock>
+            <TextBlock Foreground="White" Margin="150,0,0,0">
+                <TextBlock.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="Black" Offset="0"/>
+                        <GradientStop Color="#FF080C6E" Offset="0.9"/>
+                    </LinearGradientBrush>
+                </TextBlock.Background></TextBlock>
         </Grid>
 
     </Grid>

@@ -10,44 +10,38 @@ namespace ConsoleApp1
         //kot
         static void Main(string[] args)
         {
-            //kotek
-            MainDir mainDir = new MainDir(
-                new DirDescription(@"C:\Users\Klakier\Desktop\kociFolderek", "kociFolderek")
-                );
+            DirManagement manager = DirManagement.GetDefaultInstance();
 
-            ChildDir dir1 = new ChildDir("firek1", mainDir);
-            ChildDir dir2 = new ChildDir("firek2", mainDir);
-            ChildDir dir3 = new ChildDir("firek3", mainDir);
-            ChildDir dir4 = new ChildDir("firek4", mainDir);
-            ChildDir dir41 = new ChildDir("firek41", dir4);
-            ChildDir dir42 = new ChildDir("firek42", dir4);
-            ChildDir dir43 = new ChildDir("firek43", dir4);
-            ChildDir dir44 = new ChildDir("firek44", dir4);
-            mainDir.AddChildToChildrenList(dir1);
-            mainDir.AddChildToChildrenList(dir2);
-            mainDir.AddChildToChildrenList(dir3);
-            mainDir.AddChildToChildrenList(dir4);
-            dir4.AddChildToChildrenList(dir41);
-            dir4.AddChildToChildrenList(dir42);
-            dir4.AddChildToChildrenList(dir43);
-            dir4.AddChildToChildrenList(dir44);
+            MainDir main = DirRead.GetInstance().GetMainDirFolder(@"C:\Users\Klakier\Desktop\Nowy folder (2)");
+/*            ChildDir child0 = new ChildDir("newFolder_0", main);
+            ChildDir child1 = new ChildDir("newFolder_1", main);
+            ChildDir child3 = new ChildDir("newFolder_3", main);
 
-            var management = DirManagement.GetDefaultInstance();
-            DirManagement.MemoryDirs.GetInstance().InitializeAllChildren(mainDir);
+ 
+            main.AddChildToChildrenList(child1);
+            main.AddChildToChildrenList(child3);
+            main.AddChildToChildrenList(child0);*/
 
-            management.GenerateAllChildrenDirsAsFolders();
-                 
+            System.Console.WriteLine("jak jest" +"\n");
+            foreach(IEditableDirWithChildrenAndParrent child in main.Children)
+            {
+                System.Console.WriteLine(child.Description.Name+"\n");
+            }
 
+            ChildDir child2 = new ChildDir(manager.GenerateName(main), main);
+            main.AddChildToChildrenList(child2);
 
+            ChildDir child4 = new ChildDir(manager.GenerateName(main), main);
+            main.AddChildToChildrenList(child4);
 
+            ChildDir child6 = new ChildDir(manager.GenerateName(main), main);
+            main.AddChildToChildrenList(child6);
 
-
-
-
-
-
-
-
+            System.Console.WriteLine("jak się zmieniło"+"\n");
+            foreach (IEditableDirWithChildrenAndParrent child in main.Children)
+            {
+                System.Console.WriteLine(child.Description.Name + "\n");
+            }
         }
     }
 }

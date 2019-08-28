@@ -10,7 +10,7 @@ namespace ReFolder.Dir
         public IEditableDirWithChildren ParrentDir { get; set; }
       
 
-        public ChildDir(IMutableSystemObjectDescription description, IEditableDirWithChildren mainDir,  List<IEditableDirWithChildrenAndParrent> childrens) : base( description, childrens)
+        public ChildDir(IMutableSystemObjectDescription description, IEditableDirWithChildren mainDir,  List<IEditableDirWithChildrenAndParrent> children) : base( description, children)
         {
             this.ParrentDir = mainDir;
         }
@@ -36,5 +36,6 @@ namespace ReFolder.Dir
             Description.FullName = fullName;
             return fullName;
         }
+
     }
 }

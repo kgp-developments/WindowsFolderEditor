@@ -29,8 +29,10 @@ namespace main_1._0
         IEditableDirWithChildren Main;
         List<StackPanel> Panels = new List<StackPanel>(); // lista paneli z gornego paska, np. plik, widok
         bool rightHandedView = true; // zmienna okreslajaca widok (leworeczny/praworeczny)
-        Canvas CurrentlyChosen = null;
+        public static Canvas CurrentlyChosen = null;
+        public IEditableDirWithChildren CurrentlyChosenDir = null;
         IEditableDirWithChildren Seed;
+        List<IEditableDirWithChildrenAndParrent> CopyOfChildren;
 
         // zawiera inicjalizację Dirów do testu
         public MainWindow()
@@ -53,11 +55,13 @@ namespace main_1._0
             ChildDir f3 = new ChildDir("f3", Main);
             Main.Children.Add(f3);
 
+            ChildDir f11 = new ChildDir("f11", f1);
+            f1.Children.Add(f11);
+
             ChildDir f31 = new ChildDir("f31", f3);
             f3.Children.Add(f31);
 
-            ChildDir f11 = new ChildDir("f11", f1);
-            f1.Children.Add(f11);
+
             ChildDir f12 = new ChildDir("f12", f1);
             f1.Children.Add(f12);
             ChildDir f13 = new ChildDir("f13", f1);
@@ -90,13 +94,12 @@ namespace main_1._0
 
             ChildDir f2111 = new ChildDir("f10000", f211);
             f211.Children.Add(f2111);
-          
+
             #endregion
 
 
             Sorteritno sorteritno = new Sorteritno();
             sorteritno.Create(ResTree, 30, 0, Seed);
-            //yas.Text = f13.name;
 
             sorteritno.Sort(Seed, ResTree, 0, 30);
 
@@ -104,15 +107,18 @@ namespace main_1._0
 
         }
 
+        #region funkcje składowe komend
+        private void HideAllPanels()
+        {
+            foreach (StackPanel element in Panels)
+            {
+                element.Visibility = Visibility.Collapsed;
+            }
+        }
+        #endregion
 
         // funkcje komend
-        #region funkcje komend
-
-        // ukryj/pokaz panel
-        private void AlwaysTrueForExecuted(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-        }
+        #region funkcje komend _Executed
         private void GenerateDirs_Executed(object sender,ExecutedRoutedEventArgs e)
         {
             DirManagement management = DirManagement.GetDefaultInstance();
@@ -120,29 +126,28 @@ namespace main_1._0
             memoryDirs.InitializeAllChildren(Main);
             management.GenerateAllChildrenDirsAsFolders();
         }
-        private void ViewContent_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void CopyChildrenDirs_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Button ViewContentButton = (Button)e.Parameter;
-            Canvas MainLayer = (Canvas)ViewContentButton.Parent;
-            IEditableDirWithChildren FolderContained = (IEditableDirWithChildren)MainLayer.Tag;
-            if (FolderContained.Children.Count == 0)
-            {
-                e.CanExecute = false;
-            }
-            else
-            {
-                e.CanExecute = true;
-            }
-        }
 
-        private void HideAllPanels()
+            SaveAndReadElementInBinaryFile.GetInstance()
+                .WriteToBinaryFile<IEditableDirWithChildren>(@"..\..\..\TemporaryFiles\tempFile~Copy", CurrentlyChosenDir);
+        }
+        private void PasteChildrenDirs_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            foreach(StackPanel element in Panels)
+            List<IEditableDirWithChildrenAndParrent> CopyOfChildren =
+                SaveAndReadElementInBinaryFile.GetInstance()
+                .ReadFromBinaryFile<IEditableDirWithChildren>(@"C:..\..\..\TemporaryFiles\tempFile~Copy")
+                .Children;
+  
+            foreach (IEditableDirWithChildrenAndParrent child in CopyOfChildren)
             {
-                element.Visibility = Visibility.Collapsed;
+                child.ParrentDir = CurrentlyChosenDir;
             }
+            CurrentlyChosenDir.AddChildrenToChildrenList(CopyOfChildren);
+            MainDir.AutoGenerateChildrenFullName(CurrentlyChosenDir);
+            Sorteritno ToSort = new Sorteritno();
+            ToSort.ResetTree(ResTree, ResetHighlight, Seed, drzewo);
         }
-
         private void ShowHide_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             StackPanel PanelGiven = (StackPanel)e.Parameter;
@@ -162,14 +167,6 @@ namespace main_1._0
                 }
             }
         }
-
-
-        //do usuniecia // po usunięciu wywala błąd przy kompilacji
-        private void testkol(object sender, ExecutedRoutedEventArgs e)
-        {
-            drzewo.Background = Brushes.PaleVioletRed;
-        }
-
         private void HorizontalStyleSwitch_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             if (rightHandedView)
@@ -189,27 +186,37 @@ namespace main_1._0
                 rightHandedView = true;
             }
         }
-
         private void HighlightChosen_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+
+                
             Button HiddenButton = (Button)e.Parameter;
             Canvas MainLayer = (Canvas)HiddenButton.Parent;
-            if(CurrentlyChosen != null)
+            if(CurrentlyChosen != null )
             {
+
                 CurrentlyChosen.Background = Brushes.LightGray;
+                CurrentlyChosenDir = (IEditableDirWithChildren)CurrentlyChosen.Tag;
+                CurrentlyChosenDir.IsMarked = false;
+
             }
-            
             MainLayer.Background = Brushes.Blue;
             CurrentlyChosen = MainLayer;
-        }
 
+                CurrentlyChosenDir = (IEditableDirWithChildren)CurrentlyChosen.Tag;
+                CurrentlyChosenDir.IsMarked = true;
+        }
         private void ResetHighlight_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             if(CurrentlyChosen != null)
             {
                 CurrentlyChosen.Background = Brushes.LightGray;
+                CurrentlyChosenDir = (IEditableDirWithChildren)CurrentlyChosen.Tag;
+                CurrentlyChosenDir.IsMarked = false;
                 CurrentlyChosen = null;
+                CurrentlyChosenDir = null;
             }
+            HideAllPanels();
         }
         private void ViewContent_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -227,7 +234,63 @@ namespace main_1._0
             Sorteritno Temporary = new Sorteritno();
             Temporary.ResetTree(ResTree, ResetHighlight, Seed, drzewo);
         }
+        private void DefaultAddition_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            string name= DirManagement.GetDefaultInstance().GenerateName(CurrentlyChosenDir);
+            Console.WriteLine(name +"__________________________________________________________ \n");
+            IEditableDirWithChildrenAndParrent NewDir = new ChildDir(name, CurrentlyChosenDir);
+            CurrentlyChosenDir.AddChildToChildrenList(NewDir);
+            Sorteritno ToSort = new Sorteritno();
+            ToSort.ResetTree(ResTree, ResetHighlight, Seed, drzewo);
+        }
         #endregion
+
+        #region funkcje komend _CanExecute
+        private void ChosenNotNullDepended(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if(CurrentlyChosen == null)
+            {
+                e.CanExecute = false;
+            }
+            else
+            {
+                e.CanExecute = true;
+            }
+        }
+        private void ViewContent_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            Button ViewContentButton = (Button)e.Parameter;
+            Canvas MainLayer = (Canvas)ViewContentButton.Parent;
+            IEditableDirWithChildren FolderContained = (IEditableDirWithChildren)MainLayer.Tag;
+            if (FolderContained.Children.Count == 0)
+            {
+                e.CanExecute = false;
+            }
+            else
+            {
+                e.CanExecute = true;
+            }
+        }
+        private void CopyChildrenDirs_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
+            if (CurrentlyChosen == null) e.CanExecute = false;
+            else
+            {
+                Console.WriteLine("no i pyk dane do kieszeni");
+                e.CanExecute = true;
+            }
+
+        }
+        private void PasteChildrenDirs_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (CurrentlyChosenDir == null && (CopyOfChildren == null || CopyOfChildren.Count == 0)) e.CanExecute = false;
+            else e.CanExecute = true;
+        }
+        private void AlwaysTrueForExecuted(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+        #endregion
+
     }
 
 

@@ -1,4 +1,5 @@
 ﻿using ReFolder.Dir;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -10,6 +11,7 @@ namespace ReFolder.Management
         private DirWrite dirWrite;
         private DirRead dirRead;
         private MemoryDirs memoryDirs;
+        private const string const_defaultPrefixForGeneratingNames = "newFolder";
         //Singleton
         private static DirManagement InstanceDirManagement { get; set; }
 
@@ -68,6 +70,51 @@ namespace ReFolder.Management
         {
             return dirRead.GetMainDirFolder(fullName);
         }
+        public string GenerateName(IEditableDirWithChildren parrentDir, int sufix_minValue = 0, string prefix= const_defaultPrefixForGeneratingNames)
+        {
+            int biggestInt = 0;
+
+            List<int> numbers = new List<int>();
+
+            foreach(IEditableDirWithChildrenAndParrent child in parrentDir.Children)
+            {
+
+                if (child.Description.Name.Contains(prefix))
+                {
+                    string[] splitted= child.Description.Name.Split('_');
+                    int num = int.Parse(splitted[splitted.Length - 1]);
+                    numbers.Add(num);           
+                    if(biggestInt< num)
+                    {
+                        biggestInt = num;
+                    }
+                }
+            }
+
+            if(numbers.Count==0) return $"{prefix}_{sufix_minValue}";
+
+
+            if (biggestInt >= sufix_minValue)
+            {
+                for ( int i= sufix_minValue; i < biggestInt; i++){
+                    if(!numbers.Contains(i))
+                    {
+                        return $"{prefix}_{i}";
+                    }
+
+                }
+
+                return $"{prefix}_{++biggestInt}";
+            }
+
+
+            return $"{prefix}_{sufix_minValue}";
+
+        }
+
+
+
+
 
         // zarządzanie wszystkimi wygenerowanymi dirami przez osobną klasę wewnętrzną 
         public class MemoryDirs

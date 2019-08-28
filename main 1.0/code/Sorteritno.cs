@@ -9,6 +9,7 @@ namespace main_1._0
 {
     public class Sorteritno
     {
+            
             public void ResetTree(Grid SwitchedGrid, Button ResetButton, IEditableDirWithChildren Seed, ScrollViewer TreeSV)
             {
                 TreeSV.Content = null;
@@ -72,7 +73,7 @@ namespace main_1._0
                 TheGrid.Children.Add(Line);
             }
 
-            public void Create(Grid SwitchedGrid, int up, int parX, IEditableDirWithChildren Folder)
+            public void Create(Grid SwitchedGrid, int up, int parX, IEditableDirWithChildren Folder )
             {
                                 // Ustawienia obrazka
                 BitmapImage carBitmap = new BitmapImage(new Uri(@"icons8-folder-48.png", UriKind.Relative));
@@ -90,8 +91,8 @@ namespace main_1._0
                 MainLayer.VerticalAlignment = VerticalAlignment.Top;
                 MainLayer.Width = 36;
                 MainLayer.Height = 36;
-                MainLayer.Background = Brushes.LightGray;
-                Thickness marg = MainLayer.Margin;
+
+            Thickness marg = MainLayer.Margin;
                 marg.Top = up;
                 if (parX < 0)
                 {
@@ -123,7 +124,6 @@ namespace main_1._0
                 HLRbutton.Margin = obrazek;
                 HLRbutton.CommandParameter = HLRbutton;
                 HLRbutton.Command = KGPcommands.HighlightChosen;
-                MainLayer.Tag = Folder;
                 MainLayer.Children.Add(HLRbutton);
                                  // Ustawienia wyswietlania nazwy folderu
                 TextBlock FolderText = new TextBlock();
@@ -131,16 +131,19 @@ namespace main_1._0
                 FolderText.FontSize = 10;
                 Canvas.SetTop(FolderText ,25);
                 Canvas.SetLeft(FolderText, 18 - 5 * Folder.Description.Name.Length/2);
-                //FolderText.Width = 40;
-
-                //Thickness Tmarg = new Thickness();
-                //Tmarg.Bottom = 36;
-                //Tmarg.Left = 16;
-                //FolderText.Margin = Tmarg;
                 MainLayer.Children.Add(FolderText);
-
+                if (Folder.IsMarked)
+                {
+                    MainLayer.Background = Brushes.Blue;
+                    MainWindow.CurrentlyChosen = MainLayer;
+                }
+                else
+                {
+                    MainLayer.Background = Brushes.LightGray;
+                }
                 SwitchedGrid.Children.Add(MainLayer);
-            }
+                MainLayer.Tag = Folder;
+        }
 
             public int GetSize(IEditableDirWithChildren Folder) //szerokosc galezi 
             {
@@ -168,6 +171,10 @@ namespace main_1._0
                 if (Folder.Children.Count == 0)
                 {
                     size += 90;
+                }
+                else if (Folder.Children.Count == 1)
+                {
+                    size += GetSideSize(Folder.Children[0], parameter);
                 }
                 else if (Folder.Children.Count != 0)
                 {

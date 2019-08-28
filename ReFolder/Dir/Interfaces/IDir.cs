@@ -7,5 +7,6 @@ namespace ReFolder.Dir
         IMutableSystemObjectDescription Description { get; }
         bool IsMarked { get; set; }
         bool ShowContent { get; set; }
+        Dir GetDir();
     }
 }

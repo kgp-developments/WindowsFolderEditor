@@ -41,6 +41,22 @@ namespace main_1._0
            "GenerateDirs",
            typeof(KGPcommands)
        );
+
+       public static readonly RoutedUICommand CopyChildrenDirs = new RoutedUICommand
+        (
+            "CopyChildrenDirs",
+            "CopyChildrenDirs",
+            typeof(KGPcommands)
+        );
+        public static readonly RoutedUICommand PasteChildrenDirs = new RoutedUICommand
+        (
+            "PasteChildrenDirs",
+            "PasteChildrenDirs",
+            typeof(KGPcommands)
+        );
+
+
+
         public static readonly RoutedUICommand ResetHighlight = new RoutedUICommand
         (
         "ResetHighlight",
@@ -52,6 +68,13 @@ namespace main_1._0
         (
         "ViewContent",
         "ViewContent",
+        typeof(KGPcommands)
+        );
+
+        public static readonly RoutedUICommand DefaultAddition = new RoutedUICommand
+        (
+        "DefaultAddition",
+        "DefaultAddition",
         typeof(KGPcommands)
         );
 

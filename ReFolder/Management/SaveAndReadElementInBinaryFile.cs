@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System;
 
 
 namespace ReFolder.Management
@@ -7,10 +8,10 @@ namespace ReFolder.Management
     public class SaveAndReadElementInBinaryFile
     {
         // singleton
-        private static SaveAndReadElementInBinaryFile Instance {get;set;}
+        private static SaveAndReadElementInBinaryFile Instance { get; set; }
 
 
-        public SaveAndReadElementInBinaryFile GetInstance()
+        public static SaveAndReadElementInBinaryFile GetInstance()
         {
             if (Instance == null)
             {
@@ -36,6 +37,13 @@ namespace ReFolder.Management
             T file = (T)binaryFormatter.Deserialize(stream);
             stream.Close();
             return file;
+        }
+        public void DeleteFile(string filepath)
+        {
+            DirectoryInfo info = new DirectoryInfo(filepath);
+            if (!File.Exists(filepath)) throw new ArgumentException("file doesn't exists");
+            File.Delete(filepath);
+
         }
     }
 }
