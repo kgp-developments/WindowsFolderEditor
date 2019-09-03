@@ -2,6 +2,8 @@
 using ReFolder.Dir;
 using ReFolder.Dir.Description;
 using ReFolder.Management;
+using ReFolder.Memento;
+using System;
 
 namespace ConsoleApp1
 {
@@ -10,38 +12,68 @@ namespace ConsoleApp1
         //kot
         static void Main(string[] args)
         {
-            DirManagement manager = DirManagement.GetDefaultInstance();
+            Console.Beep();
+            IEditableDirWithChildren main = DirRead.GetDefaultInstance().GetMainDirFolder(@"C:\Users\Klakier\Desktop\kociFolderek");
+            Orginator.State = main;
+            Caretaker.AddMemento(Orginator.Save());
+            System.Console.WriteLine(main.Children.Count + " ilość dzieci____ current memento to: " + Caretaker.CurrentMemento + "\n");
 
-            MainDir main = DirRead.GetInstance().GetMainDirFolder(@"C:\Users\Klakier\Desktop\Nowy folder (2)");
-/*            ChildDir child0 = new ChildDir("newFolder_0", main);
-            ChildDir child1 = new ChildDir("newFolder_1", main);
-            ChildDir child3 = new ChildDir("newFolder_3", main);
+            IEditableDirWithChildrenAndParrent child1 = new ChildDir("child1", main);
+            main.AddChildToChildrenList(child1);         
+            Orginator.State= main; 
+            Caretaker.AddMemento(Orginator.Save());
+            System.Console.WriteLine(main.Children.Count + " ilość dzieci____ current memento to: " + Caretaker.CurrentMemento  + "\n");
 
- 
-            main.AddChildToChildrenList(child1);
-            main.AddChildToChildrenList(child3);
-            main.AddChildToChildrenList(child0);*/
-
-            System.Console.WriteLine("jak jest" +"\n");
-            foreach(IEditableDirWithChildrenAndParrent child in main.Children)
-            {
-                System.Console.WriteLine(child.Description.Name+"\n");
-            }
-
-            ChildDir child2 = new ChildDir(manager.GenerateName(main), main);
+            IEditableDirWithChildrenAndParrent child2 = new ChildDir("child2", main);
             main.AddChildToChildrenList(child2);
+            Orginator.State = main;
+            Caretaker.AddMemento(Orginator.Save());
+            System.Console.WriteLine(main.Children.Count + " ilość dzieci____ current memento to: " + Caretaker.CurrentMemento + "\n");
 
-            ChildDir child4 = new ChildDir(manager.GenerateName(main), main);
-            main.AddChildToChildrenList(child4);
+            IEditableDirWithChildrenAndParrent child3 = new ChildDir("child3", main);
+            main.AddChildToChildrenList(child3);
+            Orginator.State = main;
+            Caretaker.AddMemento(Orginator.Save());
+            System.Console.WriteLine(main.Children.Count+ " ilość dzieci____ current memento to: " + Caretaker.CurrentMemento + "\n");
 
-            ChildDir child6 = new ChildDir(manager.GenerateName(main), main);
-            main.AddChildToChildrenList(child6);
 
-            System.Console.WriteLine("jak się zmieniło"+"\n");
-            foreach (IEditableDirWithChildrenAndParrent child in main.Children)
-            {
-                System.Console.WriteLine(child.Description.Name + "\n");
-            }
+            System.Console.WriteLine("szykuję się do przywrócenia o 1 do tyłu");
+            main=Orginator.Restore(Caretaker.GetMemento(Caretaker.CurrentMemento - 1));
+            System.Console.WriteLine(main.Children.Count + " ilość dzieci____ current memento to: " + Caretaker.CurrentMemento + "\n");
+
+            System.Console.WriteLine("szykuję się do przywrócenia o 1 do przodu");
+            main = Orginator.Restore(Caretaker.GetMemento(Caretaker.CurrentMemento +1));
+            System.Console.WriteLine(main.Children.Count + " ilość dzieci____ current memento to: " + Caretaker.CurrentMemento + "\n");
+
+            System.Console.WriteLine("szykuję się do przywrócenia o 3 do tyłu");
+            main = Orginator.Restore(Caretaker.GetMemento(Caretaker.CurrentMemento - 3));
+            System.Console.WriteLine(main.Children.Count + " ilość dzieci____ current memento to: " + Caretaker.CurrentMemento + "\n");
+
+            System.Console.WriteLine("szykuję się do przywrócenia o 3 do przodu");
+            main = Orginator.Restore(Caretaker.GetMemento(Caretaker.CurrentMemento + 3));
+            System.Console.WriteLine(main.Children.Count + " ilość dzieci____ current memento to: " + Caretaker.CurrentMemento + "\n");
+
+            Orginator.State = main;
+            Caretaker.AddMemento(Orginator.Save());
+            System.Console.WriteLine(main.Children.Count + " ilość dzieci____ current memento to: " + Caretaker.CurrentMemento + "\n");
+
+            Orginator.State = main;
+            Caretaker.AddMemento(Orginator.Save());
+            System.Console.WriteLine(main.Children.Count + " ilość dzieci____ current memento to: " + Caretaker.CurrentMemento + "\n");
+
+            Orginator.State = main;
+            Caretaker.AddMemento(Orginator.Save());
+            System.Console.WriteLine(main.Children.Count + " ilość dzieci____ current memento to: " + Caretaker.CurrentMemento + "\n");
+
+            System.Console.WriteLine("szykuję się do przywrócenia o 2 do tyłu");
+            main = Orginator.Restore(Caretaker.GetMemento(Caretaker.CurrentMemento - 2));
+            System.Console.WriteLine(main.Children.Count + " ilość dzieci____ current memento to: " + Caretaker.CurrentMemento + "\n");
+
+            Orginator.State = main;
+            Caretaker.AddMemento(Orginator.Save());
+            System.Console.WriteLine(main.Children.Count + " ilość dzieci____ current memento to: " + Caretaker.CurrentMemento + "\n");
+
+
         }
     }
 }

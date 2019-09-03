@@ -8,96 +8,72 @@ namespace ReFolder.Management
 {
     public class DirManagement
     {
-        private DirWrite dirWrite;
-        private DirRead dirRead;
-        private MemoryDirs memoryDirs;
+        private DirRead DirRead { get; set; }
+        private DirValidate DirValidate { get; set; }
+
         private const string const_defaultPrefixForGeneratingNames = "newFolder";
         //Singleton
         private static DirManagement InstanceDirManagement { get; set; }
 
-
         //konstruktor do  wstrzykiwania singletonów przez metody
-        private DirManagement(DirWrite dirWrite, DirRead dirRead, MemoryDirs memoryDirs)
+        private DirManagement( DirRead dirRead, DirValidate dirValidate)
         {
-            this.dirWrite = dirWrite;
-            this.dirRead = dirRead;
-            this.memoryDirs = memoryDirs;
+            this.DirRead = dirRead;
+            this.DirValidate = dirValidate;
         }
-
-        
-        // zwraca zwykłą instancję
+        // zwraca zwykłą instancję singletona
         public static DirManagement GetDefaultInstance()
         {
             if (InstanceDirManagement == null)
             {
-                InstanceDirManagement = new DirManagement(DirWrite.GetInstance(),DirRead.GetInstance(), MemoryDirs.GetInstance());
+                InstanceDirManagement = new DirManagement(DirRead.GetDefaultInstance(), DirValidate.GetDefaultInstance()); ;
             }
             return InstanceDirManagement;
         }
-        // zwraca instancję z możliwością wstrzyknięcia zależności(na potrzeby testów )
-        public static DirManagement InitializeInstance(DirWrite dirWrite, DirRead dirRead, MemoryDirs memoryDirs)
+        // zwraca instancję singletona z możliwością wstrzyknięcia zależności(na potrzeby testów )
+        public static DirManagement InitializeInstance( DirRead dirRead, DirValidate dirValidate)
         {
             if (InstanceDirManagement == null)
             {
-                InstanceDirManagement = new DirManagement(dirWrite,dirRead, memoryDirs);
+                InstanceDirManagement = new DirManagement(dirRead, dirValidate);
             }
             return InstanceDirManagement;
         }
-
-
-        // generuje wszystkie foldery z pamięci(z klasy MemoryDirs) jeśli nie istnieją 
-        public void GenerateAllChildrenDirsAsFolders()
-        {
-            foreach (IEditableDirWithChildrenAndParrent dir in MemoryDirs.AllCreatedDirs)
-            {
-                if (!DirValidate.isDirExisting(dir))
-                {
-                    dirWrite.CreateNewFolder(dir.Description.FullName);
-                }
-                else continue;
-
-            }
-        }
-        // usuwa folder z pamięci i z systemu 
-        public void DeleteChildFolder(IEditableDirWithChildrenAndParrent dir)
-        {
-            memoryDirs.DeleteDirFromAllCreatedDirs(dir);
-            dirWrite.DeleteFolder(dir.Description.FullName);
-
-        }
-        // tworzy nowy MainDir na podstawie ścieżki 
+        // tworzy nowy MainDir na podstawie ścieżki !! uwaga metoda powinna być użyta tylko jeden raz ponieważ zawsze zwraca NOWEGO mainDira
         public MainDir GetFolderAsNewMainDir(string fullName)
         {
-            return dirRead.GetMainDirFolder(fullName);
+            return DirRead.GetMainDirFolder(fullName);
         }
-        public string GenerateName(IEditableDirWithChildren parrentDir, int sufix_minValue = 0, string prefix= const_defaultPrefixForGeneratingNames)
+
+        #region generate string names
+        // generuje nazwę wg. prefix_sufix nie sprawdza istnienia folderu w systemie sprawdza istnienie w rodzicu
+          public string GeneratetName_Default(IEditableDirWithChildren parrentDir, int sufix_minValue = 0, string prefix = const_defaultPrefixForGeneratingNames)
         {
             int biggestInt = 0;
-
             List<int> numbers = new List<int>();
 
-            foreach(IEditableDirWithChildrenAndParrent child in parrentDir.Children)
+            foreach (IEditableDirWithChildrenAndParrent child in parrentDir.Children)
             {
-
-                if (child.Description.Name.Contains(prefix))
+                if (child.Description.Name.Contains(prefix)&& child.Description.Name.Contains("_"))
                 {
-                    string[] splitted= child.Description.Name.Split('_');
-                    int num = int.Parse(splitted[splitted.Length - 1]);
-                    numbers.Add(num);           
-                    if(biggestInt< num)
-                    {
-                        biggestInt = num;
-                    }
+                    
+                        string[] splitted = child.Description.Name.Split('_');
+                        int num = int.Parse(splitted[splitted.Length - 1]);
+                        numbers.Add(num);
+                        if (biggestInt < num)
+                        {
+                            biggestInt = num;
+                        }       
                 }
             }
-
-            if(numbers.Count==0) return $"{prefix}_{sufix_minValue}";
+            if (numbers.Count == 0) return $"{prefix}_{sufix_minValue}";
 
 
             if (biggestInt >= sufix_minValue)
             {
-                for ( int i= sufix_minValue; i < biggestInt; i++){
-                    if(!numbers.Contains(i))
+                for (int i = sufix_minValue; i < biggestInt; i++)
+                {
+                    if (!numbers.Contains(i))
                     {
                         return $"{prefix}_{i}";
                     }
@@ -111,73 +87,52 @@ namespace ReFolder.Management
             return $"{prefix}_{sufix_minValue}";
 
         }
+        // generuje nazwę wg. Number_Text_ParrentName sprawdza istnienie folderu w systemie i rodzicu
+        public string GenerateName_Number_Text_ParrentName(IEditableDirWithChildren parrentDir, string text, int prefix = 0)
+        {
+            if (text == null)
+            {
+                throw new ArgumentNullException("text string is empty ");
+            }
 
+            string name = $"{prefix}_{text}_{parrentDir.Description.Name}";
 
+            if(DirValidate.IsDirExistingAsFolderAndChild(parrentDir, name))
+            {
+                throw new ArgumentException($"{name} exists");
+            }
 
+            return name;
+        }
+        // generuje nazwę wg. ParrentName_Text_Number  sprawdza istnienie folderu w systemie i rodzicu
+        public string GenerateName_ParrentName_Text_Number(IEditableDirWithChildren parrentDir, string text, int prefix = 0)
+        {
+            if (text == null)
+            {
+                throw new ArgumentNullException("text string is empty ");
+            }
 
+            string name = $"{parrentDir.Description.Name}_{text}_{prefix}";
 
-        // zarządzanie wszystkimi wygenerowanymi dirami przez osobną klasę wewnętrzną 
-        public class MemoryDirs
+            if (DirValidate.IsDirExistingAsFolderAndChild(parrentDir, name))
+            {
+                throw new ArgumentException($"{name} exists");
+            }
+
+            return name;
+        }
+        // generuje nazwę wg. Number  sprawdza istnienie folderu w systemie i rodzicu
+        public string GenerateName_Number(IEditableDirWithChildren parrentDir, int number)
         {
 
-            //singleton
-            private static MemoryDirs InstanceMemoryDirs { get; set; }
-
-
-            // zwraca instancję
-            public static MemoryDirs GetInstance()
+            if (DirValidate.IsDirExistingAsFolderAndChild(parrentDir, Convert.ToString(number)))
             {
-                if (InstanceMemoryDirs == null)
-                {
-                    InstanceMemoryDirs = new MemoryDirs();
-                }
-                return InstanceMemoryDirs;
+                throw new ArgumentException($"{number} exists");
             }
 
-
-            // posiada dane wszystkich utworzonych folderów za wyjątkiem folderu głównego
-            public static List<IEditableDirWithChildrenAndParrent> AllCreatedDirs { get; } = new List<IEditableDirWithChildrenAndParrent>();
-            //inicjalizuje listę wszystkich folderów
-            public void InitializeAllChildren(IEditableDirWithChildren dir)
-            {
-
-                foreach (IEditableDirWithChildrenAndParrent childDir in dir.Children)
-                {
-                    MemoryDirs.AllCreatedDirs.Add(childDir);
-                    if (childDir.Children.Count > 0)
-                    {
-                        InitializeAllChildren(childDir);
-                    }
-                    else continue;
-                }
-            }
-            // sprawdza czy dany folder istnieje w zbiorze wszystkich folderów tablicy AllCreatedAllCreatedDirs
-            public bool ReturnTrueIfDirExistInAllCreatedDirs(IEditableDirWithChildren dir)
-            {
-                bool flag = false;
-                foreach (IEditableDirWithChildren childDir in AllCreatedDirs)
-                {
-                    if (childDir.Description.FullName.Equals(dir.Description.FullName))
-                    {
-                        flag = true;
-                    }
-
-                }
-                return flag;
-            }
-            //usuwa folder z wszystkich folderów w pamięci 
-            public void DeleteDirFromAllCreatedDirs(IEditableDirWithChildrenAndParrent dir)
-            {
-                AllCreatedDirs.Remove(dir);
-            }
-            // usuwa foldery z wszystkich folderów w pamięci  
-            public void DeleteDirsFromAllCreatedDirs(List<IEditableDirWithChildrenAndParrent> childDirs)
-            {
-                foreach (IEditableDirWithChildrenAndParrent dir in childDirs)
-                    DeleteDirFromAllCreatedDirs(dir);
-            }
+            return Convert.ToString(number);
         }
+        #endregion
+
     }
-
-
 }

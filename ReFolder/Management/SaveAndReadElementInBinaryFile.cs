@@ -9,9 +9,7 @@ namespace ReFolder.Management
     {
         // singleton
         private static SaveAndReadElementInBinaryFile Instance { get; set; }
-
-
-        public static SaveAndReadElementInBinaryFile GetInstance()
+        public static SaveAndReadElementInBinaryFile GetDefaultInstance()
         {
             if (Instance == null)
             {
@@ -21,13 +19,13 @@ namespace ReFolder.Management
         }
 
         // zapisuje obiekt typu T do pliku pod wskazaną ścieżką.
-        //  jeśli  plik o podanej nazwie istnieje to zostanie nadpisany w przeciwnym wypadku zostanie utworzony nowy plik
         public void WriteToBinaryFile<T>(string filePath, T objectToWrite)
         {
             Stream stream = File.Open(filePath, FileMode.Create);
             new BinaryFormatter().Serialize(stream, objectToWrite);
             stream.Close();
         }
+        // odczytuje obiekt typu T do pliku pod wskazaną ścieżką.
         public T ReadFromBinaryFile<T>(string filePath)
         {
 
@@ -38,6 +36,7 @@ namespace ReFolder.Management
             stream.Close();
             return file;
         }
+        //usuwa plik 
         public void DeleteFile(string filepath)
         {
             DirectoryInfo info = new DirectoryInfo(filepath);

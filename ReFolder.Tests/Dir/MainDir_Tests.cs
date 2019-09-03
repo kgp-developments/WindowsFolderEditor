@@ -161,7 +161,8 @@ namespace ReFolder.Tests
             child1.AddChildToChildrenList(child12);
             //act
             mainDir.Description.FullName = fullName;
-            mainDir.AutoGenerateChildrenFullName(mainDir);
+
+            MainDir.AutoGenerateChildrenFullName(mainDir);
             //assert
             Assert.AreEqual($"{fullName}\\{nameList[0]}", child1.Description.FullName);
             Assert.AreEqual($"{fullName}\\{nameList[0]}\\{nameList[1]}", child11.Description.FullName);
@@ -181,7 +182,7 @@ namespace ReFolder.Tests
             child1.AddChildToChildrenList(child11);
             child1.AddChildToChildrenList(child12);
             //act
-            mainDir.AutoGenerateChildrenFullName(mainDir);
+            MainDir.AutoGenerateChildrenFullName(mainDir);
             //assert
             Assert.AreEqual($"{fullName}\\{nameList[0]}", child1.Description.FullName);
             Assert.AreEqual($"{fullName}\\{nameList[0]}\\{nameList[1]}", child11.Description.FullName);

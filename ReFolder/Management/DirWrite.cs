@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReFolder.Dir;
+using System;
 using System.IO;
 
 namespace ReFolder.Management
@@ -8,17 +9,31 @@ namespace ReFolder.Management
     {
         //Singleton
         private static  DirWrite InstanceDirWrite { get; set; }
+        private DirValidate DirValidate{ get; set; }
 
-         public static DirWrite GetInstance()
+        public DirWrite( DirValidate dirValidate)
+        {
+            this.DirValidate = dirValidate;
+        }
+
+        // zwraca zwykłą instancję 
+        public static DirWrite GetDefaultInstance()
         {
             if (InstanceDirWrite == null)
             {
-                InstanceDirWrite = new DirWrite();
+                InstanceDirWrite = new DirWrite(DirValidate.GetDefaultInstance());
             }
             return InstanceDirWrite;
         }
-
-
+        // cele testów
+        public static DirWrite GetInstance( DirValidate dirValidate)
+        {
+            if (InstanceDirWrite == null)
+            {
+                InstanceDirWrite = new DirWrite(dirValidate);
+            }
+            return InstanceDirWrite;
+        }
         // tworzy folder
         private  void CreateFolder(string fullName)
         {
@@ -43,7 +58,7 @@ namespace ReFolder.Management
             }
 
         }
-
+        // tworzy nowy folder w systemie i zwraca boola jeśli go utworzy
         public  bool CreateNewFolder(string fullName)
         {
             try
@@ -67,6 +82,19 @@ namespace ReFolder.Management
         {
             DirectoryInfo info = new DirectoryInfo(fullName);
                 info.Delete();
+        }
+        // generuje wszystkie foldery z pamięci(z klasy MemoryDirs) jeśli nie istnieją 
+        public void GenerateAllChildrenDirsAsFolders()
+        {
+            foreach (IEditableDirWithChildrenAndParrent dir in MemoryDirs.AllCreatedDirs)
+            {
+                if (!DirValidate.IsDirExistingAsFolder(dir.Description.FullName))
+                {
+                    CreateNewFolder(dir.Description.FullName);
+                }
+                else continue;
+
+            }
         }
     }
 }

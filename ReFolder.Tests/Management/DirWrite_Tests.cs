@@ -10,7 +10,7 @@ namespace ReFolder.Tests
         public void CreateNewFolder_ThrowsArgumentNullException_WhenFullNameIsNull()
         {
             //arange
-            var dirWrite = DirWrite.GetInstance();
+            var dirWrite = DirWrite.GetInstance(DirValidate.GetDefaultInstance());
             //Act
             TestDelegate action = () => dirWrite.CreateNewFolder(null);
             //assert
@@ -20,7 +20,7 @@ namespace ReFolder.Tests
         public void CreateNewFolder_throwsArgumentException_WhenFullNameDontContainsSlash()
         {
             //arange
-            var dirWrite = DirWrite.GetInstance();
+            var dirWrite = DirWrite.GetInstance(DirValidate.GetDefaultInstance());
             //Act
             TestDelegate action = () => dirWrite.CreateNewFolder(" kotek");
             //assert
@@ -30,7 +30,7 @@ namespace ReFolder.Tests
         public void CreateNewFolder_throwsArgumentException_WhenFullNameIsEmptyString()
         {
             //arange
-            var dirWrite = DirWrite.GetInstance();
+            var dirWrite = DirWrite.GetInstance(DirValidate.GetDefaultInstance());
             //Act
             TestDelegate action = () => dirWrite.CreateNewFolder(" ");
             //assert
@@ -40,7 +40,7 @@ namespace ReFolder.Tests
         public void CreateNewFolder_throwsArgumentException_WhenFullNameEndsWithSlash()
         {
             //arange
-            var dirWrite = DirWrite.GetInstance();
+            var dirWrite = DirWrite.GetInstance(DirValidate.GetDefaultInstance());
             //Act
             TestDelegate action = () => dirWrite.CreateNewFolder("kotek\\mruczek\\");
             //assert

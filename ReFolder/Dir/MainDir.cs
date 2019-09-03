@@ -66,6 +66,34 @@ namespace ReFolder.Dir
 
             }
         }
+        public void DoXForAll(Action x, IEditableDirWithChildren dir)
+        {
+            foreach (IEditableDirWithChildrenAndParrent childDir in dir.Children)
+            {
+               
+                x.Invoke();
+                if (childDir.Children.Count > 0)
+                {
+                    DoXForAll(x, childDir);
+                }
+                else continue;
 
+            }
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is MainDir dir &&
+                   base.Equals(obj) &&
+                   EqualityComparer<List<IEditableDirWithChildrenAndParrent>>.Default.Equals(Children, dir.Children);
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = 812589192;
+            hashCode = hashCode * -1521134295 + base.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<IEditableDirWithChildrenAndParrent>>.Default.GetHashCode(Children);
+            return hashCode;
+        }
     }
 }

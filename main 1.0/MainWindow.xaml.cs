@@ -87,12 +87,12 @@ namespace main_1._0
             ChildDir f133 = new ChildDir("f777", f13);
             f13.Children.Add(f133);
 
-            ChildDir f1331 = new ChildDir("f888", f133);
+            ChildDir f1331 = new ChildDir("f8880", f133);
             f133.Children.Add(f1331);
             ChildDir f1332 = new ChildDir("f999", f133);
             f133.Children.Add(f1332);
 
-            ChildDir f2111 = new ChildDir("f10000", f211);
+            ChildDir f2111 = new ChildDir("r10001", f211);
             f211.Children.Add(f2111);
 
             #endregion
@@ -122,25 +122,32 @@ namespace main_1._0
         private void GenerateDirs_Executed(object sender,ExecutedRoutedEventArgs e)
         {
             DirManagement management = DirManagement.GetDefaultInstance();
-            DirManagement.MemoryDirs memoryDirs = DirManagement.MemoryDirs.GetInstance();
+            MemoryDirs memoryDirs = MemoryDirs.GetDefaultInstance();
             memoryDirs.InitializeAllChildren(Main);
-            management.GenerateAllChildrenDirsAsFolders();
+            DirWrite.GetDefaultInstance().GenerateAllChildrenDirsAsFolders();
         }
         private void CopyChildrenDirs_Executed(object sender, ExecutedRoutedEventArgs e)
         {
 
-            SaveAndReadElementInBinaryFile.GetInstance()
+            SaveAndReadElementInBinaryFile.GetDefaultInstance()
                 .WriteToBinaryFile<IEditableDirWithChildren>(@"..\..\..\TemporaryFiles\tempFile~Copy", CurrentlyChosenDir);
         }
         private void PasteChildrenDirs_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             List<IEditableDirWithChildrenAndParrent> CopyOfChildren =
-                SaveAndReadElementInBinaryFile.GetInstance()
+                SaveAndReadElementInBinaryFile.GetDefaultInstance()
                 .ReadFromBinaryFile<IEditableDirWithChildren>(@"C:..\..\..\TemporaryFiles\tempFile~Copy")
                 .Children;
-  
+
+            var validate= DirValidate.GetDefaultInstance();
             foreach (IEditableDirWithChildrenAndParrent child in CopyOfChildren)
             {
+
+                if (validate.IsDirExistingAsFolderAndChild(CurrentlyChosenDir, child.Description.Name))
+                {
+                    child.Description.Name = DirManagement.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir,1,child.Description.Name);
+                }
+
                 child.ParrentDir = CurrentlyChosenDir;
             }
             CurrentlyChosenDir.AddChildrenToChildrenList(CopyOfChildren);
@@ -236,8 +243,7 @@ namespace main_1._0
         }
         private void DefaultAddition_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            string name= DirManagement.GetDefaultInstance().GenerateName(CurrentlyChosenDir);
-            Console.WriteLine(name +"__________________________________________________________ \n");
+            string name= DirManagement.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir);
             IEditableDirWithChildrenAndParrent NewDir = new ChildDir(name, CurrentlyChosenDir);
             CurrentlyChosenDir.AddChildToChildrenList(NewDir);
             Sorteritno ToSort = new Sorteritno();

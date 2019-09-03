@@ -7,9 +7,11 @@ namespace ReFolder.Management
     //dokończ
       public class DirRead
     {
-        //singleton
+
         private static DirRead InstanceDirRead { get; set; }
-        public static DirRead GetInstance()
+        //singleton
+
+        public static DirRead GetDefaultInstance()
         {
             if (InstanceDirRead == null)
             {

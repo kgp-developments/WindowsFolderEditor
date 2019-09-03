@@ -18,12 +18,12 @@ namespace ReFolder.Dir
         {
             this.ParrentDir = mainDir;
         }
-        public ChildDir(string descriptionName, IEditableDirWithChildren mainDir)
+        public ChildDir(string Name, IEditableDirWithChildren mainDir)
         {
             this.ParrentDir = mainDir;
             DirDescription dirDescription = new DirDescription(
-                name: descriptionName,
-                fullName: $"{mainDir.Description.FullName}\\{descriptionName}"
+                name: Name,
+                fullName: $"{mainDir.Description.FullName}\\{Name}"
                 );
 
             Description = dirDescription;
