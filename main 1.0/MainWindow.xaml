@@ -19,7 +19,13 @@
         <CommandBinding Command="self:KGPcommands.DefaultAddition" CanExecute="ChosenNotNullDepended" Executed="DefaultAddition_Executed" />
         <CommandBinding Command="self:KGPcommands.CopyChildrenDirs" CanExecute="ChosenNotNullDepended" Executed="CopyChildrenDirs_Executed" />
         <CommandBinding Command="self:KGPcommands.PasteChildrenDirs" CanExecute="PasteChildrenDirs_CanExecute" Executed="PasteChildrenDirs_Executed" />
-
+        <CommandBinding Command="self:KGPcommands.ComplexAdditionWindowShow" CanExecute="ChosenNotNullDepended" Executed="ComplexAdditionWindowShow_Executed"/>
+        <CommandBinding Command="self:KGPcommands.CopyDir" CanExecute="ChosenNotNullDepended" Executed="CopyDir_Executed"/>
+        <CommandBinding Command="self:KGPcommands.PasteDir" CanExecute="ChosenNotNullDepended" Executed="PasteDir_Executed"/>
+        <CommandBinding Command="self:KGPcommands.UndoChanges" CanExecute="UndoChanges_CanExecute" Executed="UndoChanges_Executed"/>
+        <CommandBinding Command="self:KGPcommands.RedoChanges" CanExecute="RedoChanges_CanExecute" Executed="RedoChanges_Executed"/>
+        <CommandBinding Command="self:KGPcommands.NameEditionWindowShow" CanExecute="ChosenNotNullMainNeither" Executed="NameEditionWindow_Executed" />
+        <CommandBinding Command="self:KGPcommands.DeleteDir" CanExecute="ChosenNotNullMainNeither" Executed="DeleteDir_Executed" />
     </Window.CommandBindings>
 
     <Grid Background="#FF373837">
@@ -44,27 +50,23 @@
 
         <!-- OPCJE EDYCJI DRZEWA -->
         <Canvas Name="EdycjaDrzewa"  HorizontalAlignment="Right" Margin="0,15,0,0" RenderTransformOrigin="0.5,0.5" Width="190">
-            <Canvas.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform ScaleX="1"/>
-                    <SkewTransform/>
-                    <RotateTransform/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </Canvas.RenderTransform>
             <Canvas.Background>
                 <LinearGradientBrush>
                     <GradientStop Color="White" Offset="1.9"/>
                     <GradientStop Color="Black"/>
                 </LinearGradientBrush>
             </Canvas.Background>
+            <Button Canvas.Left="47" Canvas.Top="277" VerticalAlignment="Center" Command="self:KGPcommands.UndoChanges">Cofnij</Button>
+            <Button Canvas.Left="124" Canvas.Top="277" VerticalAlignment="Center" Command="self:KGPcommands.RedoChanges">Przywróć</Button>
+            <Button Height="40" VerticalAlignment="Bottom" HorizontalAlignment="Right" Canvas.Bottom="20" Canvas.Right="15" Command="self:KGPcommands.GenerateDirs">Generuj strukture do systemu</Button>
             <TextBlock FontSize="15" Canvas.Left="47" Foreground="AliceBlue" ><Bold>Edycja drzewa</Bold></TextBlock>
             <Button Name="DefaultAddbtn" Width="160" Height="20" Canvas.Top="25" Canvas.Left="15" Background="DarkGray" Command="self:KGPcommands.DefaultAddition">Dodaj nowy folder</Button>
-            <Button Name="ComplexAddbtn" Width="160" Height="20" Canvas.Top="50" Canvas.Left="15" Background="DarkGray">Dodaj złożoną gałąź</Button>
-            <Button Name="Copybtn" Width="160" Height="20" Canvas.Top="95" Canvas.Left="15" Background="DarkGray" Command="self:KGPcommands.CopyChildrenDirs" >Kopiuj wnętrze gałęzi</Button>
-            <Button Name="Pastebtn" Width="160" Height="20" Canvas.Top="120" Canvas.Left="15" Background="DarkGray" Command="self:KGPcommands.PasteChildrenDirs">Wklej fragment gałęzi</Button>
-            <Button Name="DefaultDeletebtn" Width="160" Height="20" Canvas.Top="165" Canvas.Left="15" Background="DarkGray">Usuń fragment gałęzi</Button>
-            <Button Name="DeleteMiddlebtn" Width="160" Height="20" Canvas.Top="190" Canvas.Left="15" Background="DarkGray">Usuń pośredni folder</Button>
+            <Button Name="ComplexAddbtn" Width="160" Height="20" Canvas.Top="50" Canvas.Left="15" Background="DarkGray" Command="self:KGPcommands.ComplexAdditionWindowShow">Dodaj złożoną gałąź</Button>
+            <Button Name="Copybtn" Width="160" Height="20" Canvas.Top="95" Canvas.Left="15" Background="DarkGray"  Command="self:KGPcommands.CopyDir">Kopiuj</Button>
+            <Button Name="CopyContentbtn" Width="160" Height="20" Canvas.Top="120" Canvas.Left="15" Background="DarkGray" Command="self:KGPcommands.CopyChildrenDirs" >Kopiuj zawartość</Button>
+            <Button Name="Pastebtn" Width="160" Height="20" Canvas.Top="145" Canvas.Left="15" Background="DarkGray" Command="self:KGPcommands.PasteChildrenDirs">Wklej</Button>
+            <Button Name="DefaultDeletebtn" Width="160" Height="20" Canvas.Top="190" Canvas.Left="15" Background="DarkGray" Command="self:KGPcommands.DeleteDir" CommandParameter="{Binding ElementName=DefaultDeletebtn}">Usuń fragment gałęzi</Button>
+            <Button Name="DeleteMiddlebtn" Width="160" Height="20" Canvas.Top="215" Canvas.Left="15" Background="DarkGray" Command="self:KGPcommands.DeleteDir" CommandParameter="{Binding ElementName=DeleteMiddlebtn}">Usuń pośredni folder</Button>
 
         </Canvas>
         <!-- OPCJE EDYCJI FOLDERU-->
@@ -79,14 +81,11 @@
             <Canvas.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform ScaleY="1"/>
-                    <SkewTransform/>
-                    <RotateTransform/>
-                    <TranslateTransform/>
                 </TransformGroup>
             </Canvas.RenderTransform>
             <TextBlock Canvas.Left="158" Foreground="AliceBlue"><Bold>Edycja folderu</Bold></TextBlock>
-            <Button>Opcja 1</Button>
-            <Button Canvas.Top="30">Opcja 2</Button>
+            <Button Canvas.Left="80" Canvas.Top="20">Zmień ikone</Button>
+            <Button Canvas.Top="20" Canvas.Left="260" Command="self:KGPcommands.NameEditionWindowShow">Zmień nazwe</Button>
         </Canvas>
 
         <!-- KOMENDY UZYTKOWNIKA -->

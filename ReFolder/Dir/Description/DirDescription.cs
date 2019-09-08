@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReFolder.Management;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -26,55 +27,57 @@ namespace ReFolder.Dir.Description
         {
             get
             {
-                if (fullName == null)
-                {
-                    throw new NullReferenceException("fullName isn't set ");
-                }
-                else
-                {
-                    return this.fullName;
-                }
+                return this.fullName;
             }
             set
             {
-                this.fullName = value;
+                if (String.IsNullOrWhiteSpace(value))
+                {
+                    throw new NullReferenceException("name is empty/null");
+                }
+                else
+                {
+                    this.fullName = value;
+                }             
             }
         }
         public string Name
         {
             get
             {
-                if (name == null)
-                {
-                    throw new NullReferenceException("name isn't set ");
-                }
-                else
-                {
-                    return this.name;
-                }
+                return this.name;              
             }
             set
             {
-                this.name = value;
+                if (String.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("name is empty/null");
+                }
+                {
+                     this.name = value;
+                }
+                
             }
         }
         public string IconAddress
         {
             get
             {
-                if (iconAddress == null)
-                {
-                    throw new NullReferenceException("iconAddress isn't set ");
-                }
-                else
-                {
-                    return this.iconAddress;
-                }
+                return this.iconAddress;
             }
             set
             {
-                this.iconAddress = value;
+                if (String.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("IconAddress is empty/null");
+                }
+                {
+                    this.iconAddress = value;
+                }
+
             }
+
+
         }
     }
 }

@@ -21,12 +21,12 @@ namespace ReFolder.Management
         }
 
         // lista wszystkich folderów które mają być wygenerowane posiada dane wszystkich utworzonych folderów za wyjątkiem folderu głównego 
-        public static List<IEditableDirWithChildrenAndParrent> AllCreatedDirs { get; } = new List<IEditableDirWithChildrenAndParrent>();
+        public static List<IEditableDirWithChildrenAndParent> AllCreatedDirs { get; } = new List<IEditableDirWithChildrenAndParent>();
         //inicjalizuje listę wszystkich folderów
         public void InitializeAllChildren(IEditableDirWithChildren dir)
         {
 
-            foreach (IEditableDirWithChildrenAndParrent childDir in dir.Children)
+            foreach (IEditableDirWithChildrenAndParent childDir in dir.Children)
             {
                 MemoryDirs.AllCreatedDirs.Add(childDir);
                 if (childDir.Children.Count > 0)
@@ -51,14 +51,14 @@ namespace ReFolder.Management
             return flag;
         }
         //usuwa folder z wszystkich folderów w pamięci 
-        public void DeleteDirFromAllCreatedDirs(IEditableDirWithChildrenAndParrent dir)
+        public void DeleteDirFromAllCreatedDirs(IEditableDirWithChildrenAndParent dir)
         {
             AllCreatedDirs.Remove(dir);
         }
         // usuwa foldery z wszystkich folderów w pamięci  
-        public void DeleteDirsFromAllCreatedDirs(List<IEditableDirWithChildrenAndParrent> childDirs)
+        public void DeleteDirsFromAllCreatedDirs(List<IEditableDirWithChildrenAndParent> childDirs)
         {
-            foreach (IEditableDirWithChildrenAndParrent dir in childDirs)
+            foreach (IEditableDirWithChildrenAndParent dir in childDirs)
                 DeleteDirFromAllCreatedDirs(dir);
         }
     }

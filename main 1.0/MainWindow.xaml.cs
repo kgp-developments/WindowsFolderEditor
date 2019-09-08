@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using ReFolder.Dir;
 using ReFolder.Dir.Description;
 using ReFolder.Management;
+using ReFolder.Memento;
 
 namespace main_1._0
 {
@@ -31,8 +32,11 @@ namespace main_1._0
         bool rightHandedView = true; // zmienna okreslajaca widok (leworeczny/praworeczny)
         public static Canvas CurrentlyChosen = null;
         public IEditableDirWithChildren CurrentlyChosenDir = null;
-        IEditableDirWithChildren Seed;
-        List<IEditableDirWithChildrenAndParrent> CopyOfChildren;
+        public IEditableDirWithChildren Seed;
+        List<IEditableDirWithChildrenAndParent> CopyOfChildren;
+        public Sorteritno sorteritno = new Sorteritno();
+        ComplexAdditionWindow CAW;
+        NameEditionWindow NEW;
 
         // zawiera inicjalizację Dirów do testu
         public MainWindow()
@@ -43,12 +47,11 @@ namespace main_1._0
             Panels.Add(PanelWidoku);
             HideAllPanels();
 
+            MainDir Main = DirManagement.GetDefaultInstance().GetFolderAsNewMainDir(@"C:\Users\lenovo\Desktop\gui testowe\AppTest");
+            Seed = Main;
             #region inicjalizacja  ChildDirów do testu
 
-            Main = new MainDir(new DirDescription(@"C:\Users\Klakier\Desktop\kociFolderek","kociFolderek"));
-            Seed = Main;
-
-            ChildDir f1 = new ChildDir("f1", Main);
+/*            ChildDir f1 = new ChildDir("f1", Main);
             Main.Children.Add(f1);
             ChildDir f2 = new ChildDir("f2", Main);
             Main.Children.Add(f2);
@@ -93,19 +96,20 @@ namespace main_1._0
             f133.Children.Add(f1332);
 
             ChildDir f2111 = new ChildDir("r10001", f211);
-            f211.Children.Add(f2111);
+            f211.Children.Add(f2111);*/
 
             #endregion
 
 
             Sorteritno sorteritno = new Sorteritno();
-            sorteritno.Create(ResTree, 30, 0, Seed);
+            sorteritno.Create(ResTree, 30, 0, Seed, "MW");
 
-            sorteritno.Sort(Seed, ResTree, 0, 30);
+            sorteritno.Sort(Seed, ResTree, 0, 30, "MW");
 
-
+            AddMemento();
 
         }
+
 
         #region funkcje składowe komend
         private void HideAllPanels()
@@ -117,10 +121,67 @@ namespace main_1._0
         }
         #endregion
 
-        // funkcje komend
         #region funkcje komend _Executed
+        private void UndoChanges_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Seed = Orginator.Restore(Caretaker.GetMemento(Caretaker.CurrentMemento - 1));
+            Sorteritno ToSort = new Sorteritno();
+            ToSort.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+
+
+        }
+        private void RedoChanges_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Seed = Orginator.Restore(Caretaker.GetMemento(Caretaker.CurrentMemento + 1));
+            Sorteritno ToSort = new Sorteritno();
+            ToSort.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+        }
+        private void DeleteDir_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Button Clicked = (Button)e.Parameter;
+            IEditableDirWithChildrenAndParent Target = (IEditableDirWithChildrenAndParent)CurrentlyChosenDir;
+
+            if (Clicked.Name == "DeleteMiddlebtn")
+            {
+                List<IEditableDirWithChildrenAndParent> TemporaryList = new List<IEditableDirWithChildrenAndParent>();
+                for (int i = Target.ParentDir.Children.Count - 1; i > Target.ParentDir.Children.IndexOf(Target); i--)
+                {
+                    IEditableDirWithChildrenAndParent child = Target.ParentDir.Children[i];
+                    if (Target.ParentDir.Children.IndexOf(child) > Target.ParentDir.Children.IndexOf(Target))
+                    {
+                        TemporaryList.Insert(TemporaryList.Count, child);
+                        Target.ParentDir.DeleteChildDirFromList(child);
+                    }
+                }
+                foreach (IEditableDirWithChildrenAndParent child in Target.Children)
+                {
+                    child.ParentDir = Target.ParentDir;
+                    Target.ParentDir.AddChildToChildrenList(child);
+                }
+                Target.ParentDir.AddChildrenToChildrenList(TemporaryList);
+            }
+            Target.ParentDir.DeleteChildDirFromList(Target);
+
+            CurrentlyChosen = null;
+            CurrentlyChosenDir = null;
+            AddMemento();
+            Sorteritno ToSort = new Sorteritno();         
+            ToSort.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+        }
+        private void NameEditionWindow_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            NEW = new NameEditionWindow();
+            NEW.ShowDialog();
+        }
+
+        private void ComplexAdditionWindowShow_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            CAW = new ComplexAdditionWindow();
+            CAW.ShowDialog();
+        }
         private void GenerateDirs_Executed(object sender,ExecutedRoutedEventArgs e)
         {
+            
             DirManagement management = DirManagement.GetDefaultInstance();
             MemoryDirs memoryDirs = MemoryDirs.GetDefaultInstance();
             memoryDirs.InitializeAllChildren(Main);
@@ -131,16 +192,18 @@ namespace main_1._0
 
             SaveAndReadElementInBinaryFile.GetDefaultInstance()
                 .WriteToBinaryFile<IEditableDirWithChildren>(@"..\..\..\TemporaryFiles\tempFile~Copy", CurrentlyChosenDir);
+            Pastebtn.Command = KGPcommands.PasteChildrenDirs;
         }
+
         private void PasteChildrenDirs_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            List<IEditableDirWithChildrenAndParrent> CopyOfChildren =
+            List<IEditableDirWithChildrenAndParent> CopyOfChildren =
                 SaveAndReadElementInBinaryFile.GetDefaultInstance()
                 .ReadFromBinaryFile<IEditableDirWithChildren>(@"C:..\..\..\TemporaryFiles\tempFile~Copy")
                 .Children;
 
             var validate= DirValidate.GetDefaultInstance();
-            foreach (IEditableDirWithChildrenAndParrent child in CopyOfChildren)
+            foreach (IEditableDirWithChildrenAndParent child in CopyOfChildren)
             {
 
                 if (validate.IsDirExistingAsFolderAndChild(CurrentlyChosenDir, child.Description.Name))
@@ -148,12 +211,47 @@ namespace main_1._0
                     child.Description.Name = DirManagement.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir,1,child.Description.Name);
                 }
 
-                child.ParrentDir = CurrentlyChosenDir;
+                child.ParentDir = CurrentlyChosenDir;
             }
             CurrentlyChosenDir.AddChildrenToChildrenList(CopyOfChildren);
             MainDir.AutoGenerateChildrenFullName(CurrentlyChosenDir);
+            AddMemento();
             Sorteritno ToSort = new Sorteritno();
-            ToSort.ResetTree(ResTree, ResetHighlight, Seed, drzewo);
+            ToSort.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+        }
+        private void PasteDir_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            IEditableDirWithChildrenAndParent childDir =
+               SaveAndReadElementInBinaryFile.GetDefaultInstance()
+               .ReadFromBinaryFile<IEditableDirWithChildrenAndParent>(@"C:..\..\..\TemporaryFiles\tempFile~Copy");
+
+            var validate= DirValidate.GetDefaultInstance();
+
+
+                if (validate.IsDirExistingAsFolderAndChild(CurrentlyChosenDir, childDir.Description.Name))
+                {
+                    childDir.Description.Name = DirManagement.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir,1, childDir.Description.Name);
+                }
+
+                childDir.ParentDir = CurrentlyChosenDir;
+            
+            CurrentlyChosenDir.AddChildToChildrenList(childDir);
+            MainDir.AutoGenerateChildrenFullName(CurrentlyChosenDir);
+            AddMemento();
+            Sorteritno ToSort = new Sorteritno();
+            ToSort.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+
+        }
+
+        private void CopyDir_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+            IEditableDirWithChildrenAndParent child = new ChildDir(CurrentlyChosenDir.Description, CurrentlyChosenDir.Children);
+
+            SaveAndReadElementInBinaryFile.GetDefaultInstance()
+                 .WriteToBinaryFile<IEditableDirWithChildrenAndParent>(@"..\..\..\TemporaryFiles\tempFile~Copy", child);
+            Pastebtn.Command = KGPcommands.PasteDir;
+
         }
         private void ShowHide_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -238,20 +336,57 @@ namespace main_1._0
             {
                 FolderContained.ShowContent = true;
             }
+            AddMemento();
             Sorteritno Temporary = new Sorteritno();
-            Temporary.ResetTree(ResTree, ResetHighlight, Seed, drzewo);
+            Temporary.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
         }
         private void DefaultAddition_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             string name= DirManagement.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir);
-            IEditableDirWithChildrenAndParrent NewDir = new ChildDir(name, CurrentlyChosenDir);
+            IEditableDirWithChildrenAndParent NewDir = new ChildDir(name, CurrentlyChosenDir);
             CurrentlyChosenDir.AddChildToChildrenList(NewDir);
+            AddMemento();
             Sorteritno ToSort = new Sorteritno();
-            ToSort.ResetTree(ResTree, ResetHighlight, Seed, drzewo);
+            ToSort.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
         }
         #endregion
 
         #region funkcje komend _CanExecute
+        private void UndoChanges_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (Caretaker.CurrentMemento > 0)
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
+        }
+        private void RedoChanges_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if(Caretaker.CurrentMemento +1< Caretaker.CountMemento())
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
+
+        }
+        private void ChosenNotNullMainNeither(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (CurrentlyChosen == null || CurrentlyChosenDir == Seed)
+            {
+                e.CanExecute = false;
+            }
+            else
+            {
+                e.CanExecute = true;
+            }
+        }
+
         private void ChosenNotNullDepended(object sender, CanExecuteRoutedEventArgs e)
         {
             if(CurrentlyChosen == null)
@@ -281,15 +416,15 @@ namespace main_1._0
             if (CurrentlyChosen == null) e.CanExecute = false;
             else
             {
-                Console.WriteLine("no i pyk dane do kieszeni");
                 e.CanExecute = true;
             }
 
         }
+        
         private void PasteChildrenDirs_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
+            {
             if (CurrentlyChosenDir == null && (CopyOfChildren == null || CopyOfChildren.Count == 0)) e.CanExecute = false;
-            else e.CanExecute = true;
+            else e.CanExecute= true;
         }
         private void AlwaysTrueForExecuted(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -297,6 +432,12 @@ namespace main_1._0
         }
         #endregion
 
+        private void AddMemento()
+        {
+            Orginator.State = Seed;
+            Caretaker.AddMemento(Orginator.Save());
+
+        }
     }
 
 

@@ -1,20 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using ReFolder.Dir.Description;
+using ReFolder.Management;
 
 namespace ReFolder.Dir
 {
     [Serializable]
     public abstract class Dir : IDir
     {
-        public IMutableSystemObjectDescription Description { get; set; }
+        private IMutableSystemObjectDescription description;
+        public IMutableSystemObjectDescription Description {
+            get
+            {
+                return description;
+            }
+            set {
+                if (value == null) throw new ArgumentNullException("Description is null");
+                description = value;
+            }
+        }
         public bool IsMarked { get; set; } = false;
-        //public bool IsCurrentlyChosen { get; set; } = false;
         public bool ShowContent { get; set; } = true;
+
+        #region constructors
+
         public Dir() { }
         public Dir(IMutableSystemObjectDescription description) {
+            if (description == null) throw new ArgumentNullException("one or more arguments are null");
             Description = description;
-        }    
+        }
+
+        #endregion
+
         public Dir GetDir()
         {
             return this;

@@ -8,12 +8,11 @@ namespace ReFolder.Dir
     public interface IEditableDirWithChildren: IDir
 
     {
-        List<IEditableDirWithChildrenAndParrent> Children { get; set; }
+        List<IEditableDirWithChildrenAndParent> Children { get; set; }
       
-        void DeleteChildDirFromList(IEditableDirWithChildrenAndParrent child);
-        void DeleteChildrenDirsFromList(List<IEditableDirWithChildrenAndParrent> children);
-        void AddChildToChildrenList(IEditableDirWithChildrenAndParrent child);
-        void AddChildrenToChildrenList(List<IEditableDirWithChildrenAndParrent> children);
-        void DoXForAll(Action x, IEditableDirWithChildren dir);
+        void DeleteChildDirFromList(IEditableDirWithChildrenAndParent child);
+        void DeleteChildrenDirsFromList(List<IEditableDirWithChildrenAndParent> children);
+        void AddChildToChildrenList(IEditableDirWithChildrenAndParent child);
+        void AddChildrenToChildrenList(List<IEditableDirWithChildrenAndParent> children);
     }
 }

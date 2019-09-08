@@ -15,9 +15,10 @@ namespace ReFolder.Memento
             return new Memento(State);
         }
 
-        public static IEditableDirWithChildren Restore(Memento m)
+        public static IEditableDirWithChildren Restore(Memento memento)
         {
-            State = SaveAndReadElementInBinaryFile.GetDefaultInstance().ReadFromBinaryFile<IEditableDirWithChildren>(m.FilePath);
+            if (memento == null) throw new ArgumentNullException("memento is null ");
+            State = SaveAndReadElementInBinaryFile.GetDefaultInstance().ReadFromBinaryFile<IEditableDirWithChildren>(memento.FilePath);
             return State;
         }
     }

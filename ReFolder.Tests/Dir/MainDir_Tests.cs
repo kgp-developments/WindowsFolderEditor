@@ -31,9 +31,9 @@ namespace ReFolder.Tests
                 x.FullName== "kot");
 
             IEditableDirWithChildren mainDir = new MainDir(Descr);
-            IEditableDirWithChildrenAndParrent child = Mock.Of<IEditableDirWithChildrenAndParrent>();
-            IEditableDirWithChildrenAndParrent child1 = Mock.Of<IEditableDirWithChildrenAndParrent>();
-            List<IEditableDirWithChildrenAndParrent> list = new List<IEditableDirWithChildrenAndParrent>();
+            IEditableDirWithChildrenAndParent child = Mock.Of<IEditableDirWithChildrenAndParent>();
+            IEditableDirWithChildrenAndParent child1 = Mock.Of<IEditableDirWithChildrenAndParent>();
+            List<IEditableDirWithChildrenAndParent> list = new List<IEditableDirWithChildrenAndParent>();
             list.Add(child);
             list.Add(child1);
 
@@ -69,9 +69,9 @@ namespace ReFolder.Tests
                 x.FullName == "kot");
 
             IEditableDirWithChildren mainDir = new MainDir(Descr);
-            IEditableDirWithChildrenAndParrent child = Mock.Of<IEditableDirWithChildrenAndParrent>();
-            IEditableDirWithChildrenAndParrent child1 = Mock.Of<IEditableDirWithChildrenAndParrent>();
-            List<IEditableDirWithChildrenAndParrent> list = new List<IEditableDirWithChildrenAndParrent>();
+            IEditableDirWithChildrenAndParent child = Mock.Of<IEditableDirWithChildrenAndParent>();
+            IEditableDirWithChildrenAndParent child1 = Mock.Of<IEditableDirWithChildrenAndParent>();
+            List<IEditableDirWithChildrenAndParent> list = new List<IEditableDirWithChildrenAndParent>();
             list.Add(child);
             list.Add(child1);
 
@@ -105,8 +105,8 @@ namespace ReFolder.Tests
             var Descr = Mock.Of<IMutableSystemObjectDescription>(x=>
             x.FullName=="kotek");
             IEditableDirWithChildren mainDir = new MainDir(Descr);
-            IEditableDirWithChildrenAndParrent child= Mock.Of<IEditableDirWithChildrenAndParrent>();
-            IEditableDirWithChildrenAndParrent child1= Mock.Of<IEditableDirWithChildrenAndParrent>();
+            IEditableDirWithChildrenAndParent child= Mock.Of<IEditableDirWithChildrenAndParent>();
+            IEditableDirWithChildrenAndParent child1= Mock.Of<IEditableDirWithChildrenAndParent>();
             mainDir.AddChildToChildrenList(child);
             mainDir.AddChildToChildrenList(child1);
             //act
@@ -134,9 +134,9 @@ namespace ReFolder.Tests
             var Descr = Mock.Of<IMutableSystemObjectDescription>(x =>
             x.FullName == "kotek");
             IEditableDirWithChildren mainDir = new MainDir(Descr);
-            IEditableDirWithChildrenAndParrent child = Mock.Of<IEditableDirWithChildrenAndParrent>();
-            IEditableDirWithChildrenAndParrent child1 = Mock.Of<IEditableDirWithChildrenAndParrent>();
-            List<IEditableDirWithChildrenAndParrent> list = new List<IEditableDirWithChildrenAndParrent>();
+            IEditableDirWithChildrenAndParent child = Mock.Of<IEditableDirWithChildrenAndParent>();
+            IEditableDirWithChildrenAndParent child1 = Mock.Of<IEditableDirWithChildrenAndParent>();
+            List<IEditableDirWithChildrenAndParent> list = new List<IEditableDirWithChildrenAndParent>();
 
             list.Add(child);
             list.Add(child1);
@@ -147,7 +147,7 @@ namespace ReFolder.Tests
             Assert.AreEqual(2, size);
         }
         [Test]
-        public void AutoGenerateChildrenFullName_ChangeChildrenFullName_WhenParrentFullNameChange()
+        public void AutoGenerateChildrenFullName_ChangeChildrenFullName_WhenParentFullNameChange()
         {
             string fullName = "c:\\cats\\RedCats";
             string[] nameList = new string[] { "kuszek", "puszek", "muszek" };
@@ -169,7 +169,7 @@ namespace ReFolder.Tests
             Assert.AreEqual($"{fullName}\\{nameList[0]}\\{nameList[2]}", child12.Description.FullName);
         }
         [Test]
-        public void AutoGenerateChildrenFullName_ChangeChildrenFullName_WhenParrentFullNameNotChange()
+        public void AutoGenerateChildrenFullName_ChangeChildrenFullName_WhenParentFullNameNotChange()
         {
             string fullName = "c:\\cats\\BlueCats";
             string[] nameList = new string[] { "kuszek", "puszek", "muszek" };

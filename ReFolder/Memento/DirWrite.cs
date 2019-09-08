@@ -86,7 +86,7 @@ namespace ReFolder.Management
         // generuje wszystkie foldery z pamięci(z klasy MemoryDirs) jeśli nie istnieją 
         public void GenerateAllChildrenDirsAsFolders()
         {
-            foreach (IEditableDirWithChildrenAndParent dir in MemoryDirs.AllCreatedDirs)
+            foreach (IEditableDirWithChildrenAndParrent dir in MemoryDirs.AllCreatedDirs)
             {
                 if (!DirValidate.IsDirExistingAsFolder(dir.Description.FullName))
                 {

@@ -44,95 +44,132 @@ namespace ReFolder.Management
         {
             return DirRead.GetMainDirFolder(fullName);
         }
-
         #region generate string names
         // generuje nazwę wg. prefix_sufix nie sprawdza istnienia folderu w systemie sprawdza istnienie w rodzicu
-          public string GeneratetName_Default(IEditableDirWithChildren parrentDir, int sufix_minValue = 0, string prefix = const_defaultPrefixForGeneratingNames)
+        public string GeneratetName_Default(IEditableDirWithChildren parentDir, int sufix_minValue = 0, string prefix = const_defaultPrefixForGeneratingNames, params string[] namesToIgnore)
         {
-            int biggestInt = 0;
-            List<int> numbers = new List<int>();
+            if (prefix == null) throw new ArgumentNullException("text string is null ");
+            if (parentDir == null) throw new ArgumentNullException("parentDir is null ");
 
-            foreach (IEditableDirWithChildrenAndParrent child in parrentDir.Children)
+            if (DirValidate.IsDirExistingAsFolder(parentDir.Description.FullName))
             {
-                if (child.Description.Name.Contains(prefix)&& child.Description.Name.Contains("_"))
+                string[] existingFolders = DirRead.GetAllChildrenNames(parentDir.Description.FullName);
+                foreach (string name in existingFolders)
                 {
-                    
-                        string[] splitted = child.Description.Name.Split('_');
-                        int num = int.Parse(splitted[splitted.Length - 1]);
-                        numbers.Add(num);
-                        if (biggestInt < num)
-                        {
-                            biggestInt = num;
-                        }       
-                }
-            }
-            if (numbers.Count == 0) return $"{prefix}_{sufix_minValue}";
-
-
-            if (biggestInt >= sufix_minValue)
-            {
-                for (int i = sufix_minValue; i < biggestInt; i++)
-                {
-                    if (!numbers.Contains(i))
-                    {
-                        return $"{prefix}_{i}";
-                    }
-
+                    if (name.Equals($"{prefix}_{sufix_minValue}")) GeneratetName_Default(parentDir, ++sufix_minValue, prefix, namesToIgnore);
                 }
 
-                return $"{prefix}_{++biggestInt}";
             }
 
+            if (parentDir.Children.Count != 0)
+            {
+                foreach (var child in parentDir.Children)
+                {
+                    if ((child.Description.Name.Equals($"{prefix}_{sufix_minValue}"))) GeneratetName_Default(parentDir, ++sufix_minValue, prefix, namesToIgnore);
+                }
+            }
+            foreach (string name in namesToIgnore)
+            {
+                if (name.Equals($"{prefix}_{sufix_minValue}"))
+                {
+                    GeneratetName_Default(parentDir, ++sufix_minValue, prefix, namesToIgnore);
 
+                }
+            }
+
+            //    DirValidate.IsNameExistingAsChild(parentDir, $"{prefix}_{sufix_minValue}");
+            Console.WriteLine("DOKONAŁO SIĘ ");
             return $"{prefix}_{sufix_minValue}";
 
         }
-        // generuje nazwę wg. Number_Text_ParrentName sprawdza istnienie folderu w systemie i rodzicu
-        public string GenerateName_Number_Text_ParrentName(IEditableDirWithChildren parrentDir, string text, int prefix = 0)
+        // generuje nazwę wg. Number_Text_ParentName sprawdza istnienie folderu w systemie i rodzicu
+        public string GenerateName_Number_Text_ParentName(IEditableDirWithChildren parentDir, string text, int prefix = 0, char sign = '_', params string[] namesToIgnore)
         {
-            if (text == null)
+            if (parentDir == null) throw new ArgumentNullException("parentDir is null ");
+
+            foreach (string name in namesToIgnore)
             {
-                throw new ArgumentNullException("text string is empty ");
+                if (name.Equals($"{prefix}{sign}{text}{sign}{parentDir.Description.Name}")) GenerateName_ParentName_Text_Number(parentDir, text, ++prefix, sign);
             }
-
-            string name = $"{prefix}_{text}_{parrentDir.Description.Name}";
-
-            if(DirValidate.IsDirExistingAsFolderAndChild(parrentDir, name))
+            if (DirValidate.IsDirExistingAsFolder(parentDir.Description.FullName))
             {
-                throw new ArgumentException($"{name} exists");
-            }
+                string[] existingFolders = DirRead.GetAllChildrenNames(parentDir.Description.FullName);
+                foreach (string name in existingFolders)
+                {
+                    if (name.Equals($"{prefix}{sign}{text}{sign}{parentDir.Description.Name}")) GenerateName_ParentName_Text_Number(parentDir, text, ++prefix, sign);
+                }
 
-            return name;
+            }
+            foreach (var child in parentDir.Children)
+            {
+                if (child.Description.Name.Equals($"{prefix}{sign}{text}{sign}{parentDir.Description.Name}"))
+                {
+                    GenerateName_ParentName_Text_Number(parentDir, text, ++prefix, sign);
+                }
+            }
+            DirValidate.IsNameExistingAsChild(parentDir, $"{prefix}{sign}{text}{sign}{parentDir.Description.Name}");
+            return $"{prefix}{sign}{text}{sign}{parentDir.Description.Name}";
         }
-        // generuje nazwę wg. ParrentName_Text_Number  sprawdza istnienie folderu w systemie i rodzicu
-        public string GenerateName_ParrentName_Text_Number(IEditableDirWithChildren parrentDir, string text, int prefix = 0)
+        // generuje nazwę wg. ParentName_Text_Number  sprawdza istnienie folderu w systemie i rodzicu
+        public string GenerateName_ParentName_Text_Number(IEditableDirWithChildren parentDir, string text, int sufix = 0, char sign = '_', params string[] namesToIgnore)
         {
-            if (text == null)
+            if (text == null) throw new ArgumentNullException("text string is null ");
+            if (parentDir == null) throw new ArgumentNullException("parentDir is null ");
+
+            foreach (string name in namesToIgnore)
             {
-                throw new ArgumentNullException("text string is empty ");
+                if (name.Equals($"{parentDir.Description.Name}{sign}{text}{sign}{sufix}")) GenerateName_ParentName_Text_Number(parentDir, text, ++sufix, sign);
             }
-
-            string name = $"{parrentDir.Description.Name}_{text}_{prefix}";
-
-            if (DirValidate.IsDirExistingAsFolderAndChild(parrentDir, name))
+            if (DirValidate.IsDirExistingAsFolder(parentDir.Description.FullName))
             {
-                throw new ArgumentException($"{name} exists");
-            }
+                string[] existingFolders = DirRead.GetAllChildrenNames(parentDir.Description.FullName);
+                foreach (string name in existingFolders)
+                {
+                    if (name.Equals($"{parentDir.Description.Name}{sign}{text}{sign}{sufix}")) GenerateName_ParentName_Text_Number(parentDir, text, ++sufix, sign);
+                }
 
-            return name;
+            }
+            foreach (var child in parentDir.Children)
+            {
+                if (child.Description.Name.Equals($"{parentDir.Description.Name}{sign}{text}{sign}{sufix}"))
+                {
+                    GenerateName_ParentName_Text_Number(parentDir, text, ++sufix, sign);
+                }
+            }
+            DirValidate.IsNameExistingAsChild(parentDir, $"{parentDir.Description.Name}{sign}{text}{sign}{sufix}");
+            return $"{parentDir.Description.Name}{sign}{text}{sign}{sufix}";
+            ;
         }
         // generuje nazwę wg. Number  sprawdza istnienie folderu w systemie i rodzicu
-        public string GenerateName_Number(IEditableDirWithChildren parrentDir, int number)
+        public string GenerateName_Number(IEditableDirWithChildren parentDir, int number, params string[] namesToIgnore)
         {
+            if (parentDir == null) throw new ArgumentNullException("parentDir is null ");
+            string convertedNumber = Convert.ToString(number);
 
-            if (DirValidate.IsDirExistingAsFolderAndChild(parrentDir, Convert.ToString(number)))
+            foreach (string name in namesToIgnore)
             {
-                throw new ArgumentException($"{number} exists");
+                if (name.Equals($"{convertedNumber}")) GenerateName_Number(parentDir, ++number);
             }
-
+            if (DirValidate.IsDirExistingAsFolder(parentDir.Description.FullName))
+            {
+                string[] existingFolders = DirRead.GetAllChildrenNames(parentDir.Description.FullName);
+                foreach (string name in existingFolders)
+                {
+                    if (name.Equals($"{convertedNumber}")) GenerateName_Number(parentDir, ++number);
+                }
+            }
+            foreach (var child in parentDir.Children)
+            {
+                if (child.Description.Name.Equals(convertedNumber))
+                {
+                    GenerateName_Number(parentDir, ++number);
+                }
+            }
+            DirValidate.IsNameExistingAsChild(parentDir, convertedNumber);
             return Convert.ToString(number);
         }
         #endregion
+
 
     }
 }

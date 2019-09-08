@@ -13,9 +13,13 @@ namespace ReFolder.Memento
             }
         }
         private static List<Memento> Mementos = new List<Memento>();
-
+        public static int CountMemento()
+        {
+            return Mementos.Count;
+        }
         public static void AddMemento(Memento memento)
         {
+            if (memento == null) throw new ArgumentNullException("memento is null");
             Console.WriteLine("dodaję memento");
 
             if (currentMemento< Mementos.Count - 1)
@@ -36,11 +40,13 @@ namespace ReFolder.Memento
         }
         public static Memento GetMemento(int index)
         {
+            if (index < 0 && index >= Mementos.Count) throw new ArgumentException("index is too big/ small");
+
             Console.WriteLine("pobieram memento o indeksie " + index+" max index wynosi "+ (Mementos.Count-1));
             currentMemento = index;          
             return Mementos[currentMemento];
         }
-        public static string GenerateMementoName()
+        internal static string GenerateMementoName()
         {
             return $"memento~{Mementos.Count}";
         }

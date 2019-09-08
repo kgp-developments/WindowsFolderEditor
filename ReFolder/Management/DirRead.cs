@@ -1,7 +1,7 @@
 ﻿using ReFolder.Dir;
 using System.IO;
 using ReFolder.Dir.Description;
-
+using System;
 namespace ReFolder.Management
 {
     //dokończ
@@ -26,21 +26,35 @@ namespace ReFolder.Management
             return new DirectoryInfo(fullName).GetDirectories();
         }
         // zwraca folder nadrzędny 
-        private DirectoryInfo GetParrentFolder(string fullName)
+        private DirectoryInfo GetParentFolder(string fullName)
         {
             DirectoryInfo directory = new DirectoryInfo(fullName);
             return directory;
-        }     
+        }
+        public string[] GetAllChildrenNames(string fullName)
+        {
+            if (String.IsNullOrWhiteSpace(fullName)) throw new ArgumentException("fullname is empty/null");
+            DirectoryInfo[] directories = new DirectoryInfo(fullName).GetDirectories();
+            string[] names = new string[directories.Length];
 
+            for (int i = 0; i < directories.Length; i++)
+            {
+                names[i] = directories[i].Name;
+
+            }
+
+            return names;
+        }
 
         /*  Method Info
          * metoda powinna być użyta tylko raz do wygenerowania punktu początkowego drzewa(root) ponieważ tworzy ona NOWY OBIEKT 
          * a nie zwraca do niego referencji.
          * Powiązania powinny być zachowane a nie tworzone osobno dla każdego folderu  
        */
-        public MainDir GetMainDirFolder(string fullName)
+        internal MainDir GetMainDirFolder(string fullName)
         {
-            DirectoryInfo dir =GetParrentFolder(fullName);
+            if (String.IsNullOrWhiteSpace(fullName)) throw new ArgumentException("fullname is empty/null");
+            DirectoryInfo dir =GetParentFolder(fullName);
             DirDescription dirDescription = new DirDescription(dir.FullName, dir.Name);
 
             return new MainDir(dirDescription);

@@ -1,0 +1,22 @@
+﻿<Window x:Class="main_1._0.NameEditionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:self="clr-namespace:main_1._0"
+        mc:Ignorable="d"
+        Title="Edycja nazwy" Height="150" Width="300" MinHeight="150" MaxHeight="150" MinWidth="300" MaxWidth="300">
+
+    <Window.CommandBindings>
+        <CommandBinding Command="self:KGPcommands.NewNameCommand" Executed="NewNameCommand_Executed" CanExecute="AlwaysTrueForCanExecute"/>
+    </Window.CommandBindings>
+    
+    <Grid Background="LightGray">
+        <Canvas Background="White" Height="20" Width="200">
+            <TextBlock Canvas.Left="35" Canvas.Top="-21">Wprowadź nową nazwe:</TextBlock>
+            <TextBox Name="NewNameTB" Height="20" Width="200"/>
+            <Button Name="OK"  Width="60" Height="20" Canvas.Left="41" Canvas.Top="37" Command="self:KGPcommands.NewNameCommand" CommandParameter="{Binding ElementName=OK}">Zastosuj</Button>
+            <Button Name="Cancel" Height="20"  Width="60" Canvas.Left="101" Canvas.Top="37" Command="self:KGPcommands.NewNameCommand" CommandParameter="{Binding ElementName=Cancel}">Anuluj</Button>
+        </Canvas>
+    </Grid>
+</Window>

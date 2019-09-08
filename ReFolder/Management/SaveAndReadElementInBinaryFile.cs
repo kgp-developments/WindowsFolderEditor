@@ -21,6 +21,8 @@ namespace ReFolder.Management
         // zapisuje obiekt typu T do pliku pod wskazaną ścieżką.
         public void WriteToBinaryFile<T>(string filePath, T objectToWrite)
         {
+            if (String.IsNullOrWhiteSpace(filePath)) throw new ArgumentException(" filepath is null/empty/whitespace");
+            if (objectToWrite == null) throw new ArgumentNullException("object to write is null");
             Stream stream = File.Open(filePath, FileMode.Create);
             new BinaryFormatter().Serialize(stream, objectToWrite);
             stream.Close();
@@ -28,7 +30,7 @@ namespace ReFolder.Management
         // odczytuje obiekt typu T do pliku pod wskazaną ścieżką.
         public T ReadFromBinaryFile<T>(string filePath)
         {
-
+            if (String.IsNullOrWhiteSpace(filePath)) throw new ArgumentException(" filepath is null/empty/whitespace");
             Stream stream = File.Open(filePath, FileMode.Open);
 
             BinaryFormatter binaryFormatter = new BinaryFormatter();
@@ -37,11 +39,12 @@ namespace ReFolder.Management
             return file;
         }
         //usuwa plik 
-        public void DeleteFile(string filepath)
+        public void DeleteFile(string filePath)
         {
-            DirectoryInfo info = new DirectoryInfo(filepath);
-            if (!File.Exists(filepath)) throw new ArgumentException("file doesn't exists");
-            File.Delete(filepath);
+            if (String.IsNullOrWhiteSpace(filePath)) throw new ArgumentException(" filepath is null/empty/whitespace");
+            DirectoryInfo info = new DirectoryInfo(filePath);
+            if (!File.Exists(filePath)) throw new ArgumentException("file doesn't exists");
+            File.Delete(filePath);
 
         }
     }
