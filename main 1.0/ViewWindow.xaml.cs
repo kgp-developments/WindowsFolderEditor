@@ -19,9 +19,107 @@ namespace main_1._0
     /// </summary>
     public partial class ViewWindow : Window
     {
+        static MainWindow AppMW = (MainWindow)Application.Current.MainWindow;
+        public Settings settings;
+        public string rightHandedView;
+
         public ViewWindow()
         {
             InitializeComponent();
+            settings = AppMW.settings;
+            SetShownSettings();
+
         }
+
+        private void SetShownSettings()
+        {
+            BrushConverter bc = new BrushConverter();
+            LanguageCB.SelectedItem = FindName(settings.language);
+            FontSizeCB.SelectedItem = FindName(settings.fontSize);
+            OYdisCB.SelectedItem = FindName(settings.OYdis);
+            colorCB.SelectedItem = FindName(settings.color);
+            if (bool.Parse(settings.RHV))
+            {
+                righthanded.Background = Brushes.LightGray;
+                lefthanded.Background = (Brush)bc.ConvertFrom("#FF7A7878");
+                rightHandedView = "true";
+            }
+            else
+            {
+                lefthanded.Background = Brushes.LightGray;
+                righthanded.Background = (Brush)bc.ConvertFrom("#FF7A7878");
+                rightHandedView = "false";
+            }
+
+        }
+
+       /* private  void FormatBtn_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Button Clicked = (Button)e.Parameter;
+            if (Clicked.Name == "side")
+            {
+                RHVtxtBlock.Visibility = Visibility.Visible;
+                lefthanded.Visibility = Visibility.Visible;
+                righthanded.Visibility = Visibility.Visible;
+            }
+            else if(Clicked.Name == "up")
+            {
+                RHVtxtBlock.Visibility = Visibility.Collapsed;
+                lefthanded.Visibility = Visibility.Collapsed;
+                righthanded.Visibility = Visibility.Collapsed;
+            }
+        }*/
+
+        private void ApplyChanges_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Button Clicked = (Button)e.Parameter;
+            string[] newSettings = new string[5];
+            newSettings[0] = "language = " + ((ComboBoxItem)LanguageCB.SelectedItem).Name.ToString();
+            newSettings[1] = "fontsize = " + ((ComboBoxItem)FontSizeCB.SelectedItem).Name.ToString();
+            newSettings[2] = "color = " + ((ComboBoxItem)colorCB.SelectedItem).Name.ToString();
+            newSettings[3] = "oydis = " + ((ComboBoxItem)OYdisCB.SelectedItem).Name.ToString();
+            newSettings[4] = "rhv = " + rightHandedView;
+
+            settings.ChangeStyleSettings(newSettings);
+            settings.GetStyleSettings();
+            settings.ApplyStyleMW();
+
+            AppMW.RestoreMainLayout();
+            if(Clicked.Name == "OkBtn")
+            {
+                this.Close();
+            }
+        }
+
+        private void CancelBtn_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.Close();
+        }
+        private void RHVbtnSwitch_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            BrushConverter bc = new BrushConverter();
+            Button Clicked = (Button)e.Parameter;
+            if(Clicked.Name == "righthanded")
+            {
+                righthanded.Background = Brushes.LightGray;
+                lefthanded.Background = (Brush)bc.ConvertFrom("#FF7A7878");
+                rightHandedView = "true";
+            }
+            else if (Clicked.Name == "lefthanded")
+            {
+                lefthanded.Background = Brushes.LightGray;
+                righthanded.Background = (Brush)bc.ConvertFrom("#FF7A7878");
+                rightHandedView = "false";
+            }
+        }
+
+        private void AlwaysTrueForCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
     }
+
+
+
 }

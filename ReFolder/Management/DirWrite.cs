@@ -88,7 +88,7 @@ namespace ReFolder.Management
         {
             foreach (IEditableDirWithChildrenAndParent dir in MemoryDirs.AllCreatedDirs)
             {
-                if (!DirValidate.IsDirExistingAsFolder(dir.Description.FullName))
+                if (!DirValidate.IsfolderExisting(dir.Description.FullName))
                 {
                     CreateNewFolder(dir.Description.FullName);
                 }

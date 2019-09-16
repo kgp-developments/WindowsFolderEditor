@@ -27,7 +27,7 @@ namespace main_1._0
     public partial class MainWindow : Window
     {
         // folder główny z którego rozpoczyna się dziedziczenie 
-        IEditableDirWithChildren Main;
+        readonly IEditableDirWithChildren  Main;
         List<StackPanel> Panels = new List<StackPanel>(); // lista paneli z gornego paska, np. plik, widok
         bool rightHandedView = true; // zmienna okreslajaca widok (leworeczny/praworeczny)
         public static Canvas CurrentlyChosen = null;
@@ -35,9 +35,12 @@ namespace main_1._0
         public IEditableDirWithChildren Seed;
         List<IEditableDirWithChildrenAndParent> CopyOfChildren;
         public Sorteritno sorteritno = new Sorteritno();
-        ComplexAdditionWindow CAW;
+        public ComplexAdditionWindow CAW;
         NameEditionWindow NEW;
-
+        public ViewWindow VW;
+        public Settings settings;
+        public CreateNewTreeWindow CNTW;
+        public LoadTreeWindow LTW;
         // zawiera inicjalizację Dirów do testu
         public MainWindow()
         {
@@ -45,73 +48,39 @@ namespace main_1._0
 
             Panels.Add(PanelPliku);
             Panels.Add(PanelWidoku);
-            HideAllPanels();
+            Panels.Add(PanelEdycji);
+            //HideAllPanels();
+            settings = new Settings();
+            settings.GetStyleSettings();
+            settings.GetMWSize();
+            settings.ApplyStyleMW();
 
-            MainDir Main = DirManagement.GetDefaultInstance().GetFolderAsNewMainDir(@"C:\Users\lenovo\Desktop\gui testowe\AppTest");
+
+            MainDir Main = DirManagement.GetDefaultInstance().GetFolderAsNewMainDir(@"C:\Users\Klakier\Desktop\kociFolderek");
             Seed = Main;
-            #region inicjalizacja  ChildDirów do testu
-
-/*            ChildDir f1 = new ChildDir("f1", Main);
-            Main.Children.Add(f1);
-            ChildDir f2 = new ChildDir("f2", Main);
-            Main.Children.Add(f2);
-            ChildDir f3 = new ChildDir("f3", Main);
-            Main.Children.Add(f3);
-
-            ChildDir f11 = new ChildDir("f11", f1);
-            f1.Children.Add(f11);
-
-            ChildDir f31 = new ChildDir("f31", f3);
-            f3.Children.Add(f31);
 
 
-            ChildDir f12 = new ChildDir("f12", f1);
-            f1.Children.Add(f12);
-            ChildDir f13 = new ChildDir("f13", f1);
-            f1.Children.Add(f13);
-            ChildDir f14 = new ChildDir("f13", f1);
-            f1.Children.Add(f14);
-
-
-            ChildDir f21 = new ChildDir("f111", f2);
-            f2.Children.Add(f21);
-            ChildDir f22 = new ChildDir("f222", f2);
-            f2.Children.Add(f22);
-
-            ChildDir f211 = new ChildDir("f333", f21);
-            f21.Children.Add(f211);
-            ChildDir f212 = new ChildDir("f444", f21);
-            f21.Children.Add(f212);
-
-            ChildDir f131 = new ChildDir("f555", f13);
-            f13.Children.Add(f131);
-            ChildDir f132 = new ChildDir("f666", f13);
-            f13.Children.Add(f132);
-            ChildDir f133 = new ChildDir("f777", f13);
-            f13.Children.Add(f133);
-
-            ChildDir f1331 = new ChildDir("f8880", f133);
-            f133.Children.Add(f1331);
-            ChildDir f1332 = new ChildDir("f999", f133);
-            f133.Children.Add(f1332);
-
-            ChildDir f2111 = new ChildDir("r10001", f211);
-            f211.Children.Add(f2111);*/
-
-            #endregion
-
-
-            Sorteritno sorteritno = new Sorteritno();
             sorteritno.Create(ResTree, 30, 0, Seed, "MW");
 
             sorteritno.Sort(Seed, ResTree, 0, 30, "MW");
+            ZoomSlider.Value = 1;
 
             AddMemento();
-
         }
 
 
         #region funkcje składowe komend
+        private void SaveSize()
+        {
+            string[] size = new string[2];
+            size[0] = this.Height.ToString();
+            size[1] = this.Width.ToString();
+            if (size[0] != settings.MWheight && size[1] != settings.MWwidth)
+            {
+                settings.SaveLatestMWSize(size);
+            }
+        }
+
         private void HideAllPanels()
         {
             foreach (StackPanel element in Panels)
@@ -119,22 +88,63 @@ namespace main_1._0
                 element.Visibility = Visibility.Collapsed;
             }
         }
+        private void AddMemento()
+        {
+            Orginator.State = Seed;
+            Caretaker.AddMemento(Orginator.Save());
+
+        }
+        public void HorizontalStyleSwitch(bool check)
+        {
+            if (!check)
+            {
+                RamkaDrzewa.Margin = new Thickness(190, 20, 0, 61);
+                EdycjaDrzewa.HorizontalAlignment = HorizontalAlignment.Left;
+                EdycjaFolderu.HorizontalAlignment = HorizontalAlignment.Right;
+                KomendyUzytkownika.Margin = new Thickness(190, 0, 420, 0);
+            }
+            else
+            {
+                RamkaDrzewa.Margin = new Thickness(0, 20, 190, 61);
+                EdycjaDrzewa.HorizontalAlignment = HorizontalAlignment.Right;
+                EdycjaFolderu.HorizontalAlignment = HorizontalAlignment.Left;
+                KomendyUzytkownika.Margin = new Thickness(420, 0, 190, 0);
+            }
+        }
+        public void RestoreMainLayout()
+        {
+            sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+        }
+
+
         #endregion
 
         #region funkcje komend _Executed
+        private void LTWshow_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            LTW = new LoadTreeWindow();
+            LTW.ShowDialog();
+        }
+
+        private void ViewWindowShow_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            VW = new ViewWindow();
+            VW.ShowDialog();
+        }
         private void UndoChanges_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Seed = Orginator.Restore(Caretaker.GetMemento(Caretaker.CurrentMemento - 1));
-            Sorteritno ToSort = new Sorteritno();
-            ToSort.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
-
-
+            sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
         }
         private void RedoChanges_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Seed = Orginator.Restore(Caretaker.GetMemento(Caretaker.CurrentMemento + 1));
-            Sorteritno ToSort = new Sorteritno();
-            ToSort.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+            sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+        }
+        private void CNTWshow_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            CNTW = new CreateNewTreeWindow();
+            CNTW.ShowDialog();
         }
         private void DeleteDir_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -165,8 +175,7 @@ namespace main_1._0
             CurrentlyChosen = null;
             CurrentlyChosenDir = null;
             AddMemento();
-            Sorteritno ToSort = new Sorteritno();         
-            ToSort.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+            sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
         }
         private void NameEditionWindow_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -177,6 +186,8 @@ namespace main_1._0
         private void ComplexAdditionWindowShow_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             CAW = new ComplexAdditionWindow();
+            settings.GetCAWsize();
+            settings.ApplyStyleCAW();
             CAW.ShowDialog();
         }
         private void GenerateDirs_Executed(object sender,ExecutedRoutedEventArgs e)
@@ -184,7 +195,7 @@ namespace main_1._0
             
             DirManagement management = DirManagement.GetDefaultInstance();
             MemoryDirs memoryDirs = MemoryDirs.GetDefaultInstance();
-            memoryDirs.InitializeAllChildren(Main);
+            memoryDirs.InitializeAllChildren(Seed);
             DirWrite.GetDefaultInstance().GenerateAllChildrenDirsAsFolders();
         }
         private void CopyChildrenDirs_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -216,8 +227,7 @@ namespace main_1._0
             CurrentlyChosenDir.AddChildrenToChildrenList(CopyOfChildren);
             MainDir.AutoGenerateChildrenFullName(CurrentlyChosenDir);
             AddMemento();
-            Sorteritno ToSort = new Sorteritno();
-            ToSort.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+            sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
         }
         private void PasteDir_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -238,8 +248,7 @@ namespace main_1._0
             CurrentlyChosenDir.AddChildToChildrenList(childDir);
             MainDir.AutoGenerateChildrenFullName(CurrentlyChosenDir);
             AddMemento();
-            Sorteritno ToSort = new Sorteritno();
-            ToSort.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+            sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
 
         }
 
@@ -272,25 +281,6 @@ namespace main_1._0
                 }
             }
         }
-        private void HorizontalStyleSwitch_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (rightHandedView)
-            {
-                RamkaDrzewa.Margin = new Thickness(190, 15, 0, 61);
-                EdycjaDrzewa.HorizontalAlignment = HorizontalAlignment.Left;
-                EdycjaFolderu.HorizontalAlignment = HorizontalAlignment.Right;
-                KomendyUzytkownika.Margin = new Thickness(190, 0, 420, 0);
-                rightHandedView = false;
-            }
-            else
-            {
-                RamkaDrzewa.Margin = new Thickness(0, 15, 190, 61);
-                EdycjaDrzewa.HorizontalAlignment = HorizontalAlignment.Right;
-                EdycjaFolderu.HorizontalAlignment = HorizontalAlignment.Left;
-                KomendyUzytkownika.Margin = new Thickness(420, 0, 190, 0);
-                rightHandedView = true;
-            }
-        }
         private void HighlightChosen_Executed(object sender, ExecutedRoutedEventArgs e)
         {
 
@@ -310,6 +300,7 @@ namespace main_1._0
 
                 CurrentlyChosenDir = (IEditableDirWithChildren)CurrentlyChosen.Tag;
                 CurrentlyChosenDir.IsMarked = true;
+
         }
         private void ResetHighlight_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -322,6 +313,7 @@ namespace main_1._0
                 CurrentlyChosenDir = null;
             }
             HideAllPanels();
+
         }
         private void ViewContent_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -337,8 +329,7 @@ namespace main_1._0
                 FolderContained.ShowContent = true;
             }
             AddMemento();
-            Sorteritno Temporary = new Sorteritno();
-            Temporary.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+            sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
         }
         private void DefaultAddition_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -346,8 +337,7 @@ namespace main_1._0
             IEditableDirWithChildrenAndParent NewDir = new ChildDir(name, CurrentlyChosenDir);
             CurrentlyChosenDir.AddChildToChildrenList(NewDir);
             AddMemento();
-            Sorteritno ToSort = new Sorteritno();
-            ToSort.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+            sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
         }
         #endregion
 
@@ -432,11 +422,19 @@ namespace main_1._0
         }
         #endregion
 
-        private void AddMemento()
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Orginator.State = Seed;
-            Caretaker.AddMemento(Orginator.Save());
+            SaveSize();
+        }
 
+        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (ZoomSlider != null && userCommand != null)
+            {
+                userCommand.Text = ZoomSlider.Value.ToString();
+                sorteritno.scale = (float)ZoomSlider.Value;
+                sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+            }
         }
     }
 

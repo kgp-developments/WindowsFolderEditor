@@ -14,12 +14,6 @@ namespace main_1._0 {
         "HorizontalStyleSwitch",
         typeof(KGPcommands)
        );
-    public static readonly RoutedUICommand Jakas = new RoutedUICommand
-    (
-        "Jakas",
-        "Jakas",
-        typeof(KGPcommands)
-    );
 
     public static readonly RoutedUICommand WidokShowHide = new RoutedUICommand
     (
@@ -171,6 +165,85 @@ typeof(KGPcommands)
 "RedoChanges",
 typeof(KGPcommands)
 );
+        public static readonly RoutedUICommand ViewWindowShow = new RoutedUICommand
+(
+"ViewWindowShow",
+"ViewWindowShow",
+typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand ApplyChangesVW = new RoutedUICommand
+(
+    "ApplyChangesVW",
+    "ApplyChangesVW",
+    typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand CancelVW = new RoutedUICommand
+(
+    "CancelVW",
+    "CancelVW",
+    typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand ApplyStyleChanges = new RoutedUICommand
+(
+"ApplyStyleChanges",
+"ApplyStyleChanges",
+typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand RHVBtnSwitch = new RoutedUICommand
+(
+"RHVBtnSwitch",
+"RHVBtnSwitch",
+typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand CancelCNTW = new RoutedUICommand
+(
+"CancelCNTW",
+"CancelCNTW",
+typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand CreateCNTW = new RoutedUICommand
+(
+"CreateCNTW",
+"CreateCNTW",
+typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand BrowseCNTW = new RoutedUICommand
+(
+"BrowseCNTW",
+"BrowseCNTW",
+typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand CNTWshow = new RoutedUICommand
+(
+"CNTWshow",
+"CNTWshow",
+typeof(KGPcommands)
+         );
+                    public static readonly RoutedUICommand LTWshow = new RoutedUICommand
+(
+"LTWshow",
+"LTWshow",
+typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand CancelLTW = new RoutedUICommand
+(
+"CancelLTW",
+"CancelLTW",
+typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand LoadLTW = new RoutedUICommand
+(
+"LoadLTW",
+"LoadLTW",
+typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand SetChosenLTW = new RoutedUICommand
+(
+"SetChosenLTW",
+"SetChosenLTW",
+typeof(KGPcommands)
+);
+
     }
 
 

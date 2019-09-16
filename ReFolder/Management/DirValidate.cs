@@ -21,7 +21,7 @@ namespace ReFolder.Management
 
 
         //sprawdza czy istnieje dany dir jako folder
-        public bool  IsDirExistingAsFolder(string fullName)
+        public bool  IsfolderExisting(string fullName)
         {
             IfNullOrWhitespaceThrowException(fullName);
              DirectoryInfo info = new DirectoryInfo(fullName);
@@ -76,7 +76,7 @@ namespace ReFolder.Management
                 return true;
 
             }
-            else if (IsDirExistingAsFolder($"{ParentDir.Description.FullName}\\{name}"))
+            else if (IsfolderExisting($"{ParentDir.Description.FullName}\\{name}"))
             {
 
                 return true;

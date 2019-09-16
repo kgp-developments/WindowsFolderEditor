@@ -1,0 +1,5 @@
+language = PL
+fontsize = fourteen
+color = dark
+oydis = mid
+rhv = true

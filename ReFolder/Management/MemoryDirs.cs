@@ -25,7 +25,7 @@ namespace ReFolder.Management
         //inicjalizuje listę wszystkich folderów
         public void InitializeAllChildren(IEditableDirWithChildren dir)
         {
-
+            if (dir == null) throw new ArgumentNullException("dir is null ");
             foreach (IEditableDirWithChildrenAndParent childDir in dir.Children)
             {
                 MemoryDirs.AllCreatedDirs.Add(childDir);
@@ -39,6 +39,7 @@ namespace ReFolder.Management
         // sprawdza czy dany folder istnieje w zbiorze wszystkich folderów tablicy AllCreatedAllCreatedDirs
         public bool ReturnTrueIfDirExistInAllCreatedDirs(IEditableDirWithChildren dir)
         {
+            if (dir == null) throw new ArgumentNullException("dir is null ");
             bool flag = false;
             foreach (IEditableDirWithChildren childDir in AllCreatedDirs)
             {
@@ -53,11 +54,13 @@ namespace ReFolder.Management
         //usuwa folder z wszystkich folderów w pamięci 
         public void DeleteDirFromAllCreatedDirs(IEditableDirWithChildrenAndParent dir)
         {
+            if (dir == null) throw new ArgumentNullException("dir is null ");
             AllCreatedDirs.Remove(dir);
         }
         // usuwa foldery z wszystkich folderów w pamięci  
         public void DeleteDirsFromAllCreatedDirs(List<IEditableDirWithChildrenAndParent> childDirs)
         {
+            if (childDirs == null) throw new ArgumentNullException("childDirs is null ");
             foreach (IEditableDirWithChildrenAndParent dir in childDirs)
                 DeleteDirFromAllCreatedDirs(dir);
         }

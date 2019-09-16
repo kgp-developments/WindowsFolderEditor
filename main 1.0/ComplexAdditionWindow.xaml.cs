@@ -32,8 +32,6 @@ namespace main_1._0
         {
             InitializeComponent();
             //NewSeed = (ChildDir)AppMW.CurrentlyChosenDir;
-            NewSeed = new MainDir(new DirDescription(@"C:\Users\lol", "lol"));
-
             if (AppMW.Seed != null)
             {
                 NewSeed = new MainDir(AppMW.CurrentlyChosenDir.Description);
@@ -43,14 +41,28 @@ namespace main_1._0
                 //NewSeed.Children.Add(sa);
                 //ChildDir sas = new ChildDir("test", NewSeed);
                 //NewSeed.Children.Add(sas);
+                ZoomSlider.Value = 1;
+
                 AppMW.sorteritno.Create(DisplayedBranchGrid, 30, 0, NewSeed, "CAW");
                 AppMW.sorteritno.Sort(NewSeed, DisplayedBranchGrid, 0, 30, "CAW");
+                ChosenNameSeries.SelectedItem = Default;
                 //AppMW.sorteritno.ResetTree(DisplayedBranchGrid, null, NewSeed, drzewo);
             }
-
+            //AppMW.settings.ApplyStyleCAW();
         }
 
         #region Inne
+        private void SaveSize()
+        {
+            string[] size = new string[2];
+            size[0] = this.Height.ToString();
+            size[1] = this.Width.ToString();
+            if (size[0] != AppMW.settings.CAWheight && size[1] != AppMW.settings.CAWwidth)
+            {
+                AppMW.settings.SaveLatestCAWSize(size);
+            }
+        }
+
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             // Filter out non-digit text input
@@ -68,14 +80,14 @@ namespace main_1._0
                 //Target = AppMW.CurrentlyChosenDir;
                 for (int j = 0; j < int.Parse(AmountOfParallelTB.Text); j++)
                 {
-                    ChildDir NewDir = new ChildDir(SetGeneratedName(ChosenNameSeriesText.Text, Targeted), Targeted);
+                    ChildDir NewDir = new ChildDir(SetGeneratedName(ChosenNameSeries.SelectedItem, Targeted), Targeted);
                     Targeted.Children.Add(NewDir);
                     SetComplexHelper(steps + 1, NewDir);
                 }
             }
         }
 
-        string SetGeneratedName(string check, IEditableDirWithChildren Parent)
+        string SetGeneratedName(object check, IEditableDirWithChildren Parent)
         {
             List<string> namesInSystem = new List<string>();
             // names to ignore
@@ -89,7 +101,7 @@ namespace main_1._0
             {
                 namesToIgnore[j] = AppMW.CurrentlyChosenDir.Children[j].Description.Name;
 
-                if (j == AppMW.CurrentlyChosenDir.Children.Count - 1 && DirValidate.GetDefaultInstance().IsDirExistingAsFolder(AppMW.CurrentlyChosenDir.Description.FullName))
+                if (j == AppMW.CurrentlyChosenDir.Children.Count - 1 && DirValidate.GetDefaultInstance().IsfolderExisting(AppMW.CurrentlyChosenDir.Description.FullName))
                 {
                     namesInSystem.CopyTo(namesToIgnore, ++j);
 
@@ -97,19 +109,19 @@ namespace main_1._0
             }
 
 
-            if (check == "- Domyślne -")
+            if (check == Default)
             {
                 return DirManagement.GetDefaultInstance().GeneratetName_Default(Parent, namesToIgnore: namesToIgnore);
             }
-            else if (check == "Numerowanie")
+            else if (check == Numbers)
             {
                 return DirManagement.GetDefaultInstance().GenerateName_Number(Parent, 1, namesToIgnore: namesToIgnore);
             }
-            else if (check == "Numerowanie;Znak;NazwaRodzica")
+            else if (check == NumSiPar)
             {
                 return DirManagement.GetDefaultInstance().GenerateName_Number_Text_ParentName(Parent, SignTB.Text, namesToIgnore: namesToIgnore);
             }
-            else if (check == "NazwaRodzica;Znak;Numerowanie")
+            else if (check == ParSiNum)
             {
                 return DirManagement.GetDefaultInstance().GenerateName_ParentName_Text_Number(Parent, SignTB.Text, namesToIgnore: namesToIgnore);
             }
@@ -172,78 +184,18 @@ namespace main_1._0
             if (Trigger.Name == "ComplexBranchAddidionFoldButton" && ExistingBranchAdditionGrid.Visibility == Visibility.Visible)
             {
                 ExistingBranchAdditionGrid.Visibility = Visibility.Collapsed;
-                ExistingBranchAdditionFold.Background = Brushes.LightGray;
-                ComplexBranchAddidionFold.Background = Brushes.BlanchedAlmond;
+                ExistingBranchAdditionFold.Background = bindingInactiveColorHelper.Background; ;
+                ComplexBranchAddidionFold.Background = bindingActiveColorHelper.Background;
             }
             else if (Trigger.Name == "ExistingBranchAdditionFoldButton" && ExistingBranchAdditionGrid.Visibility == Visibility.Collapsed)
             {
                 ExistingBranchAdditionGrid.Visibility = Visibility.Visible;
-                ExistingBranchAdditionFold.Background = Brushes.BlanchedAlmond;
-                ComplexBranchAddidionFold.Background = Brushes.LightGray;
+                ExistingBranchAdditionFold.Background = bindingActiveColorHelper.Background;
+                ComplexBranchAddidionFold.Background = bindingInactiveColorHelper.Background;
             }
 
         }
-        private void ShowHideTypeOfSeries_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (TypeOfSeriesPanel.Visibility == Visibility.Collapsed)
-            {
-                TypeOfSeriesPanel.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                TypeOfSeriesPanel.Visibility = Visibility.Collapsed;
-            }
-        }
-        private void ShowHideAutoNames_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (AutoNamesSV.Visibility == Visibility.Collapsed)
-            {
-                AutoNamesSV.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                AutoNamesSV.Visibility = Visibility.Collapsed;
-            }
-        }
-        private void SetChosenTypeOfSeries_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            Button ChosenType = (Button)e.Parameter;
-            ChosenSeriesText.Text = (string)ChosenType.Content;
-            TypeOfSeriesPanel.Visibility = Visibility.Collapsed;
-            if (ChosenSeriesText.Text == "Szeregowo-równoległe")
-            {
-                AmountOfElements.Visibility = Visibility.Visible;
-                AmountOfSteps.Visibility = Visibility.Visible;
-                AmountInSeries.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                AmountOfElements.Visibility = Visibility.Collapsed;
-                AmountOfSteps.Visibility = Visibility.Collapsed;
-                if (ChosenSeriesText.Text == "- Brak -")
-                {
-                    AmountInSeries.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    AmountInSeries.Visibility = Visibility.Visible;
-                }
-            }
-        }
-        private void SetAutoName_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            Button ChosenType = (Button)e.Parameter;
-            ChosenNameSeriesText.Text = (string)ChosenType.Content;
-            AutoNamesSV.Visibility = Visibility.Collapsed;
-            if (ChosenNameSeriesText.Text == "Numerowanie;Znak;NazwaRodzica" || ChosenNameSeriesText.Text == "NazwaRodzica;Znak;Numerowanie")
-            {
-                ChosenSign.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                ChosenSign.Visibility = Visibility.Collapsed;
-            }
-        }
+
         private void SetComplexAddition_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             IEditableDirWithChildren Target = CurrentlyChosenDir;
@@ -252,24 +204,24 @@ namespace main_1._0
 
             int i;
             //string generateName;
-            if (ChosenSeriesText.Text == "Szeregowa (po sobie)")
+            if (TypeOfSeries.SelectedItem == Serial)
             {
                 for (i = 0; i < int.Parse(AmountInSeriesTB.Text); i++)
                 {
-                    ChildDir NewDir = new ChildDir(SetGeneratedName(ChosenNameSeriesText.Text, Target), Target);
+                    ChildDir NewDir = new ChildDir(SetGeneratedName(ChosenNameSeries.SelectedItem, Target), Target);
                     Target.Children.Add(NewDir);
                     Target = NewDir;
                 }
             }
-            else if (ChosenSeriesText.Text == "Równoległa (obok siebie)")
+            else if (TypeOfSeries.SelectedItem == Parallel)
             {
                 for (i = 0; i < int.Parse(AmountInSeriesTB.Text); i++)
                 {
-                    ChildDir NewDir = new ChildDir(SetGeneratedName(ChosenNameSeriesText.Text, Target), Target);
+                    ChildDir NewDir = new ChildDir(SetGeneratedName(ChosenNameSeries.SelectedItem, Target), Target);
                     Target.Children.Add(NewDir);
                 }
             }
-            else if (ChosenSeriesText.Text == "Szeregowo-równoległe")
+            else if (TypeOfSeries.SelectedItem == Complex)
             {
                 for (i = 0; i < int.Parse(AmountInSeriesTB.Text); i++)
                 {
@@ -292,7 +244,8 @@ namespace main_1._0
 
             AppMW.CurrentlyChosenDir.AddChildrenToChildrenList(children);
             MainDir.AutoGenerateChildrenFullName(AppMW.CurrentlyChosenDir);
-            //SaveAndReadElementInBinaryFile.GetDefaultInstance().DeleteFile(@"C:..\..\..\TemporaryFiles\tempFile~CopyCAW");
+
+            AppMW.sorteritno.scale = (float)AppMW.ZoomSlider.Value;
             AppMW.sorteritno.ResetTree(AppMW.ResTree, AppMW.ResetHighlight, AppMW.Seed, AppMW.drzewo, "MW");
             if(ThisButton.Name == "OkBtn")
             {
@@ -322,15 +275,15 @@ namespace main_1._0
         }
         private void SetComplexAddition_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (ChosenSeriesText != null && ChosenSeriesText.Text != "- Brak -" && CurrentlyChosenDir != null)
+            if (TypeOfSeries != null && TypeOfSeries.SelectedItem != null && CurrentlyChosenDir != null)
             {
                 if (AmountInSeriesTB.Text.Length > 0)
                 {
-                    if (ChosenSeriesText.Text == "Szeregowo-równoległe")
+                    if (TypeOfSeries.SelectedItem == Complex)
                     {
                         if (AmountOfParallelTB.Text.Length > 0 && AmountOfSerialTB.Text.Length > 0)
                         {
-                            if (ChosenNameSeriesText.Text == "Numerowanie;Znak;NazwaRodzica" || ChosenNameSeriesText.Text == "NazwaRodzica;Znak;Numerowanie")
+                            if (ChosenNameSeries.SelectedItem == NumSiPar || ChosenNameSeries.SelectedItem ==  ParSiNum)
                             {
                                 if (SignTB.Text.Length > 0)
                                 {
@@ -353,7 +306,7 @@ namespace main_1._0
                     }
                     else
                     {
-                        if (ChosenNameSeriesText.Text == "Numerowanie;Znak;NazwaRodzica" || ChosenNameSeriesText.Text == "NazwaRodzica;Znak;Numerowanie")
+                        if (ChosenNameSeries.SelectedItem == NumSiPar || ChosenNameSeries.SelectedItem == ParSiNum)
                         {
                             if (SignTB.Text.Length > 0)
                             {
@@ -406,5 +359,49 @@ namespace main_1._0
             Caretaker.AddMemento(Orginator.Save());
 
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            SaveSize();
+            AppMW.sorteritno.scale = (float)AppMW.ZoomSlider.Value;
+        }
+
+        private void ZoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (NewSeed != null)
+            {
+                AppMW.sorteritno.scale = (float)ZoomSlider.Value;
+                AppMW.sorteritno.ResetTree(DisplayedBranchGrid, ResetHighlight, NewSeed, drzewo, "CAW");
+            }
+        }
+
+        private void TypeOfSeries_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            AmountInSeries.Visibility = Visibility.Visible;
+            if (TypeOfSeries.SelectedItem == Complex)
+            {
+                AmountOfElements.Visibility = Visibility.Visible;
+                AmountOfSteps.Visibility = Visibility.Visible;
+                AmountInSeries.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                AmountOfElements.Visibility = Visibility.Collapsed;
+                AmountOfSteps.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void ChosenNameSeries_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ChosenNameSeries.SelectedItem == NumSiPar || ChosenNameSeries.SelectedItem == ParSiNum)
+            {
+                ChosenSign.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                ChosenSign.Visibility = Visibility.Collapsed;
+            }
+        }
+
     }
 }

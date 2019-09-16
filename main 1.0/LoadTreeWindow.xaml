@@ -1,0 +1,26 @@
+﻿<Window x:Class="main_1._0.LoadTreeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:self="clr-namespace:main_1._0"
+        mc:Ignorable="d"
+        Title="LoadTreeWindow" Height="300" Width="450">
+    <Window.CommandBindings>
+        <CommandBinding Command="self:KGPcommands.CancelLTW" CanExecute="AlwaysTrueForCanExecute" Executed="CanceLTW_Executed" />
+        <CommandBinding Command="self:KGPcommands.LoadLTW" CanExecute="LoadLTW_CanExecute" Executed="LoadLTW_Executed" />
+        <CommandBinding Command="self:KGPcommands.SetChosenLTW" CanExecute="AlwaysTrueForCanExecute" Executed="SetChosenLTW_Executed" />
+
+    </Window.CommandBindings>
+    
+    <Grid Background="#FFCDCDCD">
+        <TextBlock FontSize="20" Margin="87,5,67.2,232.4">Wczytywanie zapisanej struktury</TextBlock>
+        <TextBlock Margin="46,38,226.2,205.4" FontSize="15">Lista zapisanych struktur</TextBlock>
+        <ScrollViewer Height="140" Width="350">
+            <StackPanel Name="SavedStructuresList" Background="White">
+            </StackPanel>
+        </ScrollViewer>
+        <Button Margin="261,214,101.2,20.4" Content="Wczytaj" Command="self:KGPcommands.LoadLTW"/>
+        <Button Margin="342,214,20,20" Content="Analuj" Command="self:KGPcommands.CancelLTW"/>
+    </Grid>
+</Window>

@@ -6,14 +6,22 @@
         xmlns:self="clr-namespace:main_1._0"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-
-
+    <Window.CommandBindings>
+        <CommandBinding Command="self:KGPcommands.ApplyStyleChanges" Executed="ApplyChanges_Executed" CanExecute="AlwaysTrueForCanExecute"/>
+        <CommandBinding Command="self:KGPcommands.RHVBtnSwitch" Executed="RHVbtnSwitch_Executed" CanExecute="AlwaysTrueForCanExecute" />
+        <CommandBinding Command="self:KGPcommands.CancelVW" CanExecute="AlwaysTrueForCanExecute" Executed="CancelBtn_Executed"/>
+    </Window.CommandBindings>
 
     <Grid Background="#FF8D8A8A">
         <!--strefa obrazka-->
         <Canvas HorizontalAlignment="Left" Width="390" Margin="390,10,10,10">
             <!--<Image Source="AAtaasd.png" Height="427" Width="380"  HorizontalAlignment="Right" VerticalAlignment="Top" />-->
-
+            <TextBlock Name="test" Height="50" Width="67"></TextBlock>
+        </Canvas>
+        <Canvas Margin="508,385,-0.4,0">
+            <Button Name="OkBtn" Height="25" Width="80" Canvas.Left="28"  Command="self:KGPcommands.ApplyStyleChanges" CommandParameter="{Binding ElementName=OkBtn}" Canvas.Top="-1">Ok</Button>
+            <Button Name="ApplyBtn" Height="25" Width="80" Canvas.Left="108" Canvas.Top="-1" Command="self:KGPcommands.ApplyStyleChanges" CommandParameter="{Binding ElementName=ApplyBtn}">Zastosuj</Button>
+            <Button Name="CancelBtn" Height="25" Width="80" Canvas.Left="188" Canvas.Top="-1"  Command="self:KGPcommands.CancelVW">Anuluj</Button>
         </Canvas>
         <!--strefa z ustawieniami-->
         <Canvas HorizontalAlignment="Left"  Margin="0,10,10,10">
@@ -32,57 +40,52 @@
                 <!--Wybór języka-->
                 <!--Możesz usunąc niepotrzebne z tego-->
                 <TextBlock  Margin="50,22,335,350" FontSize="16">Język</TextBlock>
-                <ComboBox Text=" Polski" x:Name="Testowy" Margin="153,22,126,353" Background="#FF8B0303" BorderBrush="#FF991414">
+                <ComboBox Name="LanguageCB"  Text=" Polski" Margin="153,22,126,353" Background="#FF8B0303" BorderBrush="#FF991414">
 
-                    <ComboBoxItem>Polski</ComboBoxItem>
+                    <ComboBoxItem Name="PL">Polski</ComboBoxItem>
                     <ComboBoxItem>English</ComboBoxItem>
-                    <ComboBoxItem>Deutsch</ComboBoxItem>
-                    <ComboBoxItem>Español</ComboBoxItem>
+                   <!-- <ComboBoxItem>Deutsch</ComboBoxItem>
+                    <ComboBoxItem>Español</ComboBoxItem> -->
 
                 </ComboBox>
 
                 <!--Wybór formatu-->
                 <TextBlock Margin="144,67,202,313" FontSize="15">Wybór formatu</TextBlock>
-                <Button Margin="50,98,260,248" Width="Auto" Content="       Wysuwany" FontSize="11"/>
-                <Button Margin="209,98,101,248" Background="#FF7A7878" Width="Auto" Content="        Rozwijany" FontSize="11"/>
+                <Button Name="up" Margin="50,98,260,248" Width="Auto" Content="Opcje edycji na górze" FontSize="11" />
+                <Button Name="side" Margin="209,98,101,248" Background="#FF7A7878" Width="Auto" Content=" Opcje edycji z boku" FontSize="11"/>
 
                 <!--To będzie od czcionki-->
-                <TextBlock Margin="31,176,308,198" FontSize="15">Rozmiar czcionki</TextBlock>
-                <ComboBox Margin="153,176,101,198">
-                    <ComboBoxItem>6</ComboBoxItem>
-                    <ComboBoxItem>8</ComboBoxItem>
-                    <ComboBoxItem>10</ComboBoxItem>
-                    <ComboBoxItem>11</ComboBoxItem>
-                    <ComboBoxItem>12</ComboBoxItem>
-                    <ComboBoxItem>14</ComboBoxItem>
-                    <ComboBoxItem>16</ComboBoxItem>
-                    <ComboBoxItem>18</ComboBoxItem>
-                    <ComboBoxItem>20</ComboBoxItem>
-
+                <TextBlock Margin="31,176,236,198" FontSize="15">Rozmiar czcionki w drzewie</TextBlock>
+                <ComboBox Name="FontSizeCB" Margin="297,176,101,198" >
+                    <ComboBoxItem Name="ten" >10</ComboBoxItem>
+                    <ComboBoxItem Name="twelve">12</ComboBoxItem>
+                    <ComboBoxItem Name="fourteen">14</ComboBoxItem>
+                    <ComboBoxItem Name="sixteen">16</ComboBoxItem>
+                    <ComboBoxItem Name="eighteen">18</ComboBoxItem>
+               
                 </ComboBox>
                 <!--To będzie od koloru-->
                 <!--Ciemnnoniebieski będzie domyślnym ustawieniem chyba-->
                 <TextBlock Margin="31,220,326,158" FontSize="15">Wybór koloru</TextBlock>
-                <ComboBox Margin="153,220,101,158">
-                    <ComboBoxItem>Ciemnoniebieski</ComboBoxItem>
-                    <ComboBoxItem>Ciemny</ComboBoxItem>
-                    <ComboBoxItem>Jasny</ComboBoxItem>
-                    <ComboBoxItem>Zielony</ComboBoxItem>
-                    <ComboBoxItem>Różowy</ComboBoxItem>
+                <ComboBox Name="colorCB" Margin="153,220,101,158">
+                    <ComboBoxItem Name="dark">Ciemny</ComboBoxItem>
+                    <ComboBoxItem Name="light">Jasny</ComboBoxItem>
+                    <ComboBoxItem Name="darkblue">Ciemnoniebieski</ComboBoxItem>
+                    <ComboBoxItem Name="green">Zielony</ComboBoxItem>
+                    <ComboBoxItem Name="pink">Różowy</ComboBoxItem>
                 </ComboBox>
                 <!--To będzie od przybliżania-->
-                <TextBlock Margin="31,264,315,112" FontSize="15">Przybliż obraz</TextBlock>
-                <ComboBox Margin="153,264,101,112">
-                    <ComboBoxItem>Blisko</ComboBoxItem>
-                    <ComboBoxItem>Średnio</ComboBoxItem>
-                    <ComboBoxItem>Daleko</ComboBoxItem>
+                <TextBlock Margin="31,264,223,112" FontSize="15">Odległość folderów w pionie</TextBlock>
+                <ComboBox Name="OYdisCB" Margin="249,264,101,112">
+                    <ComboBoxItem Name="close">Blisko</ComboBoxItem>
+                    <ComboBoxItem Name="mid">Średnio</ComboBoxItem>
+                    <ComboBoxItem Name="far">Daleko</ComboBoxItem>
 
                 </ComboBox>
                 <!--A tutaj od ustawienia prawo/leworęczni-->
-                <TextBlock Margin="138,293,202,88" FontSize="15">Ustawienie dla :</TextBlock>
-                <Button Margin="190,318,101,26" Width="Auto"  Background="#FF7A7878" Content="       Praworęcznych" RenderTransformOrigin="0.5,0.5" FontSize="11"/>
-                <Button Margin="31,318,260,26" Width="Auto" Content="        Leworęcznych" FontSize="11"/>
-
+                <TextBlock Name="RHVtxtBlock" Margin="138,293,202,88" FontSize="15">Ustawienie dla :</TextBlock>
+                <Button Name="righthanded" Margin="190,318,101,26" Width="Auto"   Content="       Praworęcznych" RenderTransformOrigin="0.5,0.5" FontSize="11" Command="self:KGPcommands.RHVBtnSwitch" CommandParameter="{Binding ElementName=righthanded}"/>
+                <Button Name="lefthanded" Margin="31,318,260,26" Width="Auto" Content="        Leworęcznych" FontSize="11" Command="self:KGPcommands.RHVBtnSwitch" CommandParameter="{Binding ElementName=lefthanded}"/>
             </Grid>
         </Canvas>
 
