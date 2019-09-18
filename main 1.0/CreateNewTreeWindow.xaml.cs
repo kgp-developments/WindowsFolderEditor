@@ -1,4 +1,5 @@
-﻿using ReFolder.Management;
+﻿using ReFolder.Dir;
+using ReFolder.Management;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,11 +31,14 @@ namespace main_1._0
         //funkcja podpieta do przycisku Utworz
         public void CreateCNTW_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            AppMW.Seed = DirManagement.GetDefaultInstance().GetFolderAsNewMainDir(SeedLocation.Text);
             if (AppMW.Seed != null) //warunek zbey nie wypierdalalo bledu, ponizej rysowanie
             {
-                AppMW.sorteritno.Create(AppMW.ResTree, 30, 0, AppMW.Seed, "MW");
-                AppMW.sorteritno.Sort(AppMW.Seed, AppMW.ResTree, 0, 30, "MW");
+
+                AppMW.sorteritno.ResetTree(AppMW.ResTree, AppMW.ResetHighlight,AppMW.Seed, AppMW.drzewo, "MW" );
             }
+
+
             this.Close(); //ostatnia linijka - zamyka okno 
         }
         //olej
@@ -45,21 +49,27 @@ namespace main_1._0
         //funkcja do popdieta do przycisku wywolania szukania folderu w systemie
         public void BrowseCNTW_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-        //    SaveAndReadElementInBinaryFile.GetDefaultInstance().WriteToBinaryFile<MainDir>(_______ŚCIEŻKA_______, AppMW.Seed);
+
         }
         //warunek sprawdzajacy czy podana sciezka istnieje/ jest poprawna    
-        public void CreateCNTW_CanExecute(object sender, CanExecuteRoutedEventArgs e) //warunek sprawdzajacy czy podana sciezka istnieje/ jest poprawna
+        public void CreateCNTW_CanExecute(object sender, CanExecuteRoutedEventArgs e) 
         {
-/*            if (AppMW.Seed.Children.Count > 0 && DirValidate.GetDefaultInstance().IsfolderExisting(_____ŚCIEŻKA______))
+            bool flag = false;
+            try
+            {
+                flag = DirValidate.GetDefaultInstance().IsfolderExisting(SeedLocation.Text);
+
+            }
+            catch (Exception)
+            {  }
+            if (flag)
             {
                 e.CanExecute = true;
             }
             else
             {
                 e.CanExecute = false;
-            }*/
-            //e.canexecute = true - mozna kliknac, false - nie
-
+            }
         }
         //olej
         public void AlwaysTrueForCanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -68,3 +78,11 @@ namespace main_1._0
         }
     }
 }
+/*            if (DirValidate.GetDefaultInstance().IsfolderExisting(SeedLocation.Text))
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }*/

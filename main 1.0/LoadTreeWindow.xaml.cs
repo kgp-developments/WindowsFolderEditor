@@ -2,6 +2,7 @@
 using ReFolder.Management;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,6 +49,7 @@ namespace main_1._0
             Clicker.CommandParameter = Clicker;
 
             MainLayer.Children.Add(Clicker);
+            
             SavedStructuresList.Children.Add(MainLayer);
 
 
@@ -58,8 +60,10 @@ namespace main_1._0
             Button chosen = (Button)e.Parameter;
             Canvas chosenCanvas = (Canvas)chosen.Parent;
             chosenCanvas.Background = Brushes.LightBlue;
+
             // to inicjuj
-            // DirPath =
+            //DirPath = chosenCanvas.Children[0].;
+
             //jakas zmienna ktora oznajmia co jest wybrane musisz sobie wymysic, ja nie zdazylem
         }
         private void CanceLTW_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -68,14 +72,14 @@ namespace main_1._0
         }
         private void LoadLTW_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            AppMW.Seed = DirManagement.GetDefaultInstance().GetFolderAsNewMainDir("sc");
+            //AppMW.Seed = SaveAndReadElementInBinaryFile.GetDefaultInstance().ReadFromBinaryFile<MainDir>(____Ścieżka_________________);
             this.Close(); //ostatnia linijka, zamyka okno
 
         }
         //ma sprawdzac czy cos jest wybrane ; w funkcje SetChosenLTW mozesz dac zmienna czy cos ktora to orzeka
         private void LoadLTW_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (DirValidate.GetDefaultInstance().IsfolderExisting(DirPath))
+            if (File.Exists(DirPath))
             {
                 e.CanExecute = true;
             }
@@ -83,9 +87,6 @@ namespace main_1._0
             {
                 e.CanExecute = false;
             }
-            //
-            //e.canexecute = true - mozna kliknac, false - nie
-
         }
 
         private void AlwaysTrueForCanExecute(object sender, CanExecuteRoutedEventArgs e)

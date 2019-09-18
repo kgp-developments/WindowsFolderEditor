@@ -71,10 +71,15 @@ namespace ReFolder.Management
             // wycina numery z nazwy
             foreach (var name in reservedNames)
             {
-                int indexOfDash = name.LastIndexOf('_');
-                string numberAsString = name.Substring(++indexOfDash);
-
-                reservedNumbers.Add(Convert.ToInt32(numberAsString));
+                try
+                {
+                    int indexOfDash = name.LastIndexOf('_');
+                    string numberAsString = name.Substring(++indexOfDash);
+                    reservedNumbers.Add(Convert.ToInt32(numberAsString));
+                }
+                catch (Exception)
+                {    
+                }
             }
             return $"{prefix}_{GetNextNumber(reservedNumbers, sufix_minValue)}";
         }
