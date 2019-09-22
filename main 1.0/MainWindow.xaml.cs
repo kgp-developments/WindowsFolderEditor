@@ -37,6 +37,8 @@ namespace main_1._0
         public Sorteritno sorteritno = new Sorteritno();
         public ComplexAdditionWindow CAW;
         NameEditionWindow NEW;
+        NoteEditWindow NtEW;
+        IconSwitchWindow ISW;
         public ViewWindow VW;
         public Settings settings;
         public CreateNewTreeWindow CNTW;
@@ -191,19 +193,39 @@ namespace main_1._0
                 NEW.ShowDialog();
                 if (thisStructureName != temporary)
                 {
-                    CurrentlyChosenDir.IsMarked = false;
-                    string filePath = @"..\saved\" + thisStructureName;
+                    if (CurrentlyChosenDir != null)
+                        {
+                            CurrentlyChosenDir.IsMarked = false;
+                        }
+                    string filePath = @"..\..\saved\" + thisStructureName;
                     SaveAndReadElementInBinaryFile.GetDefaultInstance().WriteToBinaryFile<IEditableDirWithChildren>(filePath, Seed);
                 }
             }
             else if (Clicked == SaveBtn)
             {
-                CurrentlyChosenDir.IsMarked = false;
-                string filePath = @"..\saved\" + thisStructureName;
+                if (CurrentlyChosenDir != null)
+                {
+                    CurrentlyChosenDir.IsMarked = false;
+                }
+                string filePath = @"..\..\saved\" + thisStructureName;
                 SaveAndReadElementInBinaryFile.GetDefaultInstance().WriteToBinaryFile<IEditableDirWithChildren>(filePath, Seed);
             }
-            CurrentlyChosenDir.IsMarked = true;
+            if (CurrentlyChosenDir != null)
+            {
+                CurrentlyChosenDir.IsMarked = true;
+            }
 
+        }
+        private void NEWshow_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            NtEW = new NoteEditWindow();
+            NtEW.DirsNote.Text = CurrentlyChosenDir.Description.Note;
+            NtEW.ShowDialog();
+        }
+        private void ISWshow_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            ISW = new IconSwitchWindow();
+            ISW.ShowDialog();
         }
 
         private void HighlightFoundAndChosen_Executed(object sender, ExecutedRoutedEventArgs e)

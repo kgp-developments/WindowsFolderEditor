@@ -33,7 +33,7 @@ namespace ReFolder.Management
             }
         }
         // jeśli desktop.ini istnieje to ReplaceSystemFolderInfoFile usuwa go i tworzy nowy a jeśli nie istnieje tworzy nowy
-        public void ReplaceSystemFolderInfoFile(string path, string note, string iconAddress= null)
+        public void ReplaceSystemFolderInfoFile(string path, string note, string iconAddress)
         {        
             DirectoryInfo dir = new DirectoryInfo(path);
             dir.Attributes = FileAttributes.Normal;

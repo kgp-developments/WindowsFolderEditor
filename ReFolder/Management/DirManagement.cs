@@ -48,8 +48,8 @@ namespace ReFolder.Management
             return DirRead.GetMainDirFolder(fullName);
         }
 
-        // pozwala edytować plik systemowy o ile został stworzony.
-        //pozwala to na znalezienie wcześniejszej właściwości i zastąpienie jej nową. Działa z ikonoą oraz notataką 
+        // pozwala edytować plik systemowy.
+        // Działa z ikonoą oraz notataką 
         public void ChangeCreatedDirSystemValue( string newNote, IDir dir, string iconAddress)
         {
             FileWrite.ReplaceSystemFolderInfoFile(dir.Description.FullName, newNote, iconAddress );

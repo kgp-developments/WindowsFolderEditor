@@ -36,34 +36,27 @@ namespace ReFolder.Management
             return InstanceDirWrite;
         }
         // tworzy folder
-        private void CreateFolder(string fullName, string note, string IconAddress= null)
+        private void CreateFolder(string fullName, string note, string IconAddress)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(fullName);
             directoryInfo.Create();
-
-
-            AddIconAndNoteToFileSystem(fullName, note, IconAddress);
+            FileWrite.GetDefaultInstance().ReplaceSystemFolderInfoFile(fullName , note,IconAddress);
         }
 
         // tworzy plik systemowy desktop.ini który przechowuje notatkę oraz ikonę
-        public void AddIconAndNoteToFileSystem(string fullName, string note, string IconAddress = null)
+        public void AddIconAndNoteToFileSystem(string fullName, string note, string IconAddress)
         {
-            if (IconAddress != null)
-            {
-                DirectoryInfo directoryInfo = new DirectoryInfo(fullName);
-                directoryInfo.Attributes = FileAttributes.System;
+
                 string[] lines = { "[.ShellClassInfo]", $"IconResource={IconAddress},0", $"IconFile={IconAddress}", $"IconIndex=0", $"InfoTip={note}" };
+                foreach (var item in lines)
+                {
+                    Console.WriteLine(item);
+                }
+                
                 File.WriteAllLines(fullName + @"\desktop.ini", lines);
                 File.SetAttributes(fullName + @"\desktop.ini", FileAttributes.Hidden | FileAttributes.System);
-            }
-            else
-            {
-                string[] lines = { "[.ShellClassInfo]", $"InfoTip={note}" };
-                File.WriteAllLines(fullName + @"\desktop.ini", lines);
-                File.SetAttributes(fullName + @"\desktop.ini", FileAttributes.Hidden | FileAttributes.System);
-
-            }
-
+                File.SetAttributes(fullName, FileAttributes.System);
+            
         }
 
         // szykuje adres folderu do zapisu i sprawdza czy dany folder już nie istnieje 
@@ -85,8 +78,9 @@ namespace ReFolder.Management
 
         }
         // tworzy nowy folder w systemie i zwraca boola jeśli go utworzy
-        private  bool CreateNewFolder(string fullName, string Name, string note, string IconAddress= null)
+        private  bool CreateNewFolder(string fullName, string Name, string note, string IconAddress)
         {
+
             try
             {
                 string name = ReadyFullName(fullName);

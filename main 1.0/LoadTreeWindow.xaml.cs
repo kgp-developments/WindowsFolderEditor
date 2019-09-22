@@ -37,7 +37,7 @@ namespace main_1._0
             DisplayAll();
         }
         private void DisplayAll()
-        {
+        { 
             string[] files = Directory.GetFiles(saved_path);
             foreach (string file in files)
             {

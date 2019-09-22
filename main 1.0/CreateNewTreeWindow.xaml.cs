@@ -82,11 +82,3 @@ namespace main_1._0
         }
     }
 }
-/*            if (DirValidate.GetDefaultInstance().IsfolderExisting(SeedLocation.Text))
-            {
-                e.CanExecute = true;
-            }
-            else
-            {
-                e.CanExecute = false;
-            }*/

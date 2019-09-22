@@ -10,6 +10,8 @@
 
     <!-- komendy chowania/pokazywania paneli-->
     <Window.CommandBindings>
+        <CommandBinding Command="self:KGPcommands.NEWshow" CanExecute="ChosenNotNullDepended" Executed="NEWshow_Executed"/>
+        <CommandBinding Command="self:KGPcommands.ISWshow" CanExecute="ChosenNotNullDepended" Executed="ISWshow_Executed"/>
         <CommandBinding Command="self:KGPcommands.Saving" CanExecute="Saving_CanExecute" Executed="Saving_Executed" />
         <CommandBinding Command="self:KGPcommands.LTWshow" CanExecute="AlwaysTrueForExecuted" Executed="LTWshow_Executed"/>
         <CommandBinding Command="self:KGPcommands.CNTWshow" CanExecute="AlwaysTrueForExecuted" Executed="CNTWshow_Executed"/>
@@ -73,9 +75,9 @@
                 </TransformGroup>
             </Canvas.RenderTransform>
             <TextBlock Name="EdycjaFolderuTextblock" Canvas.Left="158"><Bold>Edycja folderu</Bold></TextBlock>
-            <Button Canvas.Left="30" Canvas.Top="20">Zmień ikone</Button>
+            <Button Canvas.Left="30" Canvas.Top="20" Command="self:KGPcommands.ISWshow">Zmień ikone</Button>
             <Button Canvas.Top="20" Canvas.Left="160" Command="self:KGPcommands.NameEditionWindowShow">Zmień nazwe</Button>
-            <Button Canvas.Left="300" Canvas.Top="20">Edytuj notatke</Button>
+            <Button Canvas.Left="300" Canvas.Top="20" Command="self:KGPcommands.NEWshow">Edytuj notatke</Button>
         </Canvas>
 
         <!-- KOMENDY UZYTKOWNIKA -->

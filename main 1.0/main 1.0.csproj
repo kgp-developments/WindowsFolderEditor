@@ -60,8 +60,14 @@
     <Compile Include="CreateNewTreeWindow.xaml.cs">
       <DependentUpon>CreateNewTreeWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="IconSwitchWindow.xaml.cs">
+      <DependentUpon>IconSwitchWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LoadTreeWindow.xaml.cs">
       <DependentUpon>LoadTreeWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NoteEditWindow.xaml.cs">
+      <DependentUpon>NoteEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewWindow.xaml.cs">
       <DependentUpon>ViewWindow.xaml</DependentUpon>
@@ -71,6 +77,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CreateNewTreeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="IconSwitchWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -96,6 +106,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="NameEditionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NoteEditWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -140,9 +154,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="icons8-folder-48.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="set\stylesettings.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +164,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="saved\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\icons8-folder-48.ico" />
+    <Resource Include="images\icons8-folder-48.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

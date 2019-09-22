@@ -256,6 +256,42 @@ typeof(KGPcommands)
 "Saving",
 typeof(KGPcommands)
 );
+        public static readonly RoutedUICommand ApplyChangesNEW = new RoutedUICommand
+(
+"ApplyChangesNEW",
+"ApplyChangesNEW",
+typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand CancelNEW = new RoutedUICommand
+(
+"CancelNEW",
+"CancelNEW",
+typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand CancelISW = new RoutedUICommand
+(
+"CancelISW",
+"CancelISW",
+typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand ApplyChangesISW = new RoutedUICommand
+(
+"ApplyChangesISW",
+"ApplyChangesISW",
+typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand ISWshow = new RoutedUICommand
+(
+"ISWshow",
+"ISWshow",
+typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand NEWshow = new RoutedUICommand
+(
+"NEWshow",
+"NEWshow",
+typeof(KGPcommands)
+);
 
     }
 

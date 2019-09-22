@@ -22,7 +22,7 @@ namespace main_1._0
             float width = 0;
             foreach (char c in testedName)
             {
-                if (width < 60)
+                if (width < 80*scale)
                 {
                     if (char.IsWhiteSpace(c))
                     {
@@ -110,13 +110,10 @@ namespace main_1._0
             public void Create(Grid SwitchedGrid, float up, float parX, IEditableDirWithChildren Folder, string window)
             {
                                 // Ustawienia obrazka
-                BitmapImage carBitmap = new BitmapImage(new Uri(@"icons8-folder-48.png", UriKind.Relative));
                 Image Icon = new Image();
-                Icon.Source = carBitmap;
-                Thickness obrazek = new Thickness();
-                obrazek.Top = 1 * scale;
-                obrazek.Left = 3 * scale;
-                Icon.Margin = obrazek;
+            //string temporary = Folder.Description.IconAddress.Replace(".ico",".png");
+                Icon.Source = new BitmapImage(new Uri(Folder.Description.IconAddress + ".png", UriKind.Relative));
+                Icon.Margin = new Thickness(3 * scale);
             Icon.Width = 30 * scale;
             Icon.Height = 30 * scale;
                                 // Ustawienia glownej warstwy (podswietlenia)
@@ -150,12 +147,11 @@ namespace main_1._0
                 VCbutton.Command = KGPcommands.ViewContent;
                 VCbutton.CommandParameter = VCbutton;
                 MainLayer.Children.Add(VCbutton);
-                                     // ustawienia przycisku do resetu highlightu
+                                     // ustawienia przycisku do highlightu
                 Button HLRbutton = new Button();
                 HLRbutton.Opacity = 0;
                 HLRbutton.Height = 30 * scale;
                 HLRbutton.Width = 30 * scale;
-                HLRbutton.Margin = obrazek;
                 HLRbutton.CommandParameter = HLRbutton;
                 HLRbutton.Command = KGPcommands.HighlightChosen;
                 MainLayer.Children.Add(HLRbutton);
@@ -256,58 +252,79 @@ namespace main_1._0
 
             public void Sort(IEditableDirWithChildren IEditableDirWithChildren, Grid Switched, float parX, float parY, string window)
             {
-                if (IEditableDirWithChildren.Children.Count != 0)
+                
+             Pionowa(parY + 30 + fontsize, scnd - fontsize/2, Switched, parX);
+             int mid; //indeks srodkowego
+             float k;   //krok  ;; faktyczny odstep
+             float x;   //parametr do obliczen
+            if (IEditableDirWithChildren.Children.Count % 2 == 0 && IEditableDirWithChildren.ShowContent == true) //parzyste
+            {
+                mid = IEditableDirWithChildren.Children.Count / 2 - 1; //indeks o 1 wiekszy! <
+                k = parX;
+                for (int i = mid; i >= 0; i--)  //od srodkowego w lewo
                 {
-                    Pionowa(parY + 30 + fontsize, scnd - fontsize/2, Switched, parX);
-                    int mid; //indeks srodkowego
-                float k;   //krok  ;; faktyczny odstep
-                float x;   //parametr do obliczen
-                    if (IEditableDirWithChildren.Children.Count % 2 == 0 && IEditableDirWithChildren.ShowContent == true) //parzyste
+                    x = GetSideSize(IEditableDirWithChildren.Children[i], 0);
+                    Create(Switched, parY + oyFolderDistance + fontsize / 2, x + k, IEditableDirWithChildren.Children[i], window);
+                    Pionowa(parY + first + fontsize / 2, scnd, Switched, x + k);
+                    Pozioma(parX, x + k, parY + first + fontsize / 2, Switched);
+                    if (IEditableDirWithChildren.Children[i].Children.Count != 0)
                     {
-                        mid = IEditableDirWithChildren.Children.Count / 2 - 1; //indeks o 1 wiekszy! <
-                        k = parX;
-                        for (int i = mid; i >= 0; i--)  //od srodkowego w lewo
-                        {
-                            x = GetSideSize(IEditableDirWithChildren.Children[i], 0);
-                            Create(Switched, parY + oyFolderDistance + fontsize / 2, x + k, IEditableDirWithChildren.Children[i], window);
-                            Pionowa(parY + first + fontsize / 2, scnd, Switched, x + k);
-                            Pozioma(parX, x + k, parY + first + fontsize/2, Switched);
-
-                            Sort(IEditableDirWithChildren.Children[i], Switched, x + k, parY + oyFolderDistance + fontsize / 2, window);
-                            k += 2 * GetSize(IEditableDirWithChildren.Children[i]);
-
-
-                        }
-                        k = parX;
-                        for (int i = mid + 1; i < IEditableDirWithChildren.Children.Count; i++)
-                        {
-                            x = -1 * GetSideSize(IEditableDirWithChildren.Children[i], 1);
-                            Create(Switched, parY + oyFolderDistance + fontsize / 2, x + k, IEditableDirWithChildren.Children[i], window);
-                            Pionowa(parY + first + fontsize / 2, scnd, Switched, x + k);
-                            Pozioma(parX, x + k, parY + first + fontsize / 2, Switched);
-
-                            Sort(IEditableDirWithChildren.Children[i], Switched, x + k, parY + oyFolderDistance + fontsize / 2, window);
-                            k -= 2 * GetSize(IEditableDirWithChildren.Children[i]);
-
-                        }
+                        Sort(IEditableDirWithChildren.Children[i], Switched, x + k, parY + oyFolderDistance + fontsize / 2, window);
+                        k += 2 * GetSize(IEditableDirWithChildren.Children[i]);
                     }
-                    else if (IEditableDirWithChildren.Children.Count % 2 != 0 && IEditableDirWithChildren.ShowContent == true) //nieparzyste
+                    else
                     {
-                        mid = IEditableDirWithChildren.Children.Count / 2;
-                        k = parX + GetSideSize(IEditableDirWithChildren.Children[mid], 1);
-                        Pionowa(parY + first + fontsize / 2, scnd, Switched, parX);
-                        Create(Switched, parY + oyFolderDistance + fontsize / 2, parX, IEditableDirWithChildren.Children[mid], window); //srodkowy
+                        k += 180 * scale;
+                    }
+                }
+                k = parX;
+                for (int i = mid + 1; i < IEditableDirWithChildren.Children.Count; i++)
+                {
+                    x = -1 * GetSideSize(IEditableDirWithChildren.Children[i], 1);
+                    Create(Switched, parY + oyFolderDistance + fontsize / 2, x + k, IEditableDirWithChildren.Children[i], window);
+                    Pionowa(parY + first + fontsize / 2, scnd, Switched, x + k);
+                    Pozioma(parX, x + k, parY + first + fontsize / 2, Switched);
+                    if (IEditableDirWithChildren.Children[i].Children.Count != 0)
+                    {
+                        Sort(IEditableDirWithChildren.Children[i], Switched, x + k, parY + oyFolderDistance + fontsize / 2, window);
+                        k -= 2 * GetSize(IEditableDirWithChildren.Children[i]);
+                    }
+                    else
+                    {
+                        k -= 180 * scale;
+                    }
+
+                }
+                }
+                else if (IEditableDirWithChildren.Children.Count % 2 != 0 && IEditableDirWithChildren.ShowContent == true) //nieparzyste
+                {
+                    mid = IEditableDirWithChildren.Children.Count / 2;
+                    Pionowa(parY + first + fontsize / 2, scnd, Switched, parX);
+                    Create(Switched, parY + oyFolderDistance + fontsize / 2, parX, IEditableDirWithChildren.Children[mid], window); //srodkowy
+                    if (IEditableDirWithChildren.Children[mid].Children.Count != 0)
+                    {
                         Sort(IEditableDirWithChildren.Children[mid], Switched, parX, parY + oyFolderDistance + fontsize / 2, window);
-                        for (int i = mid - 1; i >= 0; i--)
+                        k = parX + GetSideSize(IEditableDirWithChildren.Children[mid], 1);
+                    }
+                else
+                {
+                    k = parX +90 *scale;
+                }
+                for (int i = mid - 1; i >= 0; i--)
+                    {
+                        x = GetSideSize(IEditableDirWithChildren.Children[i], 0);
+                        Pionowa(parY + first + fontsize / 2, scnd, Switched, x + k);
+                        Create(Switched, parY + oyFolderDistance + fontsize / 2, x + k, IEditableDirWithChildren.Children[i], window);
+                        Pozioma(parX, x + k, parY + first + fontsize / 2, Switched);
+                        if (IEditableDirWithChildren.Children[i].Children.Count != 0)
                         {
-
-                            x = GetSideSize(IEditableDirWithChildren.Children[i], 0);
-                            Pionowa(parY + first + fontsize / 2, scnd, Switched, x + k);
-                            Create(Switched, parY + oyFolderDistance + fontsize / 2, x + k, IEditableDirWithChildren.Children[i], window);
-                            Pozioma(parX, x + k, parY + first + fontsize / 2, Switched);
-
                             Sort(IEditableDirWithChildren.Children[i], Switched, x + k, parY + oyFolderDistance + fontsize / 2, window);
                             k += 2 * GetSize(IEditableDirWithChildren.Children[i]);
+                        }
+                       else
+                       {
+                          k += 180 * scale;
+                       }
                         }//dla drugiej strony podobnie, ale w druga strone ;
                         k = parX - GetSideSize(IEditableDirWithChildren.Children[mid], 0);
 
@@ -317,13 +334,18 @@ namespace main_1._0
                             Create(Switched, parY + oyFolderDistance + fontsize / 2, x + k, IEditableDirWithChildren.Children[i], window);
                             Pionowa(parY + first + fontsize / 2, scnd, Switched, x + k);
                             Pozioma(parX, x + k, parY + first + fontsize / 2, Switched);
+                        if (IEditableDirWithChildren.Children[i].Children.Count !=0)
+                        {
                             Sort(IEditableDirWithChildren.Children[i], Switched, x + k, parY + oyFolderDistance + fontsize / 2, window);
                             k -= 2 * GetSize(IEditableDirWithChildren.Children[i]);
+                        }
+                        else{
+                        k -= 180 * scale;
+                        }
                         }
                     }
                 }
 
             }
         }
-    
-}
+   
