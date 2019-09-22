@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+
 namespace main_1._0
 {
     /// <summary>
@@ -26,6 +27,7 @@ namespace main_1._0
         public CreateNewTreeWindow()
         {
             InitializeComponent();
+
         }
 
         //funkcja podpieta do przycisku Utworz
@@ -34,11 +36,11 @@ namespace main_1._0
             AppMW.Seed = DirManagement.GetDefaultInstance().GetFolderAsNewMainDir(SeedLocation.Text);
             if (AppMW.Seed != null) //warunek zbey nie wypierdalalo bledu, ponizej rysowanie
             {
-
                 AppMW.sorteritno.ResetTree(AppMW.ResTree, AppMW.ResetHighlight,AppMW.Seed, AppMW.drzewo, "MW" );
             }
-
-
+            string filePath = @"..\..\saved\" + StructureName.Text;
+            SaveAndReadElementInBinaryFile.GetDefaultInstance().WriteToBinaryFile<IEditableDirWithChildren>(filePath, AppMW.Seed);
+            AppMW.thisStructureName = StructureName.Text;
             this.Close(); //ostatnia linijka - zamyka okno 
         }
         //olej
@@ -49,7 +51,9 @@ namespace main_1._0
         //funkcja do popdieta do przycisku wywolania szukania folderu w systemie
         public void BrowseCNTW_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-
+            System.Windows.Forms.FolderBrowserDialog x = new System.Windows.Forms.FolderBrowserDialog();
+            x.ShowDialog();
+            SeedLocation.Text = x.SelectedPath;
         }
         //warunek sprawdzajacy czy podana sciezka istnieje/ jest poprawna    
         public void CreateCNTW_CanExecute(object sender, CanExecuteRoutedEventArgs e) 
@@ -62,7 +66,7 @@ namespace main_1._0
             }
             catch (Exception)
             {  }
-            if (flag)
+            if (flag && StructureName.Text.Length >0)
             {
                 e.CanExecute = true;
             }

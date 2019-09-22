@@ -10,6 +10,7 @@
 
     <!-- komendy chowania/pokazywania paneli-->
     <Window.CommandBindings>
+        <CommandBinding Command="self:KGPcommands.Saving" CanExecute="Saving_CanExecute" Executed="Saving_Executed" />
         <CommandBinding Command="self:KGPcommands.LTWshow" CanExecute="AlwaysTrueForExecuted" Executed="LTWshow_Executed"/>
         <CommandBinding Command="self:KGPcommands.CNTWshow" CanExecute="AlwaysTrueForExecuted" Executed="CNTWshow_Executed"/>
         <CommandBinding Command="self:KGPcommands.WidokShowHide" CanExecute="AlwaysTrueForExecuted" Executed="ShowHide_Executed"/>
@@ -28,6 +29,7 @@
         <CommandBinding Command="self:KGPcommands.NameEditionWindowShow" CanExecute="ChosenNotNullMainNeither" Executed="NameEditionWindow_Executed" />
         <CommandBinding Command="self:KGPcommands.DeleteDir" CanExecute="ChosenNotNullMainNeither" Executed="DeleteDir_Executed" />
         <CommandBinding Command="self:KGPcommands.ViewWindowShow" CanExecute="AlwaysTrueForExecuted" Executed="ViewWindowShow_Executed" />
+        <CommandBinding Command="self:KGPcommands.HighlightFoundAndChosen" CanExecute="AlwaysTrueForExecuted" Executed="HighlightFoundAndChosen_Executed"/>
     </Window.CommandBindings>
 
     <Grid>
@@ -42,7 +44,7 @@
                         <Button Name="ResetHighlight" Opacity="0" Command="self:KGPcommands.ResetHighlight" Margin="0,0,0.4,-0.4"></Button>
                     </Grid>
                 </ScrollViewer>
-                <Slider Name="ZoomSlider" Orientation="Vertical" Margin="0,0,19,25" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="100" Maximum="2" Minimum="0.25" ValueChanged="Slider_ValueChanged"/>
+                <Slider Name="ZoomSlider" TickPlacement="TopLeft" IsSnapToTickEnabled="True" TickFrequency="0.05" Orientation="Vertical" Margin="0,0,19,25" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="100" Maximum="2" Minimum="0.25" ValueChanged="Slider_ValueChanged"/>
             </Grid>
 
         </Grid>
@@ -80,8 +82,11 @@
         <Grid Name="KomendyUzytkownika" VerticalAlignment="Bottom" Margin="418,0,190.6,0" Height="61">
             <TextBlock HorizontalAlignment="Center">Wyszukaj folder w drzewie</TextBlock>
             <Grid  Margin="5,17,5,20" >
-                <TextBox Name="userCommand" />
+                <TextBox Name="FolderSearchTB" PreviewTextInput="FolderSearchTB_PreviewTextInput"/>
             </Grid>
+            <ScrollViewer Name="FoundFoldersSV" Margin="-135,-78,46,77" Visibility="Collapsed" Background="{Binding ElementName=KomendyUzytkownika, Path=Background}">
+
+            </ScrollViewer>
         </Grid>
 
         <!-- pasek plik/edytuj/widok/itd-->
@@ -103,8 +108,8 @@
             <StackPanel Name="PanelPliku" VerticalAlignment="Top" HorizontalAlignment="Left" Background="Maroon" Height="100" Margin="0,15,0,-100" Width="108" Visibility="Collapsed">
                 <Button  Command="self:KGPcommands.CNTWshow">Nowy</Button>
                 <Button Command="self:KGPcommands.LTWshow">Otwórz</Button>
-                <Button>Zapisz</Button>
-                <Button>Zapisz jako</Button>
+                <Button Name="SaveBtn" Command="self:KGPcommands.Saving" CommandParameter="{Binding ElementName=SaveBtn}" >Nadpisz</Button>
+                <Button Command="self:KGPcommands.Saving" CommandParameter="{Binding ElementName=SaveAsNewBtn}" Name="SaveAsNewBtn">Zapisz nową</Button>
                 <Button Height="22">Informacje (help)</Button>
             </StackPanel>
         </Grid>

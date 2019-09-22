@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 
+
 namespace ReFolder.Management
 {
     // dodaj możliwość usuwania folderów 
@@ -35,11 +36,30 @@ namespace ReFolder.Management
             return InstanceDirWrite;
         }
         // tworzy folder
-        private  void CreateFolder(string fullName)
+        private void CreateFolder(string fullName, string note, string IconAddress)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(fullName);
             directoryInfo.Create();
+            
+            
+            if (IconAddress != null)
+            {
+                directoryInfo.Attributes = FileAttributes.System;
+                string[] lines = { "[.ShellClassInfo]", $"IconResource={IconAddress},0", $"IconFile={IconAddress}",$"IconIndex=0", $"InfoTip={note}" };
+                File.WriteAllLines(fullName + @"\desktop.ini", lines);
+                File.SetAttributes(fullName + @"\desktop.ini", FileAttributes.Hidden | FileAttributes.System);
+            }
+            else
+            {
+                string[] lines = { "[.ShellClassInfo]", $"InfoTip={note}" };
+                File.WriteAllLines(fullName + @"\desktop.ini", lines);
+                File.SetAttributes(fullName + @"\desktop.ini", FileAttributes.Hidden | FileAttributes.System);
+
+            }
         }
+
+ 
+    
         // szykuje adres folderu do zapisu i sprawdza czy dany folder już nie istnieje 
         private  string ReadyFullName(string fullName)
         {
@@ -59,12 +79,15 @@ namespace ReFolder.Management
 
         }
         // tworzy nowy folder w systemie i zwraca boola jeśli go utworzy
-        public  bool CreateNewFolder(string fullName)
+        private  bool CreateNewFolder(string fullName, string Name, string note, string IconAddress= null)
         {
             try
             {
                 string name = ReadyFullName(fullName);
-                CreateFolder(name);
+                if (fullName != name)
+                    throw new ArgumentException("path is not valid");
+
+                CreateFolder(fullName,note, IconAddress);
                 return true;
             }
             catch ( InvalidOperationException operE){
@@ -73,6 +96,8 @@ namespace ReFolder.Management
             }catch(IOException IOE)
             {
                 Console.WriteLine(IOE.Message);
+                Console.WriteLine(IOE.InnerException);
+                Console.WriteLine(IOE.StackTrace);
                 throw IOE;
             }
 
@@ -90,7 +115,7 @@ namespace ReFolder.Management
             {
                 if (!DirValidate.IsfolderExisting(dir.Description.FullName))
                 {
-                    CreateNewFolder(dir.Description.FullName);
+                    CreateNewFolder(dir.Description.FullName, dir.Description.Name, dir.Description.Note, dir.Description.IconAddress);
                 }
                 else continue;
 

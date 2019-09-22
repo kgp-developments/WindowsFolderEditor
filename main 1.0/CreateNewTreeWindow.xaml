@@ -24,7 +24,7 @@
         <TextBox Name="StructureName" Margin="53,66,201,173" Background="#FFF1F1F1">
 
         </TextBox>
-        <TextBlock Margin="53,111,274.2,128.4" FontSize="15">Lokalizacja ziarna</TextBlock>
+        <TextBlock Margin="53,111,259.2,128.4" FontSize="15">Lokalizacja ziarna</TextBlock>
         <TextBox Name="SeedLocation" Margin="53,141,201,98" Background="#FFF1F1F1">
 
         </TextBox>

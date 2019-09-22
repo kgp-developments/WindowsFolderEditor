@@ -20,12 +20,10 @@ namespace ReFolder.Memento
         public static void AddMemento(Memento memento)
         {
             if (memento == null) throw new ArgumentNullException("memento is null");
-            Console.WriteLine("dodaję memento");
 
             if (currentMemento< Mementos.Count - 1)
             {
                 int mementosToDelete = Mementos.Count - (currentMemento + 1);
-                Console.WriteLine("mementos to delete" + mementosToDelete);
 
                 Mementos.RemoveRange(++currentMemento, mementosToDelete);
                 Mementos.Add(memento);
@@ -36,13 +34,11 @@ namespace ReFolder.Memento
                 
             }
 
-            Console.WriteLine("liczba memento w mementos " + Mementos.Count);
         }
         public static Memento GetMemento(int index)
         {
             if (index < 0 && index >= Mementos.Count) throw new ArgumentException("index is too big/ small");
 
-            Console.WriteLine("pobieram memento o indeksie " + index+" max index wynosi "+ (Mementos.Count-1));
             currentMemento = index;          
             return Mementos[currentMemento];
         }

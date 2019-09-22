@@ -38,7 +38,7 @@
                 <Button Name="ResetHighlight" Opacity="0" Command="self:KGPcommands.ResetHighlight"></Button>
             </Grid>
         </ScrollViewer>
-        <Slider Name="ZoomSlider" ValueChanged="ZoomSlider_ValueChanged" Orientation="Vertical" Margin="0,0,300.6,30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="100" Maximum="2" Minimum="0.25" />
+        <Slider Name="ZoomSlider" IsSnapToTickEnabled="True" TickFrequency="0.05" ValueChanged="ZoomSlider_ValueChanged" Orientation="Vertical" Margin="0,0,300.6,30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="100" Maximum="2" Minimum="0.25" />
 
 
         <!--kreuj galaz-->

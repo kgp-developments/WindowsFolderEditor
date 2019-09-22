@@ -12,6 +12,7 @@ namespace ReFolder.Dir.Description
         private string name;
         private string iconAddress;
 
+
         public DirDescription(String fullName, String name)
         {
             this.FullName = fullName;
@@ -22,7 +23,7 @@ namespace ReFolder.Dir.Description
         {
             this.IconAddress = photoAddress;
         }
-
+        public string Note { get; set; } = "no Note";
         public string FullName
         {
             get

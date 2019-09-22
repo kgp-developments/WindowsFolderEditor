@@ -31,8 +31,8 @@ namespace ReFolder.Tests
                 x.FullName== "kot");
 
             IEditableDirWithChildren mainDir = new MainDir(Descr);
-            IEditableDirWithChildrenAndParent child = Mock.Of<IEditableDirWithChildrenAndParent>();
-            IEditableDirWithChildrenAndParent child1 = Mock.Of<IEditableDirWithChildrenAndParent>();
+            IEditableDirWithChildrenAndParent child = new ChildDir("kot", mainDir);
+            IEditableDirWithChildrenAndParent child1 = new ChildDir("koot", mainDir);
             List<IEditableDirWithChildrenAndParent> list = new List<IEditableDirWithChildrenAndParent>();
             list.Add(child);
             list.Add(child1);
@@ -69,8 +69,8 @@ namespace ReFolder.Tests
                 x.FullName == "kot");
 
             IEditableDirWithChildren mainDir = new MainDir(Descr);
-            IEditableDirWithChildrenAndParent child = Mock.Of<IEditableDirWithChildrenAndParent>();
-            IEditableDirWithChildrenAndParent child1 = Mock.Of<IEditableDirWithChildrenAndParent>();
+            IEditableDirWithChildrenAndParent child = new ChildDir("kot", mainDir);
+            IEditableDirWithChildrenAndParent child1 = new ChildDir("koot", mainDir);
             List<IEditableDirWithChildrenAndParent> list = new List<IEditableDirWithChildrenAndParent>();
             list.Add(child);
             list.Add(child1);
@@ -105,8 +105,8 @@ namespace ReFolder.Tests
             var Descr = Mock.Of<IMutableSystemObjectDescription>(x=>
             x.FullName=="kotek");
             IEditableDirWithChildren mainDir = new MainDir(Descr);
-            IEditableDirWithChildrenAndParent child= Mock.Of<IEditableDirWithChildrenAndParent>();
-            IEditableDirWithChildrenAndParent child1= Mock.Of<IEditableDirWithChildrenAndParent>();
+            IEditableDirWithChildrenAndParent child = new ChildDir("kot", mainDir);
+            IEditableDirWithChildrenAndParent child1= new ChildDir("koot", mainDir);
             mainDir.AddChildToChildrenList(child);
             mainDir.AddChildToChildrenList(child1);
             //act
@@ -134,8 +134,9 @@ namespace ReFolder.Tests
             var Descr = Mock.Of<IMutableSystemObjectDescription>(x =>
             x.FullName == "kotek");
             IEditableDirWithChildren mainDir = new MainDir(Descr);
-            IEditableDirWithChildrenAndParent child = Mock.Of<IEditableDirWithChildrenAndParent>();
-            IEditableDirWithChildrenAndParent child1 = Mock.Of<IEditableDirWithChildrenAndParent>();
+            IEditableDirWithChildrenAndParent child = new ChildDir("kot", mainDir);
+            IEditableDirWithChildrenAndParent child1 = new ChildDir("koot", mainDir);
+
             List<IEditableDirWithChildrenAndParent> list = new List<IEditableDirWithChildrenAndParent>();
 
             list.Add(child);

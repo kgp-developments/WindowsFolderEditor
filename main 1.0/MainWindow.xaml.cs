@@ -16,6 +16,7 @@ using ReFolder.Dir;
 using ReFolder.Dir.Description;
 using ReFolder.Management;
 using ReFolder.Memento;
+using ReFolder.TxtFileWriter;
 
 namespace main_1._0
 {
@@ -27,7 +28,6 @@ namespace main_1._0
     public partial class MainWindow : Window
     {
         // folder główny z którego rozpoczyna się dziedziczenie 
-        readonly IEditableDirWithChildren  Main;
         List<StackPanel> Panels = new List<StackPanel>(); // lista paneli z gornego paska, np. plik, widok
         bool rightHandedView = true; // zmienna okreslajaca widok (leworeczny/praworeczny)
         public static Canvas CurrentlyChosen = null;
@@ -41,6 +41,7 @@ namespace main_1._0
         public Settings settings;
         public CreateNewTreeWindow CNTW;
         public LoadTreeWindow LTW;
+        public string thisStructureName;
         // zawiera inicjalizację Dirów do testu
         public MainWindow()
         {
@@ -56,15 +57,10 @@ namespace main_1._0
             settings.ApplyStyleMW();
 
 
-            MainDir Main = DirManagement.GetDefaultInstance().GetFolderAsNewMainDir(@"C:\Users\Klakier\Desktop\kociFolderek");
-            Seed = Main;
+            MainDir Assistant = DirManagement.GetDefaultInstance().GetFolderAsNewMainDir(@"C:\Users\lenovo\Desktop\gui testowe\AppTest");
+            Seed = Assistant;
 
-
-            sorteritno.Create(ResTree, 30, 0, Seed, "MW");
-
-            sorteritno.Sort(Seed, ResTree, 0, 30, "MW");
             ZoomSlider.Value = 1;
-
             AddMemento();
         }
 
@@ -118,8 +114,119 @@ namespace main_1._0
 
 
         #endregion
+        private void FolderSearchTB_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (FolderSearchTB.Text.Length == 0)
+            {
+                FoundFoldersSV.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                FoundFoldersSV.Visibility = Visibility.Visible;
+                SearchForFolder(FolderSearchTB.Text);
+            }
+        }
+        private void SearchForFolder(string searchedName)
+        {
+            FoundFoldersSV.Content = null;
+            StackPanel FoundFoldersSP = new StackPanel();
+            List<IEditableDirWithChildren> FoldersFound = new List<IEditableDirWithChildren>();
+            FindAllFolders(Seed, FoldersFound, searchedName);
+
+            foreach (IEditableDirWithChildren x in FoldersFound)
+            {
+                FoundFoldersSP.Children.Add(AddReferenceOfFound(x));
+            }
+            FoundFoldersSV.Content = FoundFoldersSP;
+        }
+        public Canvas AddReferenceOfFound(IEditableDirWithChildren folderFound)
+        {
+            Canvas MainLayer = new Canvas();
+            MainLayer.Height = 30;
+
+            TextBlock DisplayedName = new TextBlock();
+            DisplayedName.Text = folderFound.Description.Name;
+            DisplayedName.FontSize = 20;
+            MainLayer.Children.Add(DisplayedName);
+
+            Button Clicker = new Button();
+            Thickness thickness = new Thickness();
+            thickness.Right = -500;
+            Clicker.Margin = thickness;
+            Clicker.Opacity = 0.2f;
+            Clicker.Width = MainLayer.Width;
+            Clicker.Height = 30;
+            Clicker.Command = KGPcommands.HighlightFoundAndChosen;
+            Clicker.CommandParameter = Clicker;
+            MainLayer.Children.Add(Clicker);
+
+            MainLayer.Tag = (object)folderFound;
+            return MainLayer;
+        }
+
+        private void FindAllFolders(IEditableDirWithChildren CheckedDir, List<IEditableDirWithChildren> FList, string searched)
+        {
+            if (CheckedDir.Description.Name.ToUpper().Contains(searched.ToUpper()))
+            {
+                FList.Add(CheckedDir);
+            }
+            if (CheckedDir.Children.Count != 0)
+            {
+                foreach (IEditableDirWithChildren child in CheckedDir.Children)
+                {
+                    FindAllFolders(child, FList, searched);
+                }
+            }
+        }
 
         #region funkcje komend _Executed
+        private void Saving_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Button Clicked = (Button)e.Parameter;
+            if (Clicked == SaveAsNewBtn)
+            {
+                string temporary = thisStructureName;
+                NEW = new NameEditionWindow();
+                NEW.IsItBeingSaved = true;
+                NEW.ShowDialog();
+                if (thisStructureName != temporary)
+                {
+                    CurrentlyChosenDir.IsMarked = false;
+                    string filePath = @"..\saved\" + thisStructureName;
+                    SaveAndReadElementInBinaryFile.GetDefaultInstance().WriteToBinaryFile<IEditableDirWithChildren>(filePath, Seed);
+                }
+            }
+            else if (Clicked == SaveBtn)
+            {
+                CurrentlyChosenDir.IsMarked = false;
+                string filePath = @"..\saved\" + thisStructureName;
+                SaveAndReadElementInBinaryFile.GetDefaultInstance().WriteToBinaryFile<IEditableDirWithChildren>(filePath, Seed);
+            }
+            CurrentlyChosenDir.IsMarked = true;
+
+        }
+
+        private void HighlightFoundAndChosen_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Button Clicked = (Button)e.Parameter;
+            Canvas Layer = (Canvas)Clicked.Parent;
+            IEditableDirWithChildren Searched = (IEditableDirWithChildren)Layer.Tag;
+
+            if (CurrentlyChosen != null)
+            {
+
+                CurrentlyChosen.Background = Brushes.LightGray;
+                CurrentlyChosenDir = (IEditableDirWithChildren)CurrentlyChosen.Tag;
+                CurrentlyChosenDir.IsMarked = false;
+
+            }
+
+            CurrentlyChosenDir = (IEditableDirWithChildren)Layer.Tag;
+            CurrentlyChosenDir.IsMarked = true;
+            //sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+            HideAllPanels();
+        }
+
         private void LTWshow_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             LTW = new LoadTreeWindow();
@@ -180,6 +287,7 @@ namespace main_1._0
         private void NameEditionWindow_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             NEW = new NameEditionWindow();
+            NEW.IsItBeingSaved = false;
             NEW.ShowDialog();
         }
 
@@ -197,6 +305,9 @@ namespace main_1._0
             MemoryDirs memoryDirs = MemoryDirs.GetDefaultInstance();
             memoryDirs.InitializeAllChildren(Seed);
             DirWrite.GetDefaultInstance().GenerateAllChildrenDirsAsFolders();
+            TxtFileWriter writer = TxtFileWriter.GetDefaultInstance();
+            List<string> editedFullNames= writer.TxtFileEditor.GetMainDirChildrenNamesAndAddStringWithNote(Seed);
+            writer.WriteListToFile(Seed.Description.FullName, editedFullNames);
         }
         private void CopyChildrenDirs_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -342,6 +453,17 @@ namespace main_1._0
         #endregion
 
         #region funkcje komend _CanExecute
+        private void Saving_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (thisStructureName != null)
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
+        }
         private void UndoChanges_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             if (Caretaker.CurrentMemento > 0)
@@ -379,7 +501,7 @@ namespace main_1._0
 
         private void ChosenNotNullDepended(object sender, CanExecuteRoutedEventArgs e)
         {
-            if(CurrentlyChosen == null)
+            if(CurrentlyChosenDir == null)
             {
                 e.CanExecute = false;
             }
@@ -429,9 +551,10 @@ namespace main_1._0
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (ZoomSlider != null && userCommand != null)
+            if (ZoomSlider != null && FolderSearchTB != null && thisStructureName != null)
             {
-                userCommand.Text = ZoomSlider.Value.ToString();
+                FolderSearchTB.Text = ZoomSlider.Value.ToString();
+               
                 sorteritno.scale = (float)ZoomSlider.Value;
                 sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
             }

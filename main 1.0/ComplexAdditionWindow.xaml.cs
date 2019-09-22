@@ -245,7 +245,7 @@ namespace main_1._0
             AppMW.CurrentlyChosenDir.AddChildrenToChildrenList(children);
             MainDir.AutoGenerateChildrenFullName(AppMW.CurrentlyChosenDir);
 
-            AppMW.sorteritno.scale = (float)AppMW.ZoomSlider.Value;
+            AppMW.sorteritno.scale = (int)AppMW.ZoomSlider.Value;
             AppMW.sorteritno.ResetTree(AppMW.ResTree, AppMW.ResetHighlight, AppMW.Seed, AppMW.drzewo, "MW");
             if(ThisButton.Name == "OkBtn")
             {

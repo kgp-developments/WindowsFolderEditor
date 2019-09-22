@@ -26,14 +26,26 @@ namespace main_1._0
 
 
         //zainicjuj
-        string DirPath;
+        Canvas ChosenCanvas;
+        static string saved_path = @"..\..\saved\";
 
         public LoadTreeWindow()
         {
-            InitializeComponent();
 
+            InitializeComponent();
+            //AppMW.FolderSearchTB.Text = files[0];
+            DisplayAll();
         }
-        public void DisplayStructure(string name) //wyswietla strukture w liscie string name to nazwa struktury, mozesz modyfikowac
+        private void DisplayAll()
+        {
+            string[] files = Directory.GetFiles(saved_path);
+            foreach (string file in files)
+            {
+                string actualName = file.Substring(saved_path.Length);
+                DisplayStructure(actualName, file);
+            }
+        }
+        public void DisplayStructure(string name, string path) //wyswietla strukture w liscie string name to nazwa struktury, mozesz modyfikowac
         {
             Canvas MainLayer = new Canvas();
             MainLayer.Height = 20;
@@ -48,6 +60,7 @@ namespace main_1._0
             Clicker.Command = KGPcommands.SetChosenLTW;
             Clicker.CommandParameter = Clicker;
 
+            MainLayer.Tag = path;
             MainLayer.Children.Add(Clicker);
             
             SavedStructuresList.Children.Add(MainLayer);
@@ -58,9 +71,15 @@ namespace main_1._0
         private void SetChosenLTW_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Button chosen = (Button)e.Parameter;
-            Canvas chosenCanvas = (Canvas)chosen.Parent;
-            chosenCanvas.Background = Brushes.LightBlue;
+            Canvas chosensCanvas = (Canvas)chosen.Parent;
 
+            if (ChosenCanvas != null)
+            {
+                ChosenCanvas.Background = null;
+            }
+
+            chosensCanvas.Background = Brushes.LightBlue;
+            ChosenCanvas = chosensCanvas;
             // to inicjuj
             //DirPath = chosenCanvas.Children[0].;
 
@@ -72,14 +91,21 @@ namespace main_1._0
         }
         private void LoadLTW_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            //AppMW.Seed = SaveAndReadElementInBinaryFile.GetDefaultInstance().ReadFromBinaryFile<MainDir>(____Ścieżka_________________);
+            if (ChosenCanvas != null)
+            {
+                AppMW.Seed = SaveAndReadElementInBinaryFile.GetDefaultInstance().ReadFromBinaryFile<MainDir>((string)ChosenCanvas.Tag);
+            }
+            AppMW.sorteritno.ResetTree(AppMW.ResTree, AppMW.ResetHighlight, AppMW.Seed, AppMW.drzewo, "MW");
+            AppMW.thisStructureName = (string)ChosenCanvas.Tag.ToString().Substring(saved_path.Length);
+            AppMW.CurrentlyChosenDir = null;
             this.Close(); //ostatnia linijka, zamyka okno
 
         }
         //ma sprawdzac czy cos jest wybrane ; w funkcje SetChosenLTW mozesz dac zmienna czy cos ktora to orzeka
         private void LoadLTW_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (File.Exists(DirPath))
+            //File.Exists(DirPath)
+            if (ChosenCanvas != null)
             {
                 e.CanExecute = true;
             }

@@ -73,6 +73,6 @@ namespace ConsoleApp1
                         System.Console.WriteLine(main.Children.Count + " ilość dzieci____ current memento to: " + Caretaker.CurrentMemento + "\n");
 
             */
-
+        }
     }
 }

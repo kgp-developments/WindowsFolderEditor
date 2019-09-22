@@ -5,112 +5,113 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 //CopyDir
-namespace main_1._0 { 
-  public static class KGPcommands
-   {
-    public static readonly RoutedUICommand HorizontalStyleSwitch = new RoutedUICommand
+namespace main_1._0
+{
+    public static class KGPcommands
+    {
+        public static readonly RoutedUICommand HorizontalStyleSwitch = new RoutedUICommand
+           (
+            "HorizontalStyleSwitch",
+            "HorizontalStyleSwitch",
+            typeof(KGPcommands)
+           );
+
+        public static readonly RoutedUICommand WidokShowHide = new RoutedUICommand
+        (
+            "WidokShowHide",
+            "WidokShowHide",
+            typeof(KGPcommands)
+        );
+        public static readonly RoutedUICommand HighlightChosen = new RoutedUICommand
+        (
+            "HighlightChosen",
+            "HighlightChosen",
+            typeof(KGPcommands)
+        );
+        public static readonly RoutedUICommand GenerateDirs = new RoutedUICommand
        (
-        "HorizontalStyleSwitch",
-        "HorizontalStyleSwitch",
-        typeof(KGPcommands)
+           "GenerateDirs",
+           "GenerateDirs",
+           typeof(KGPcommands)
        );
 
-    public static readonly RoutedUICommand WidokShowHide = new RoutedUICommand
-    (
-        "WidokShowHide",
-        "WidokShowHide",
-        typeof(KGPcommands)
-    );
-    public static readonly RoutedUICommand HighlightChosen = new RoutedUICommand
-    (
-        "HighlightChosen",
-        "HighlightChosen",
-        typeof(KGPcommands)
-    );
-    public static readonly RoutedUICommand GenerateDirs = new RoutedUICommand
-   (
-       "GenerateDirs",
-       "GenerateDirs",
-       typeof(KGPcommands)
-   );
-
-    public static readonly RoutedUICommand CopyChildrenDirs = new RoutedUICommand
-     (
-         "CopyChildrenDirs",
-         "CopyChildrenDirs",
-         typeof(KGPcommands)
-     );
-    public static readonly RoutedUICommand PasteChildrenDirs = new RoutedUICommand
-    (
-        "PasteChildrenDirs",
-        "PasteChildrenDirs",
-        typeof(KGPcommands)
-    );
+        public static readonly RoutedUICommand CopyChildrenDirs = new RoutedUICommand
+         (
+             "CopyChildrenDirs",
+             "CopyChildrenDirs",
+             typeof(KGPcommands)
+         );
+        public static readonly RoutedUICommand PasteChildrenDirs = new RoutedUICommand
+        (
+            "PasteChildrenDirs",
+            "PasteChildrenDirs",
+            typeof(KGPcommands)
+        );
 
 
 
-    public static readonly RoutedUICommand ResetHighlight = new RoutedUICommand
-    (
-    "ResetHighlight",
-    "ResetHighlight",
-    typeof(KGPcommands)
-    );
+        public static readonly RoutedUICommand ResetHighlight = new RoutedUICommand
+        (
+        "ResetHighlight",
+        "ResetHighlight",
+        typeof(KGPcommands)
+        );
 
-    public static readonly RoutedUICommand ViewContent = new RoutedUICommand
-    (
-    "ViewContent",
-    "ViewContent",
-    typeof(KGPcommands)
-    );
+        public static readonly RoutedUICommand ViewContent = new RoutedUICommand
+        (
+        "ViewContent",
+        "ViewContent",
+        typeof(KGPcommands)
+        );
 
-    public static readonly RoutedUICommand DefaultAddition = new RoutedUICommand
-    (
-    "DefaultAddition",
-    "DefaultAddition",
-    typeof(KGPcommands)
-    );
-    public static readonly RoutedUICommand FoldSwitch = new RoutedUICommand
-    (
-        "FoldSwitch",
-        "FoldSwitch",
+        public static readonly RoutedUICommand DefaultAddition = new RoutedUICommand
+        (
+        "DefaultAddition",
+        "DefaultAddition",
         typeof(KGPcommands)
-    );
-    public static readonly RoutedUICommand ShowHideTypeOfSeries = new RoutedUICommand
-    (
-        "ShowHideTypeOfSeries",
-        "ShowHideTypeOfSeries",
-        typeof(KGPcommands)
-    );
-    public static readonly RoutedUICommand ShowHideAutoNames = new RoutedUICommand
-    (
-        "ShowHideAutoNames",
-        "ShowHideAutoNames",
-        typeof(KGPcommands)
-    );
-    public static readonly RoutedUICommand SetChosenType = new RoutedUICommand
-    (
-        "SetChosenType",
-        "SetChosenType",
-        typeof(KGPcommands)
-    );
-    public static readonly RoutedUICommand SetChosenAutoName = new RoutedUICommand
-    (
-        "SetChosenAutoName",
-        "SetChosenAutoName",
-        typeof(KGPcommands)
-    );
-    public static readonly RoutedUICommand SetComplexAddition = new RoutedUICommand
-    (
-        "SetComplexAddition",
-        "SetComplexAddition",
-        typeof(KGPcommands)
-    );
-    public static readonly RoutedUICommand ComplexAdditionWindowShow = new RoutedUICommand
-    (
-        "ComplexAdditionWindowShow",
-        "ComplexAdditionWindowShow",
-        typeof(KGPcommands)
-    );
+        );
+        public static readonly RoutedUICommand FoldSwitch = new RoutedUICommand
+        (
+            "FoldSwitch",
+            "FoldSwitch",
+            typeof(KGPcommands)
+        );
+        public static readonly RoutedUICommand ShowHideTypeOfSeries = new RoutedUICommand
+        (
+            "ShowHideTypeOfSeries",
+            "ShowHideTypeOfSeries",
+            typeof(KGPcommands)
+        );
+        public static readonly RoutedUICommand ShowHideAutoNames = new RoutedUICommand
+        (
+            "ShowHideAutoNames",
+            "ShowHideAutoNames",
+            typeof(KGPcommands)
+        );
+        public static readonly RoutedUICommand SetChosenType = new RoutedUICommand
+        (
+            "SetChosenType",
+            "SetChosenType",
+            typeof(KGPcommands)
+        );
+        public static readonly RoutedUICommand SetChosenAutoName = new RoutedUICommand
+        (
+            "SetChosenAutoName",
+            "SetChosenAutoName",
+            typeof(KGPcommands)
+        );
+        public static readonly RoutedUICommand SetComplexAddition = new RoutedUICommand
+        (
+            "SetComplexAddition",
+            "SetComplexAddition",
+            typeof(KGPcommands)
+        );
+        public static readonly RoutedUICommand ComplexAdditionWindowShow = new RoutedUICommand
+        (
+            "ComplexAdditionWindowShow",
+            "ComplexAdditionWindowShow",
+            typeof(KGPcommands)
+        );
         public static readonly RoutedUICommand ApplyChangesCAW = new RoutedUICommand
         (
             "ApplyChangesCAW",
@@ -219,7 +220,7 @@ typeof(KGPcommands)
 "CNTWshow",
 typeof(KGPcommands)
          );
-                    public static readonly RoutedUICommand LTWshow = new RoutedUICommand
+        public static readonly RoutedUICommand LTWshow = new RoutedUICommand
 (
 "LTWshow",
 "LTWshow",
@@ -241,6 +242,18 @@ typeof(KGPcommands)
 (
 "SetChosenLTW",
 "SetChosenLTW",
+typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand HighlightFoundAndChosen = new RoutedUICommand
+(
+"HighlightFoundAndChosen",
+"HighlightFoundAndChosen",
+typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand Saving = new RoutedUICommand
+(
+"Saving",
+"Saving",
 typeof(KGPcommands)
 );
 

@@ -2,6 +2,8 @@
 using System.IO;
 using ReFolder.Dir.Description;
 using System;
+using System.Collections.Generic;
+
 namespace ReFolder.Management
 {
     //dokończ
@@ -46,6 +48,31 @@ namespace ReFolder.Management
             return names;
         }
 
+        public List<string> GetAllChildrenFullNames(string fullName)
+        {
+            List<string> names = new List<string>();
+            if (String.IsNullOrWhiteSpace(fullName)) throw new ArgumentException("fullname is empty/null");
+            DirectoryInfo[] directories = new DirectoryInfo(fullName).GetDirectories();
+            foreach (var directory in directories)
+            {
+                names.Add(directory.FullName);
+                if(directory.GetDirectories().Length > 0)
+                {
+                    GetAllChildrenFullNames(directory.FullName, names);
+                }
+            }  
+            return names;
+        }
+        private List<string> GetAllChildrenFullNames(string fullName, List<string> names)
+        {
+            if (String.IsNullOrWhiteSpace(fullName)) throw new ArgumentException("fullname is empty/null");
+            DirectoryInfo[] directories = new DirectoryInfo(fullName).GetDirectories();
+            foreach (var directory in directories)
+            {
+                names.Add(directory.FullName);
+            }
+            return names;
+        }
         /*  Method Info
          * metoda powinna być użyta tylko raz do wygenerowania punktu początkowego drzewa(root) ponieważ tworzy ona NOWY OBIEKT 
          * a nie zwraca do niego referencji.

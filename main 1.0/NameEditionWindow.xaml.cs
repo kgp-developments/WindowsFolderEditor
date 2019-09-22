@@ -22,6 +22,7 @@ namespace main_1._0
     {
         static MainWindow AppMW = (MainWindow)Application.Current.MainWindow;
         string NewText;
+        public bool IsItBeingSaved;
         public NameEditionWindow()
         {
             InitializeComponent();
@@ -81,6 +82,7 @@ namespace main_1._0
         private void NewNameCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Button Clicked = (Button)e.Parameter;
+
             if (Clicked.Name == "OK")
             {
                 if (NewNameTB.Text.Length != 0)
@@ -89,13 +91,21 @@ namespace main_1._0
                     {
                         NewText = NewNameTB.Text;
                         NEWchanger();
-                        AppMW.CurrentlyChosenDir.Description.Name = NewText;
-                        AppMW.sorteritno.ResetTree(AppMW.ResTree, AppMW.ResetHighlight, AppMW.Seed, AppMW.drzewo, "MW");
+                        if (IsItBeingSaved)
+                        {
+                            AppMW.thisStructureName = NewText;
+                        }
+                        else
+                        {
+                            AppMW.CurrentlyChosenDir.Description.Name = NewText;
+                            AppMW.sorteritno.ResetTree(AppMW.ResTree, AppMW.ResetHighlight, AppMW.Seed, AppMW.drzewo, "MW");
 
-                        AddMemento();
+                            AddMemento();
+                        }
                     }
                 }
             }
+
             this.Close();
         }
         private void AlwaysTrueForCanExecute(object sender, CanExecuteRoutedEventArgs e)
