@@ -42,7 +42,7 @@ namespace ReFolder.TxtFileWriter
         public TxtFileWriter()
         {
             this.dirValidate = DirValidate.GetDefaultInstance();
-            TxtFileEditor = new TxtFileEditor(this.dirValidate, DirRead.GetDefaultInstance());
+            TxtFileEditor = new TxtFileEditor(this.dirValidate, DirRead.GetDefaultInstance(), FileRead.GetDefaultInstance());
         }
 
         public void WriteListToFile(string path, List<string> stringToWrite, string fileName = @"/AboutFolders.txt")

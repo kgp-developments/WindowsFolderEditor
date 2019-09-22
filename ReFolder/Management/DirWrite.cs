@@ -36,16 +36,23 @@ namespace ReFolder.Management
             return InstanceDirWrite;
         }
         // tworzy folder
-        private void CreateFolder(string fullName, string note, string IconAddress)
+        private void CreateFolder(string fullName, string note, string IconAddress= null)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(fullName);
             directoryInfo.Create();
-            
-            
+
+
+            AddIconAndNoteToFileSystem(fullName, note, IconAddress);
+        }
+
+        // tworzy plik systemowy desktop.ini który przechowuje notatkę oraz ikonę
+        public void AddIconAndNoteToFileSystem(string fullName, string note, string IconAddress = null)
+        {
             if (IconAddress != null)
             {
+                DirectoryInfo directoryInfo = new DirectoryInfo(fullName);
                 directoryInfo.Attributes = FileAttributes.System;
-                string[] lines = { "[.ShellClassInfo]", $"IconResource={IconAddress},0", $"IconFile={IconAddress}",$"IconIndex=0", $"InfoTip={note}" };
+                string[] lines = { "[.ShellClassInfo]", $"IconResource={IconAddress},0", $"IconFile={IconAddress}", $"IconIndex=0", $"InfoTip={note}" };
                 File.WriteAllLines(fullName + @"\desktop.ini", lines);
                 File.SetAttributes(fullName + @"\desktop.ini", FileAttributes.Hidden | FileAttributes.System);
             }
@@ -56,10 +63,9 @@ namespace ReFolder.Management
                 File.SetAttributes(fullName + @"\desktop.ini", FileAttributes.Hidden | FileAttributes.System);
 
             }
+
         }
 
- 
-    
         // szykuje adres folderu do zapisu i sprawdza czy dany folder już nie istnieje 
         private  string ReadyFullName(string fullName)
         {

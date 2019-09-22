@@ -47,7 +47,6 @@ namespace ReFolder.Management
 
             return names;
         }
-
         public List<string> GetAllChildrenFullNames(string fullName)
         {
             List<string> names = new List<string>();

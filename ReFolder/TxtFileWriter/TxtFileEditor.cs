@@ -11,11 +11,12 @@ namespace ReFolder.TxtFileWriter
     {
         DirValidate dirValidate;
         DirRead dirRead;
-
-        public TxtFileEditor(DirValidate dirValidate, DirRead dirReader)
+        FileRead fileRead;
+        public TxtFileEditor(DirValidate dirValidate, DirRead dirReader, FileRead fileRead)
         {
             this.dirValidate = dirValidate;
             this.dirRead = dirReader;
+            this.fileRead = fileRead;
         }
 
         public List<string> GetMainDirChildrenNamesAndAddStringWithNote(IEditableDirWithChildren mainDir)
@@ -33,7 +34,6 @@ namespace ReFolder.TxtFileWriter
         }
         private string findDescription(string path)
         {
-            List<string> lines = new List<string>();
             string infoTip = "";
             string desktopIniPath = path + @"\Desktop.ini";
 
@@ -43,25 +43,13 @@ namespace ReFolder.TxtFileWriter
             }
             else
             {
-                using (StreamReader reader = new StreamReader(desktopIniPath))
-                {
-                    while (!reader.EndOfStream)
-                        lines.Add(reader.ReadLine());
-                }
-
-                foreach (string line in lines)
-                {
-                    if (line.Contains("InfoTip"))
-                    {
-                        var splitedline = line.Split('=');
-                        infoTip = splitedline[splitedline.Length - 1];
-                    }
-
-                }
-                return infoTip;
+                string line =fileRead.ReadLineThatContainsValue(desktopIniPath, "InfoTip");
+                infoTip= fileRead.GetDataFromString(line, '=');
             }
-
+                return infoTip;
         }
+
+        
 
         private List<string> GetMainDirChildrenNamesAndAddDateAndNote(IEditableDirWithChildren mainDir, List<string> childrenNamesWithDateAndString)
         {

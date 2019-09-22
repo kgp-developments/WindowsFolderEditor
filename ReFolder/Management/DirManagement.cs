@@ -11,32 +11,34 @@ namespace ReFolder.Management
     {
         private DirRead DirRead { get; set; }
         private DirValidate DirValidate { get; set; }
+        private FileWrite FileWrite { get; set; }
 
         private const string const_defaultPrefixForGeneratingNames = "newFolder";
         //Singleton
         private static DirManagement InstanceDirManagement { get; set; }
 
         //konstruktor do  wstrzykiwania singletonów przez metody
-        private DirManagement( DirRead dirRead, DirValidate dirValidate)
+        private DirManagement( DirRead dirRead, DirValidate dirValidate, FileWrite fileWrite)
         {
             this.DirRead = dirRead;
             this.DirValidate = dirValidate;
+            this.FileWrite = fileWrite;
         }
         // zwraca zwykłą instancję singletona
         public static DirManagement GetDefaultInstance()
         {
             if (InstanceDirManagement == null)
             {
-                InstanceDirManagement = new DirManagement(DirRead.GetDefaultInstance(), DirValidate.GetDefaultInstance()); ;
+                InstanceDirManagement = new DirManagement(DirRead.GetDefaultInstance(), DirValidate.GetDefaultInstance(),FileWrite.GetDefaultInstance()); ;
             }
             return InstanceDirManagement;
         }
         // zwraca instancję singletona z możliwością wstrzyknięcia zależności(na potrzeby testów )
-        public static DirManagement InitializeInstance( DirRead dirRead, DirValidate dirValidate)
+        public static DirManagement InitializeInstance( DirRead dirRead, DirValidate dirValidate, FileWrite fileWrite)
         {
             if (InstanceDirManagement == null)
             {
-                InstanceDirManagement = new DirManagement(dirRead, dirValidate);
+                InstanceDirManagement = new DirManagement(dirRead, dirValidate, fileWrite);
             }
             return InstanceDirManagement;
         }
@@ -45,6 +47,18 @@ namespace ReFolder.Management
         {
             return DirRead.GetMainDirFolder(fullName);
         }
+
+        // pozwala edytować plik systemowy o ile został stworzony.
+        //pozwala to na znalezienie wcześniejszej właściwości i zastąpienie jej nową. Działa z ikonoą oraz notataką 
+        public void ChangeCreatedDirSystemValue( string newNote, IDir dir, string iconAddress)
+        {
+            FileWrite.ReplaceSystemFolderInfoFile(dir.Description.FullName, newNote, iconAddress );
+            dir.Description.Note = newNote;
+            dir.Description.IconAddress = iconAddress;
+        }
+        
+        
+        
         #region generate string names
         // generuje nazwę wg. prefix_sufix nie sprawdza istnienia folderu w systemie sprawdza istnienie w rodzicu
         public string GeneratetName_Default(IEditableDirWithChildren parentDir, int sufix_minValue = 0, string prefix = const_defaultPrefixForGeneratingNames, params string[] namesToIgnore)
