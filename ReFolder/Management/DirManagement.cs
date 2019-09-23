@@ -1,40 +1,36 @@
 ﻿using ReFolder.Dir;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 
 namespace ReFolder.Management
 {
-    public class DirManagement
+    ///<summary>
+    ///DirManagement implements IDirManagement
+    ///</summary>
+    public class DirManagement: IDirManagement
     {
+        #region singleton 
+
         private DirRead DirRead { get; set; }
         private DirValidate DirValidate { get; set; }
         private FileWrite FileWrite { get; set; }
-
-        private const string const_defaultPrefixForGeneratingNames = "newFolder";
-        //Singleton
         private static DirManagement InstanceDirManagement { get; set; }
-
         //konstruktor do  wstrzykiwania singletonów przez metody
-        private DirManagement( DirRead dirRead, DirValidate dirValidate, FileWrite fileWrite)
+        private DirManagement(DirRead dirRead, DirValidate dirValidate, FileWrite fileWrite)
         {
             this.DirRead = dirRead;
             this.DirValidate = dirValidate;
             this.FileWrite = fileWrite;
         }
-        // zwraca zwykłą instancję singletona
         public static DirManagement GetDefaultInstance()
         {
             if (InstanceDirManagement == null)
             {
-                InstanceDirManagement = new DirManagement(DirRead.GetDefaultInstance(), DirValidate.GetDefaultInstance(),FileWrite.GetDefaultInstance()); ;
+                InstanceDirManagement = new DirManagement(DirRead.GetDefaultInstance(), DirValidate.GetDefaultInstance(), FileWrite.GetDefaultInstance()); ;
             }
             return InstanceDirManagement;
         }
-        // zwraca instancję singletona z możliwością wstrzyknięcia zależności(na potrzeby testów )
-        public static DirManagement InitializeInstance( DirRead dirRead, DirValidate dirValidate, FileWrite fileWrite)
+        public static DirManagement InitializeInstance(DirRead dirRead, DirValidate dirValidate, FileWrite fileWrite)
         {
             if (InstanceDirManagement == null)
             {
@@ -42,24 +38,32 @@ namespace ReFolder.Management
             }
             return InstanceDirManagement;
         }
+
+        #endregion
+
         // tworzy nowy MainDir na podstawie ścieżki !! uwaga metoda powinna być użyta tylko jeden raz ponieważ zawsze zwraca NOWEGO mainDira
-        public MainDir GetFolderAsNewMainDir(string fullName)
+        public IEditableDirWithChildren GetFolderAsNewMainDir(string fullName)
         {
             return DirRead.GetMainDirFolder(fullName);
         }
-
         // pozwala edytować plik systemowy.
         // Działa z ikonoą oraz notataką 
+        /// <summary>
+        /// overwrites desktop.ini and set new, folder and dir, note and Icon
+        /// </summary>
+        /// <param name="newNote"></param>
+        /// <param name="dir"></param>
+        /// <param name="iconAddress"></param>
         public void ChangeCreatedDirSystemValue( string newNote, IDir dir, string iconAddress)
         {
             FileWrite.ReplaceSystemFolderInfoFile(dir.Description.FullName, newNote, iconAddress );
             dir.Description.Note = newNote;
             dir.Description.IconAddress = iconAddress;
         }
-        
-        
-        
+
         #region generate string names
+        private const string const_defaultPrefixForGeneratingNames = "newFolder";
+
         // generuje nazwę wg. prefix_sufix nie sprawdza istnienia folderu w systemie sprawdza istnienie w rodzicu
         public string GeneratetName_Default(IEditableDirWithChildren parentDir, int sufix_minValue = 0, string prefix = const_defaultPrefixForGeneratingNames, params string[] namesToIgnore)
         {
@@ -73,7 +77,7 @@ namespace ReFolder.Management
             // dodaje foldery pod ścieżką katalogu rodzica do ignorowanych
             if (DirValidate.GetDefaultInstance().IsfolderExisting(parentDir.Description.FullName))
             {
-                reservedNames.AddRange(DirRead.GetDefaultInstance().GetAllChildrenNames(parentDir.Description.FullName));
+                reservedNames.AddRange(DirRead.GetDefaultInstance().GetChildrenNames(parentDir.Description.FullName));
             }
 
 
@@ -149,7 +153,7 @@ namespace ReFolder.Management
             }
             if (DirValidate.IsfolderExisting(parentDir.Description.FullName))
             {
-                string[] existingFolders = DirRead.GetAllChildrenNames(parentDir.Description.FullName);
+                string[] existingFolders = DirRead.GetChildrenNames(parentDir.Description.FullName);
                 foreach (string name in existingFolders)
                 {
                     if (name.Equals($"{prefix}{sign}{text}{sign}{parentDir.Description.Name}")) GenerateName_ParentName_Text_Number(parentDir, text, ++prefix, sign);
@@ -163,7 +167,7 @@ namespace ReFolder.Management
                     GenerateName_ParentName_Text_Number(parentDir, text, ++prefix, sign);
                 }
             }
-            DirValidate.IsNameExistingAsChild(parentDir, $"{prefix}{sign}{text}{sign}{parentDir.Description.Name}");
+            DirValidate.IsNameExistingInChildrenDirs(parentDir, $"{prefix}{sign}{text}{sign}{parentDir.Description.Name}");
             return $"{prefix}{sign}{text}{sign}{parentDir.Description.Name}";
         }
         // generuje nazwę wg. ParentName_Text_Number  sprawdza istnienie folderu w systemie i rodzicu
@@ -178,7 +182,7 @@ namespace ReFolder.Management
             }
             if (DirValidate.IsfolderExisting(parentDir.Description.FullName))
             {
-                string[] existingFolders = DirRead.GetAllChildrenNames(parentDir.Description.FullName);
+                string[] existingFolders = DirRead.GetChildrenNames(parentDir.Description.FullName);
                 foreach (string name in existingFolders)
                 {
                     if (name.Equals($"{parentDir.Description.Name}{sign}{text}{sign}{sufix}")) GenerateName_ParentName_Text_Number(parentDir, text, ++sufix, sign);
@@ -192,7 +196,7 @@ namespace ReFolder.Management
                     GenerateName_ParentName_Text_Number(parentDir, text, ++sufix, sign);
                 }
             }
-            DirValidate.IsNameExistingAsChild(parentDir, $"{parentDir.Description.Name}{sign}{text}{sign}{sufix}");
+            DirValidate.IsNameExistingInChildrenDirs(parentDir, $"{parentDir.Description.Name}{sign}{text}{sign}{sufix}");
             return $"{parentDir.Description.Name}{sign}{text}{sign}{sufix}";
             ;
         }
@@ -208,7 +212,7 @@ namespace ReFolder.Management
             }
             if (DirValidate.IsfolderExisting(parentDir.Description.FullName))
             {
-                string[] existingFolders = DirRead.GetAllChildrenNames(parentDir.Description.FullName);
+                string[] existingFolders = DirRead.GetChildrenNames(parentDir.Description.FullName);
                 foreach (string name in existingFolders)
                 {
                     if (name.Equals($"{convertedNumber}")) GenerateName_Number(parentDir, ++number);
@@ -221,7 +225,7 @@ namespace ReFolder.Management
                     GenerateName_Number(parentDir, ++number);
                 }
             }
-            DirValidate.IsNameExistingAsChild(parentDir, convertedNumber);
+            DirValidate.IsNameExistingInChildrenDirs(parentDir, convertedNumber);
             return Convert.ToString(number);
         }
         #endregion

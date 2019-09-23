@@ -59,7 +59,7 @@ namespace main_1._0
             settings.ApplyStyleMW();
 
 
-            MainDir Assistant = DirManagement.GetDefaultInstance().GetFolderAsNewMainDir(@"C:\Users\lenovo\Desktop\gui testowe\AppTest");
+            IEditableDirWithChildren Assistant = DirManagement.GetDefaultInstance().GetFolderAsNewMainDir(@"C:\Users\lenovo\Desktop\gui testowe\AppTest");
             Seed = Assistant;
 
             ZoomSlider.Value = 1;

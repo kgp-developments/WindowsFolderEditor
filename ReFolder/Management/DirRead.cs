@@ -6,10 +6,14 @@ using System.Collections.Generic;
 
 namespace ReFolder.Management
 {
-    //dokończ
-      public class DirRead
-    {
 
+    ///<summary>
+    ///DirRead 
+    ///Contains method for reading existing folders in system
+    ///</summary>
+    public class DirRead
+    {
+        #region singleton
         private static DirRead InstanceDirRead { get; set; }
         //singleton
 
@@ -21,6 +25,7 @@ namespace ReFolder.Management
             }
             return InstanceDirRead;
         }
+        #endregion
 
         // zwraca wszystkie foldery podrzędne danego folderu 
         private DirectoryInfo[] GetAllChildrenFolders(string fullName)
@@ -33,7 +38,12 @@ namespace ReFolder.Management
             DirectoryInfo directory = new DirectoryInfo(fullName);
             return directory;
         }
-        public string[] GetAllChildrenNames(string fullName)
+        /// <summary>
+        /// returns the names of all child folders that contains the folder under the path
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <returns>returns the names of all child folders that contains the folder under the path</returns>
+        internal string[] GetChildrenNames(string fullName)
         {
             if (String.IsNullOrWhiteSpace(fullName)) throw new ArgumentException("fullname is empty/null");
             DirectoryInfo[] directories = new DirectoryInfo(fullName).GetDirectories();
@@ -47,7 +57,12 @@ namespace ReFolder.Management
 
             return names;
         }
-        public List<string> GetAllChildrenFullNames(string fullName)
+        /// <summary>
+        /// returns all folders names that contain a given folder
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <returns>returns all folders names that contain a given folder</returns>
+        internal List<string> GetAllChildrenFullNames(string fullName)
         {
             List<string> names = new List<string>();
             if (String.IsNullOrWhiteSpace(fullName)) throw new ArgumentException("fullname is empty/null");
@@ -77,7 +92,13 @@ namespace ReFolder.Management
          * a nie zwraca do niego referencji.
          * Powiązania powinny być zachowane a nie tworzone osobno dla każdego folderu  
        */
-        internal MainDir GetMainDirFolder(string fullName)
+        /// <summary>
+        /// returns new MainDir with auto generated name and path
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <returns> returns new MainDir </returns>
+
+        internal IEditableDirWithChildren GetMainDirFolder(string fullName)
         {
             if (String.IsNullOrWhiteSpace(fullName)) throw new ArgumentException("fullname is empty/null");
             DirectoryInfo dir =GetParentFolder(fullName);
@@ -85,5 +106,11 @@ namespace ReFolder.Management
 
             return new MainDir(dirDescription);
         }
+
+
+
+
+
+
     }
 }

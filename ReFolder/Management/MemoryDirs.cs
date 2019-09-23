@@ -1,16 +1,17 @@
 ﻿using ReFolder.Dir;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ReFolder.Management
 {
-    public class MemoryDirs
+    ///<summary>
+    ///MemoryDirs implements IMemoryDirs.
+    ///contains methods for generating Dirs to memory and managing Dirs in memory
+    ///</summary>
+    public class MemoryDirs: IMemoryDirs
     {
-
-        //singleton
+        #region singleton
         private static MemoryDirs InstanceMemoryDirs { get; set; }
-        // zwraca instancję
         public static MemoryDirs GetDefaultInstance()
         {
             if (InstanceMemoryDirs == null)
@@ -19,10 +20,16 @@ namespace ReFolder.Management
             }
             return InstanceMemoryDirs;
         }
+        #endregion
 
-        // lista wszystkich folderów które mają być wygenerowane posiada dane wszystkich utworzonych folderów za wyjątkiem folderu głównego 
+        /// <summary>
+        /// List of all folders to generate except MainDir
+        /// </summary>
         public static List<IEditableDirWithChildrenAndParent> AllCreatedDirs { get; } = new List<IEditableDirWithChildrenAndParent>();
-        //inicjalizuje listę wszystkich folderów
+        /// <summary>
+        /// Initialize AllCreatedDirs with dir children
+        /// </summary>
+        /// <param name="dir"></param>
         public void InitializeAllChildren(IEditableDirWithChildren dir)
         {
             if (dir == null) throw new ArgumentNullException("dir is null ");
@@ -36,7 +43,12 @@ namespace ReFolder.Management
                 else continue;
             }
         }
-        // sprawdza czy dany folder istnieje w zbiorze wszystkich folderów tablicy AllCreatedAllCreatedDirs
+       
+        /// <summary>
+        /// Checks if the dir exist in AllCreatedDirs
+        /// </summary>
+        /// <param name="dir">dir to check</param>
+        /// <returns>returns true if the folder exist</returns>
         public bool ReturnTrueIfDirExistInAllCreatedDirs(IEditableDirWithChildren dir)
         {
             if (dir == null) throw new ArgumentNullException("dir is null ");
@@ -51,13 +63,20 @@ namespace ReFolder.Management
             }
             return flag;
         }
-        //usuwa folder z wszystkich folderów w pamięci 
+      
+        /// <summary>
+        /// Deletes folder from AllCreatedDirs 
+        /// </summary>
+        /// <param name="dir">Dir to delete</param>
         public void DeleteDirFromAllCreatedDirs(IEditableDirWithChildrenAndParent dir)
         {
             if (dir == null) throw new ArgumentNullException("dir is null ");
             AllCreatedDirs.Remove(dir);
         }
-        // usuwa foldery z wszystkich folderów w pamięci  
+        /// <summary>
+        /// deletes list of dirs from AllCreatedDirs
+        /// </summary>
+        /// <param name="childDirs"> list of elements to delete</param>
         public void DeleteDirsFromAllCreatedDirs(List<IEditableDirWithChildrenAndParent> childDirs)
         {
             if (childDirs == null) throw new ArgumentNullException("childDirs is null ");

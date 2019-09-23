@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace ReFolder.Management
 {
-    public class FileRead
+    ///<summary>
+    ///FileRead implements IFileRead.
+    ///Contains methods for reading files
+    ///</summary>
+    public class FileRead: IFileRead
     {
+        #region singleton
         private static FileRead InstanceFileRead { get; set; }
         public static FileRead GetDefaultInstance()
         {
@@ -16,8 +20,14 @@ namespace ReFolder.Management
             }
             return InstanceFileRead;
         }
-
-        public List<string> ReadAllText(string path)
+        #endregion
+     
+        /// <summary>
+        /// Reads all lines of text
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns>all lines of text</returns>
+        public List<string> ReadAll(string path)
         {
             if (path == null || !File.Exists(path))
                 throw new ArgumentException("path is not valid");
@@ -33,6 +43,13 @@ namespace ReFolder.Management
             }
             return readedLines;
         }
+
+        /// <summary>
+        /// reads all file and returns line that contains value, otherwise returns null if value is not found
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public string ReadLineThatContainsValue(string path, string value)
         {
             if (path == null || !File.Exists(path))
@@ -47,13 +64,6 @@ namespace ReFolder.Management
                 }
             }
             return null;
-        }
-        public string GetDataFromString(string value , char separator)
-        {
-            if (value == null)
-                throw new ArgumentNullException("arguments are null");
-            string[] data = value.Split(separator);
-            return (data[data.Length - 1]);
         }
     }
 }

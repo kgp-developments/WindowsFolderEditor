@@ -4,9 +4,13 @@ using System;
 
 namespace ReFolder.Management
 {
-    
-    public class DirValidate
+    ///<summary>
+    ///DirValidate implements IDirValidate 
+    ///Contains method for validating existence of existing folders and Dirs
+    ///</summary>
+    public class DirValidate: IDirValidate
     {
+        #region singleton
         private static DirValidate InstanceDirValidate { get; set; }
 
         public static DirValidate GetDefaultInstance()
@@ -18,46 +22,41 @@ namespace ReFolder.Management
             }
             return InstanceDirValidate;
         }
-
+        #endregion
 
         //sprawdza czy istnieje dany dir jako folder
+        /// <summary>
+        /// Checks if the folder exist under the path
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <returns>returns true if folder exist</returns>
         public bool  IsfolderExisting(string fullName)
         {
             IfNullOrWhitespaceThrowException(fullName);
              DirectoryInfo info = new DirectoryInfo(fullName);
             if (info.Exists)
             {
-
                 return true;
             }
             else return false;
 
         }
         //sprawdza czy istnieje dany dir jako dziecko
-        public bool IsNameExistingAsChildInParrentDir(IEditableDirWithChildren ParentDir, string name)
+        /// <summary>
+        /// checks if the ParrentDir contains dir with the given name
+        /// </summary>
+        /// <param name="ParentDir"></param>
+        /// <param name="name"></param>
+        /// <returns>returns true if ParentDir conains given name</returns>
+        public bool IsNameExistingInChildrenDirs(IEditableDirWithChildren parent, string name)
         {
             IfNullOrWhitespaceThrowException(name);
-            IfNullThrowException(ParentDir);
-            bool exist = false;
-            foreach (IEditableDirWithChildrenAndParent child in ParentDir.Children)
-            {             
-                if (name == child.Description.Name)
-                {
-                    exist = true;
-                }             
-            }
-            return exist;
-        }
-        // sprawdza czy Name istnieje wśród dzieci 
-        public bool IsNameExistingAsChild(IEditableDirWithChildren parent, string dirName)
-        {
-            IfNullOrWhitespaceThrowException(dirName);
             IfNullThrowException(parent);
 
            
             foreach (var child in parent.Children)
             {
-                if (child.Description.Name.Equals(dirName))
+                if (child.Description.Name.Equals(name))
                 {
                     return true;
                 }   
@@ -66,17 +65,23 @@ namespace ReFolder.Management
             
         }
         //sprawdza czy istnieje dany dir jako dziecko i folder
+        /// <summary>
+        /// Checks, if the ParrentDir contains dir with the given name and that the dir exist in file system
+        /// </summary>
+        /// <param name="ParentDir">Dir Parent</param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public bool IsDirExistingAsFolderAndChild(IEditableDirWithChildren ParentDir, string name)
         {
             IfNullOrWhitespaceThrowException(name);
             IfNullThrowException(ParentDir);
 
-            if (IsNameExistingAsChild(ParentDir, name))
+            if (IsNameExistingInChildrenDirs(ParentDir, name))
             {
                 return true;
 
             }
-            else if (IsfolderExisting($"{ParentDir.Description.FullName}\\{name}"))
+            if (IsfolderExisting($"{ParentDir.Description.FullName}\\{name}"))
             {
 
                 return true;

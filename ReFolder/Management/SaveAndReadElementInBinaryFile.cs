@@ -5,9 +5,13 @@ using System;
 
 namespace ReFolder.Management
 {
-    public class SaveAndReadElementInBinaryFile
+    ///<summary>
+    ///SaveAndReadElementInBinaryFile implements ISaveAndReadElementInBinaryFile. 
+    ///Contains methods for creating, reading And updating binary files
+    ///</summary>
+    public class SaveAndReadElementInBinaryFile : ISaveAndReadElementInBinaryFile
     {
-        // singleton
+        #region singleton
         private static SaveAndReadElementInBinaryFile Instance { get; set; }
         public static SaveAndReadElementInBinaryFile GetDefaultInstance()
         {
@@ -17,9 +21,14 @@ namespace ReFolder.Management
             }
             return Instance;
         }
-
-        // zapisuje obiekt typu T do pliku pod wskazaną ścieżką.
-        public void WriteToBinaryFile<T>(string filePath, T objectToWrite)
+        #endregion
+        /// <summary>
+        /// Creates/ Updates binary file
+        /// </summary>
+        /// <typeparam name="T">type of Class to create/update</typeparam>
+        /// <param name="filePath">path to file</param>
+        /// <param name="objectToWrite">objectToWrite</param>
+        public  void WriteToBinaryFile<T>(string filePath, T objectToWrite)
         {
             if (String.IsNullOrWhiteSpace(filePath)) throw new ArgumentException(" filepath is null/empty/whitespace");
             if (objectToWrite == null) throw new ArgumentNullException("object to write is null");
@@ -27,7 +36,15 @@ namespace ReFolder.Management
             new BinaryFormatter().Serialize(stream, objectToWrite);
             stream.Close();
         }
-        // odczytuje obiekt typu T do pliku pod wskazaną ścieżką.
+
+
+
+        /// <summary>
+        /// Reads binary file
+        /// </summary>
+        /// <typeparam name="T">Type of class to read</typeparam>
+        /// <param name="filePath">path to file</param>
+        /// <returns>object of type T</returns>
         public T ReadFromBinaryFile<T>(string filePath)
         {
             if (String.IsNullOrWhiteSpace(filePath)) throw new ArgumentException(" filepath is null/empty/whitespace");
@@ -37,15 +54,6 @@ namespace ReFolder.Management
             T file = (T)binaryFormatter.Deserialize(stream);
             stream.Close();
             return file;
-        }
-        //usuwa plik 
-        public void DeleteFile(string filePath)
-        {
-            if (String.IsNullOrWhiteSpace(filePath)) throw new ArgumentException(" filepath is null/empty/whitespace");
-            DirectoryInfo info = new DirectoryInfo(filePath);
-            if (!File.Exists(filePath)) throw new ArgumentException("file doesn't exists");
-            File.Delete(filePath);
-
         }
     }
 }

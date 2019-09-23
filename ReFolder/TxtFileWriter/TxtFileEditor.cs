@@ -3,15 +3,14 @@ using ReFolder.Management;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace ReFolder.TxtFileWriter
 {
     public class TxtFileEditor
     {
-        DirValidate dirValidate;
-        DirRead dirRead;
-        FileRead fileRead;
+        readonly DirValidate dirValidate;
+        readonly DirRead dirRead;
+        readonly FileRead fileRead;
         public TxtFileEditor(DirValidate dirValidate, DirRead dirReader, FileRead fileRead)
         {
             this.dirValidate = dirValidate;
@@ -26,13 +25,13 @@ namespace ReFolder.TxtFileWriter
             List<string> childrenNamesWithDateAndString = new  List<string>();
             foreach (string fullName in dirRead.GetAllChildrenFullNames(mainDir.Description.FullName))
             {
-                childrenNamesWithDateAndString.Add(fullName + " => "+ findDescription(fullName));
+                childrenNamesWithDateAndString.Add(fullName + " => "+ FindDescription(fullName));
 
             }
 
             return childrenNamesWithDateAndString;
         }
-        private string findDescription(string path)
+        private string FindDescription(string path)
         {
             string infoTip = "";
             string desktopIniPath = path + @"\Desktop.ini";
@@ -44,12 +43,18 @@ namespace ReFolder.TxtFileWriter
             else
             {
                 string line =fileRead.ReadLineThatContainsValue(desktopIniPath, "InfoTip");
-                infoTip= fileRead.GetDataFromString(line, '=');
+                infoTip= GetDataFromString(line, '=');
             }
                 return infoTip;
         }
 
-        
+        private string GetDataFromString(string value, char separator)
+        {
+            if (value == null)
+                throw new ArgumentNullException("arguments are null");
+            string[] data = value.Split(separator);
+            return (data[data.Length - 1]);
+        }
 
         private List<string> GetMainDirChildrenNamesAndAddDateAndNote(IEditableDirWithChildren mainDir, List<string> childrenNamesWithDateAndString)
         {
@@ -57,7 +62,7 @@ namespace ReFolder.TxtFileWriter
                 throw new ArgumentNullException("mainDir is null");
             foreach (var child in mainDir.Children)
             {
-                childrenNamesWithDateAndString.Add(child.Description.FullName + " => " + findDescription(child.Description.FullName));
+                childrenNamesWithDateAndString.Add(child.Description.FullName + " => " + FindDescription(child.Description.FullName));
                 if (child.Children.Count > 0)
                 {
                     GetMainDirChildrenNamesAndAddDateAndNote(child, childrenNamesWithDateAndString);

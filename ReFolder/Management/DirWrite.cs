@@ -5,10 +5,13 @@ using System.IO;
 
 namespace ReFolder.Management
 {
-    // dodaj możliwość usuwania folderów 
-    public class DirWrite 
+    ///<summary>
+    ///DirWrite implements IDirWrite.
+    ///Contains methods for creating folders from MemoryDirs and deleting existing folders
+    ///</summary>
+    public class DirWrite: IDirWrite
     {
-        //Singleton
+        #region singleton
         private static  DirWrite InstanceDirWrite { get; set; }
         private DirValidate DirValidate{ get; set; }
 
@@ -35,6 +38,8 @@ namespace ReFolder.Management
             }
             return InstanceDirWrite;
         }
+        #endregion
+       
         // tworzy folder
         private void CreateFolder(string fullName, string note, string IconAddress)
         {
@@ -42,23 +47,6 @@ namespace ReFolder.Management
             directoryInfo.Create();
             FileWrite.GetDefaultInstance().ReplaceSystemFolderInfoFile(fullName , note,IconAddress);
         }
-
-        // tworzy plik systemowy desktop.ini który przechowuje notatkę oraz ikonę
-        public void AddIconAndNoteToFileSystem(string fullName, string note, string IconAddress)
-        {
-
-                string[] lines = { "[.ShellClassInfo]", $"IconResource={IconAddress},0", $"IconFile={IconAddress}", $"IconIndex=0", $"InfoTip={note}" };
-                foreach (var item in lines)
-                {
-                    Console.WriteLine(item);
-                }
-                
-                File.WriteAllLines(fullName + @"\desktop.ini", lines);
-                File.SetAttributes(fullName + @"\desktop.ini", FileAttributes.Hidden | FileAttributes.System);
-                File.SetAttributes(fullName, FileAttributes.System);
-            
-        }
-
         // szykuje adres folderu do zapisu i sprawdza czy dany folder już nie istnieje 
         private  string ReadyFullName(string fullName)
         {
@@ -78,9 +66,15 @@ namespace ReFolder.Management
 
         }
         // tworzy nowy folder w systemie i zwraca boola jeśli go utworzy
-        private  bool CreateNewFolder(string fullName, string Name, string note, string IconAddress)
+        /// <summary>
+        /// creates new folder
+        /// </summary>
+        /// <param name="fullName"> new folder path</param>
+        /// <param name="note"> new folder note</param>
+        /// <param name="IconAddress"> new folder IconAddress</param>
+        /// <returns></returns>
+        internal bool CreateNewFolder(string fullName, string note, string IconAddress)
         {
-
             try
             {
                 string name = ReadyFullName(fullName);
@@ -101,21 +95,26 @@ namespace ReFolder.Management
                 throw IOE;
             }
 
-        }    
-        // usuwa folder z systemu 
+        }
+        /// <summary>
+        /// deletes folder from system
+        /// </summary>
+        /// <param name="fullName">Path</param>
         public  void DeleteFolder(string fullName)
         {
             DirectoryInfo info = new DirectoryInfo(fullName);
                 info.Delete();
         }
-        // generuje wszystkie foldery z pamięci(z klasy MemoryDirs) jeśli nie istnieją 
+        /// <summary>
+        /// generates all Dirs from memory(MemoryDirs) if they dont exist in system
+        /// </summary>
         public void GenerateAllChildrenDirsAsFolders()
         {
             foreach (IEditableDirWithChildrenAndParent dir in MemoryDirs.AllCreatedDirs)
             {
                 if (!DirValidate.IsfolderExisting(dir.Description.FullName))
                 {
-                    CreateNewFolder(dir.Description.FullName, dir.Description.Name, dir.Description.Note, dir.Description.IconAddress);
+                    CreateNewFolder(dir.Description.FullName, dir.Description.Note, dir.Description.IconAddress);
                 }
                 else continue;
 

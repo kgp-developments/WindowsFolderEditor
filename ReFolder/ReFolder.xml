@@ -1,0 +1,217 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ReFolder</name>
+    </assembly>
+    <members>
+        <member name="T:ReFolder.Management.DirManagement">
+            <summary>
+            DirManagement implements IDirManagement
+            </summary>
+        </member>
+        <member name="M:ReFolder.Management.DirManagement.ChangeCreatedDirSystemValue(System.String,ReFolder.Dir.IDir,System.String)">
+            <summary>
+            overwrites desktop.ini and set new, folder and dir, note and Icon
+            </summary>
+            <param name="newNote"></param>
+            <param name="dir"></param>
+            <param name="iconAddress"></param>
+        </member>
+        <member name="T:ReFolder.Management.DirRead">
+            <summary>
+            DirRead 
+            Contains method for reading existing folders in system
+            </summary>
+        </member>
+        <member name="M:ReFolder.Management.DirRead.GetChildrenNames(System.String)">
+            <summary>
+            returns the names of all child folders that contains the folder under the path
+            </summary>
+            <param name="fullName"></param>
+            <returns>returns the names of all child folders that contains the folder under the path</returns>
+        </member>
+        <member name="M:ReFolder.Management.DirRead.GetAllChildrenFullNames(System.String)">
+            <summary>
+            returns all folders names that contain a given folder
+            </summary>
+            <param name="fullName"></param>
+            <returns>returns all folders names that contain a given folder</returns>
+        </member>
+        <member name="M:ReFolder.Management.DirRead.GetMainDirFolder(System.String)">
+            <summary>
+            returns new MainDir with auto generated name and path
+            </summary>
+            <param name="fullName"></param>
+            <returns> returns new MainDir </returns>
+        </member>
+        <member name="T:ReFolder.Management.DirValidate">
+            <summary>
+            DirValidate implements IDirValidate 
+            Contains method for validating existence of existing folders and Dirs
+            </summary>
+        </member>
+        <member name="M:ReFolder.Management.DirValidate.IsfolderExisting(System.String)">
+            <summary>
+            Checks if the folder exist under the path
+            </summary>
+            <param name="fullName"></param>
+            <returns>returns true if folder exist</returns>
+        </member>
+        <member name="M:ReFolder.Management.DirValidate.IsNameExistingInChildrenDirs(ReFolder.Dir.IEditableDirWithChildren,System.String)">
+            <summary>
+            checks if the ParrentDir contains dir with the given name
+            </summary>
+            <param name="ParentDir"></param>
+            <param name="name"></param>
+            <returns>returns true if ParentDir conains given name</returns>
+        </member>
+        <member name="M:ReFolder.Management.DirValidate.IsDirExistingAsFolderAndChild(ReFolder.Dir.IEditableDirWithChildren,System.String)">
+            <summary>
+            Checks, if the ParrentDir contains dir with the given name and that the dir exist in file system
+            </summary>
+            <param name="ParentDir">Dir Parent</param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ReFolder.Management.DirWrite">
+            <summary>
+            DirWrite implements IDirWrite.
+            Contains methods for creating folders from MemoryDirs and deleting existing folders
+            </summary>
+        </member>
+        <member name="M:ReFolder.Management.DirWrite.CreateNewFolder(System.String,System.String,System.String)">
+            <summary>
+            creates new folder
+            </summary>
+            <param name="fullName"> new folder path</param>
+            <param name="note"> new folder note</param>
+            <param name="IconAddress"> new folder IconAddress</param>
+            <returns></returns>
+        </member>
+        <member name="M:ReFolder.Management.DirWrite.DeleteFolder(System.String)">
+            <summary>
+            deletes folder from system
+            </summary>
+            <param name="fullName">Path</param>
+        </member>
+        <member name="M:ReFolder.Management.DirWrite.GenerateAllChildrenDirsAsFolders">
+            <summary>
+            generates all Dirs from memory(MemoryDirs) if they dont exist in system
+            </summary>
+        </member>
+        <member name="T:ReFolder.Management.FileRead">
+            <summary>
+            FileRead implements IFileRead.
+            Contains methods for reading files
+            </summary>
+        </member>
+        <member name="M:ReFolder.Management.FileRead.ReadAll(System.String)">
+            <summary>
+            Reads all lines of text
+            </summary>
+            <param name="path"></param>
+            <returns>all lines of text</returns>
+        </member>
+        <member name="M:ReFolder.Management.FileRead.ReadLineThatContainsValue(System.String,System.String)">
+            <summary>
+            reads all file and returns line that contains value, otherwise returns null if value is not found
+            </summary>
+            <param name="path"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ReFolder.Management.FileWrite">
+            <summary>
+            FileWrite implements IFileWrite.
+            Contains methods for writing to file and creating files 
+            </summary>
+        </member>
+        <member name="M:ReFolder.Management.FileWrite.WriteAllLines(System.String,System.Collections.Generic.List{System.String},System.Boolean)">
+            <summary>
+            Creates/ Updates file. Write all lines to file
+            </summary>
+            <param name="path"></param>
+            <param name="lines">list of lines to write</param>
+            <returns> list of lines to write</returns>
+        </member>
+        <member name="M:ReFolder.Management.FileWrite.ReplaceSystemFolderInfoFile(System.String,System.String,System.String)">
+            <summary>
+            overwrites desktop.ini
+            </summary>
+            <param name="path">Existing Folder Path</param>
+            <param name="note">Existing Folder new note</param>
+            <param name="iconAddress">Existing Folder new IconAddress</param>
+        </member>
+        <member name="M:ReFolder.Management.FileWrite.AddIconAndNoteToFileSystem(System.String,System.String,System.String)">
+            <summary>
+            creates desktop.ini
+            </summary>
+            <param name="fullName"></param>
+            <param name="note"></param>
+            <param name="IconAddress"></param>
+        </member>
+        <member name="T:ReFolder.Management.MemoryDirs">
+            <summary>
+            MemoryDirs implements IMemoryDirs.
+            contains methods for generating Dirs to memory and managing Dirs in memory
+            </summary>
+        </member>
+        <member name="P:ReFolder.Management.MemoryDirs.AllCreatedDirs">
+            <summary>
+            List of all folders to generate except MainDir
+            </summary>
+        </member>
+        <member name="M:ReFolder.Management.MemoryDirs.InitializeAllChildren(ReFolder.Dir.IEditableDirWithChildren)">
+            <summary>
+            Initialize AllCreatedDirs with dir children
+            </summary>
+            <param name="dir"></param>
+        </member>
+        <member name="M:ReFolder.Management.MemoryDirs.ReturnTrueIfDirExistInAllCreatedDirs(ReFolder.Dir.IEditableDirWithChildren)">
+            <summary>
+            Checks if the dir exist in AllCreatedDirs
+            </summary>
+            <param name="dir">dir to check</param>
+            <returns>returns true if the folder exist</returns>
+        </member>
+        <member name="M:ReFolder.Management.MemoryDirs.DeleteDirFromAllCreatedDirs(ReFolder.Dir.IEditableDirWithChildrenAndParent)">
+            <summary>
+            Deletes folder from AllCreatedDirs 
+            </summary>
+            <param name="dir">Dir to delete</param>
+        </member>
+        <member name="M:ReFolder.Management.MemoryDirs.DeleteDirsFromAllCreatedDirs(System.Collections.Generic.List{ReFolder.Dir.IEditableDirWithChildrenAndParent})">
+            <summary>
+            deletes list of dirs from AllCreatedDirs
+            </summary>
+            <param name="childDirs"> list of elements to delete</param>
+        </member>
+        <member name="T:ReFolder.Management.SaveAndReadElementInBinaryFile">
+            <summary>
+            SaveAndReadElementInBinaryFile implements ISaveAndReadElementInBinaryFile. 
+            Contains methods for creating, reading And updating binary files
+            </summary>
+        </member>
+        <member name="M:ReFolder.Management.SaveAndReadElementInBinaryFile.WriteToBinaryFile``1(System.String,``0)">
+            <summary>
+            Creates/ Updates binary file
+            </summary>
+            <typeparam name="T">type of Class to create/update</typeparam>
+            <param name="filePath">path to file</param>
+            <param name="objectToWrite">objectToWrite</param>
+        </member>
+        <member name="M:ReFolder.Management.SaveAndReadElementInBinaryFile.ReadFromBinaryFile``1(System.String)">
+            <summary>
+            Reads binary file
+            </summary>
+            <typeparam name="T">Type of class to read</typeparam>
+            <param name="filePath">path to file</param>
+            <returns>object of type T</returns>
+        </member>
+        <member name="T:ReFolder.TxtFileWriter.TxtFileWriter">
+            <summary>
+            Creates txt log in created MainDir about folders that MainDir contains.
+            </summary>
+        </member>
+    </members>
+</doc>
