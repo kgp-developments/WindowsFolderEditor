@@ -7,18 +7,28 @@ using System.Text;
 namespace ReFolder.Memento
 {
 
-    public static class Orginator
+    public  class Orginator
     {
-        public static IEditableDirWithChildren State { get; set; }
-        public static Memento Save()
+        private Caretaker caretaker;
+        public IEditableDirWithChildren State { get; private set; }
+
+        public Orginator(Caretaker caretaker)
         {
-            return new Memento(State);
+            this.caretaker = caretaker;
         }
 
-        public static IEditableDirWithChildren Restore(Memento memento)
+        public Memento Save(IEditableDirWithChildren state)
+        {
+            this.State = state;
+            return new Memento(State, caretaker);
+        }
+
+        public IEditableDirWithChildren Restore(Memento memento)
         {
             if (memento == null) throw new ArgumentNullException("memento is null ");
+
             State = SaveAndReadElementInBinaryFile.GetDefaultInstance().ReadFromBinaryFile<IEditableDirWithChildren>(memento.FilePath);
+
             return State;
         }
     }

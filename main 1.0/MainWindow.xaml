@@ -46,7 +46,7 @@
                         <Button Name="ResetHighlight" Opacity="0" Command="self:KGPcommands.ResetHighlight" Margin="0,0,0.4,-0.4"></Button>
                     </Grid>
                 </ScrollViewer>
-                <Slider Name="ZoomSlider" TickPlacement="TopLeft" IsSnapToTickEnabled="True" TickFrequency="0.05" Orientation="Vertical" Margin="0,0,19,25" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="100" Maximum="2" Minimum="0.25" ValueChanged="Slider_ValueChanged"/>
+                <Slider Name="ZoomSlider"  IsSnapToTickEnabled="True" TickFrequency="0.05" Orientation="Vertical" Margin="0,0,19,25" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="100" Maximum="2" Minimum="0.25" ValueChanged="Slider_ValueChanged"/>
             </Grid>
 
         </Grid>
@@ -86,9 +86,7 @@
             <Grid  Margin="5,17,5,20" >
                 <TextBox Name="FolderSearchTB" PreviewTextInput="FolderSearchTB_PreviewTextInput"/>
             </Grid>
-            <ScrollViewer Name="FoundFoldersSV" Margin="-135,-78,46,77" Visibility="Collapsed" Background="{Binding ElementName=KomendyUzytkownika, Path=Background}">
-
-            </ScrollViewer>
+            <ScrollViewer Name="FoundFoldersSV" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Right" Width="280" Height="100" Visibility="Collapsed" Background="{Binding ElementName=KomendyUzytkownika, Path=Background}" Margin="-185,-115,58,76"/>
         </Grid>
 
         <!-- pasek plik/edytuj/widok/itd-->

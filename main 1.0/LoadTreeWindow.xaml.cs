@@ -28,6 +28,7 @@ namespace main_1._0
         //zainicjuj
         Canvas ChosenCanvas;
         static string saved_path = @"..\..\saved\";
+        string wayChosed = null;
 
         public LoadTreeWindow()
         {
@@ -64,8 +65,6 @@ namespace main_1._0
             MainLayer.Children.Add(Clicker);
             
             SavedStructuresList.Children.Add(MainLayer);
-
-
         }
 
         private void SetChosenLTW_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -80,6 +79,7 @@ namespace main_1._0
 
             chosensCanvas.Background = Brushes.LightBlue;
             ChosenCanvas = chosensCanvas;
+            ImportantQuestionCanvas.Visibility = Visibility.Visible;
             // to inicjuj
             //DirPath = chosenCanvas.Children[0].;
 
@@ -91,21 +91,55 @@ namespace main_1._0
         }
         private void LoadLTW_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (ChosenCanvas != null)
+            if (wayChosed == "old")
             {
                 AppMW.Seed = SaveAndReadElementInBinaryFile.GetDefaultInstance().ReadFromBinaryFile<MainDir>((string)ChosenCanvas.Tag);
             }
+            else if (wayChosed == "new")
+            {
+                for (int i = AppMW.Seed.Children.Count -1 ; i >= 0; i--)
+                {
+                    AppMW.Seed.Children.RemoveAt(i);
+                }
+                IEditableDirWithChildren temporary = SaveAndReadElementInBinaryFile.GetDefaultInstance().ReadFromBinaryFile<MainDir>((string)ChosenCanvas.Tag);
+                foreach  (ChildDir child in temporary.Children)
+                {
+                    child.ParentDir = AppMW.Seed;
+                    AppMW.Seed.Children.Add(child);
+                }
+            }
+
+
+
             AppMW.sorteritno.ResetTree(AppMW.ResTree, AppMW.ResetHighlight, AppMW.Seed, AppMW.drzewo, "MW");
             AppMW.thisStructureName = (string)ChosenCanvas.Tag.ToString().Substring(saved_path.Length);
             AppMW.CurrentlyChosenDir = null;
             this.Close(); //ostatnia linijka, zamyka okno
 
         }
+        private void LTWWayChoose_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Button Clicked = (Button)e.Parameter;
+            if (Clicked == Newbtn)
+            {
+                wayChosed = "new";
+            }
+            else if (Clicked == Oldbtn)
+            {
+                wayChosed = "old";
+            }
+            else if (Clicked == Backbtn)
+            {
+                wayChosed = null;
+            }
+            ImportantQuestionCanvas.Visibility = Visibility.Collapsed;
+        }
+
         //ma sprawdzac czy cos jest wybrane ; w funkcje SetChosenLTW mozesz dac zmienna czy cos ktora to orzeka
         private void LoadLTW_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             //File.Exists(DirPath)
-            if (ChosenCanvas != null)
+            if (ChosenCanvas != null && wayChosed != null)
             {
                 e.CanExecute = true;
             }

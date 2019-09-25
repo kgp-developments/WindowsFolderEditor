@@ -15,6 +15,8 @@ using ReFolder.Dir;
 using ReFolder.Dir.Description;
 using ReFolder.Management;
 using ReFolder.Memento;
+using System.IO;
+
 
 namespace main_1._0
 {
@@ -27,6 +29,8 @@ namespace main_1._0
         IEditableDirWithChildren NewSeed;
         public static Canvas CurrentlyChosenCAW = null;
         public IEditableDirWithChildren CurrentlyChosenDir = null;
+        static string saved_path = @"..\..\saved\";
+
 
         public ComplexAdditionWindow()
         {
@@ -46,6 +50,7 @@ namespace main_1._0
                 AppMW.sorteritno.Create(DisplayedBranchGrid, 30, 0, NewSeed, "CAW");
                 AppMW.sorteritno.Sort(NewSeed, DisplayedBranchGrid, 0, 30, "CAW");
                 ChosenNameSeries.SelectedItem = Default;
+                DisplayAll();
                 //AppMW.sorteritno.ResetTree(DisplayedBranchGrid, null, NewSeed, drzewo);
             }
             //AppMW.settings.ApplyStyleCAW();
@@ -131,6 +136,25 @@ namespace main_1._0
         #endregion
 
         #region _Executed
+        //AppMW.Seed = SaveAndReadElementInBinaryFile.GetDefaultInstance().ReadFromBinaryFile<MainDir>((string)ChosenCanvas.Tag);
+        private void SetChosenLTW_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Button Clicked = (Button)e.Parameter;
+            Canvas MainLayer = (Canvas)Clicked.Parent;
+            string path = (string)MainLayer.Tag;
+
+            IEditableDirWithChildren temporary = SaveAndReadElementInBinaryFile.GetDefaultInstance().ReadFromBinaryFile<MainDir>(path);
+            foreach (ChildDir child in temporary.Children)
+            {
+                child.ParentDir = CurrentlyChosenDir;
+                CurrentlyChosenDir.Children.Add(child);
+            }
+            AppMW.sorteritno.ResetTree(DisplayedBranchGrid, ResetHighlight, NewSeed, drzewo, "CAW");
+
+            //temporary.DeleteChildrenDirsFromList(temporary.Children);
+
+        }
+
         private void ViewContent_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Button ViewContentButton = (Button)e.Parameter;
@@ -253,11 +277,12 @@ namespace main_1._0
             }
             AddMemento();
         }
-        #endregion
         private void CancelCAW_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             this.Close();
         }
+
+        #endregion
         #region _CanExecute
         private void ViewContent_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -351,12 +376,23 @@ namespace main_1._0
                 e.CanExecute = false;
             }
         }
+        private void ChosenNotNullDepended(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (CurrentlyChosenDir != null)
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
+        }
+
         #endregion
 
         private void AddMemento()
         {
-            Orginator.State = AppMW.Seed;
-            Caretaker.AddMemento(Orginator.Save());
+            AppMW.careTakerGlobal.AddMemento(AppMW.orginatorGlobal.Save(AppMW.Seed));
 
         }
 
@@ -401,6 +437,36 @@ namespace main_1._0
             {
                 ChosenSign.Visibility = Visibility.Collapsed;
             }
+        }
+
+        private void DisplayAll()
+        {
+            string[] files = Directory.GetFiles(saved_path);
+            foreach (string file in files)
+            {
+                string actualName = file.Substring(saved_path.Length);
+                DisplayStructure(actualName, file);
+            }
+        }
+        public void DisplayStructure(string name, string path) //wyswietla strukture w liscie string name to nazwa struktury, mozesz modyfikowac
+        {
+            Canvas MainLayer = new Canvas();
+            MainLayer.Height = 20;
+            TextBlock StructName = new TextBlock();
+            StructName.FontSize = 16;
+            StructName.Text = name;
+            MainLayer.Children.Add(StructName);
+            Button Clicker = new Button();
+            Clicker.Height = 20;
+            Clicker.Width = 330;
+            Clicker.Opacity = 0.2f;
+            Clicker.Command = KGPcommands.SetChosenLTW;
+            Clicker.CommandParameter = Clicker;
+
+            MainLayer.Tag = path;
+            MainLayer.Children.Add(Clicker);
+
+            SavedStructuresList.Children.Add(MainLayer);
         }
 
     }

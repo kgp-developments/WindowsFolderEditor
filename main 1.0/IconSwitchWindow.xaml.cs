@@ -21,10 +21,12 @@ namespace main_1._0
     public partial class IconSwitchWindow : Window
     {
         static MainWindow AppMW = (MainWindow)Application.Current.MainWindow;
-
+        string chosenIcon;
+        Canvas ChosenCanvas;
         public IconSwitchWindow()
         {
             InitializeComponent();
+            chosenIcon = AppMW.CurrentlyChosenDir.Description.IconAddress;
             DisplayOptionalIcons();
 
         }
@@ -57,29 +59,59 @@ namespace main_1._0
                 MainLayer.Height = 90;
                 MainLayer.Width = 90;
                 MainLayer.Tag = file;
-                MainLayer.Background = Brushes.Brown;
+                if (file == chosenIcon)
+                {
+                    MainLayer.Background = Brushes.Blue;
+                    ChosenCanvas = MainLayer;
+                }
+                //MainLayer.Background = Brushes.Brown;
 
                 Image Icon = new Image();
                 Icon.Source = new BitmapImage(new Uri(file, UriKind.Relative));
-                Icon.Height = 85;
-                Icon.Width = 85;
+                Icon.Height = 80;
+                Icon.Width = 80;
                 marg.Top = 5;
                 marg.Left = 5;
                 Icon.Margin = marg;
+
+                Button Highlight = new Button();
+                Highlight.Height = 90;
+                Highlight.Width = 90;
+                Highlight.Opacity = 0;
+                Highlight.Command = KGPcommands.HighlightChosen;
+                Highlight.CommandParameter = Highlight;
+
                 MainLayer.Children.Add(Icon);
+                MainLayer.Children.Add(Highlight);
                 AddedTo.Children.Add(MainLayer);
+
+
                 count++;
             }
         }
 
         private void ApplyChanges_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-
+            AppMW.CurrentlyChosenDir.Description.IconAddress = chosenIcon;
+            AppMW.sorteritno.ResetTree(AppMW.ResTree, AppMW.ResetHighlight, AppMW.Seed, AppMW.drzewo, "MW");
+            this.Close();
         }
 
         private void Cancel_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            this.Close();
+        }
 
+        private void HighlightChosen_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            ChosenCanvas.Background = null;
+
+            Button Clicked = (Button)e.Parameter;
+            Canvas MainLayer = (Canvas)Clicked.Parent;
+            MainLayer.Background = Brushes.Blue;
+            ChosenCanvas = MainLayer;
+
+            chosenIcon = (string)MainLayer.Tag;
         }
 
 

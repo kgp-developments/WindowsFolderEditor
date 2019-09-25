@@ -5,18 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:self="clr-namespace:main_1._0"
         mc:Ignorable="d"
-        Title="IconSwitchWindow" Height="300" Width="500">
+        Title="IconSwitchWindow" Height="300" Width="500" MaxHeight="300" MaxWidth="500" MinHeight="300" MinWidth="500">
     <Window.CommandBindings>
         <CommandBinding Command="self:KGPcommands.ApplyChangesISW" CanExecute="AlwaysTrueForCanExecute" Executed="ApplyChanges_Executed" />
         <CommandBinding Command="self:KGPcommands.CancelISW" CanExecute="AlwaysTrueForCanExecute" Executed="Cancel_Executed" />
+        <CommandBinding Command="self:KGPcommands.HighlightChosen" Executed="HighlightChosen_Executed" CanExecute="AlwaysTrueForCanExecute" />
     </Window.CommandBindings>
     <Grid Background="LightGray">
-        <ScrollViewer Background="White" Name="DirsNote" Margin="10,10,9.6,35.4" Width="360" Height="200">
+        <Canvas Margin="0,0,0,242" Height="30" Background="#FF646464">
+            <TextBlock FontSize="20" Height="26" Canvas.Left="177" Width="210" Foreground="White" VerticalAlignment="Top">Zmiana ikony</TextBlock>
+        </Canvas>
+        <ScrollViewer Background="White" Name="DirsNote" Margin="67,35,66.6,48.4" Width="360">
             <Grid Name="DisplayedGrid">
 
             </Grid>
         </ScrollViewer>
-        <Button Margin="142,227,261.6,12.4" Height="30" Width="90">Zmień ikonę</Button>
-        <Button Margin="232,227,181.6,12.4" Height="30" Width="80">Anuluj</Button>
+        <WrapPanel Margin="167,227,-0.4,0.4">
+            <Button Height="30" Width="80" Command="self:KGPcommands.ApplyChangesISW">Zmień ikonę</Button>
+            <Button Width="80" Command="self:KGPcommands.CancelISW">Anuluj</Button>
+        </WrapPanel>
     </Grid>
 </Window>

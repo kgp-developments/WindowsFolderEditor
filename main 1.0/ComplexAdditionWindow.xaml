@@ -14,6 +14,7 @@
         <CommandBinding Command="self:KGPcommands.ResetHighlight" CanExecute="AlwaysTrueForCanExecute" Executed="ResetHighlight_Executed"/>
         <CommandBinding Command="self:KGPcommands.CancelCAW" CanExecute="AlwaysTrueForCanExecute" Executed="CancelCAW_Executed"/>
         <CommandBinding Command="self:KGPcommands.ApplyChangesCAW" CanExecute="NewSeedNotEmpty" Executed="ApplyChangesCAW_Executed"/>
+        <CommandBinding Command="self:KGPcommands.SetChosenLTW" CanExecute="ChosenNotNullDepended" Executed="SetChosenLTW_Executed" />
     </Window.CommandBindings>
 
     <Grid Name="CAWbackGrid">
@@ -21,6 +22,7 @@
         <Canvas Name="bindingTextColorHelper"   Opacity="0"/>
         <Canvas Name="bindingInactiveColorHelper"  Opacity="0"/>
         <Canvas Name="bindingActiveColorHelper"  Opacity="0"/>
+
 
         <!-- zakładki-->
         <Canvas Name="ComplexBranchAddidionFold" Background="{Binding ElementName=bindingActiveColorHelper, Path=Background}" Height="20" Width="105" Margin="0,11,174.6,0" HorizontalAlignment="Right" VerticalAlignment="Top">
@@ -88,43 +90,21 @@
             </Canvas>
         </Grid>
         <!--przyciski ostateczne-->
+        <!--wstaw istniejaca-->
+        <Grid Name="ExistingBranchAdditionGrid" Width="270" Margin="0,30,10,10" HorizontalAlignment="Right" Visibility="Collapsed">
+
+            <TextBlock Margin="70,10,70,250.8">Wybierz strukture z listy</TextBlock>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" Margin="30,30,30,83.6" Background="DarkGray">
+                <StackPanel Name="SavedStructuresList">
+
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
         <Canvas Margin="0,0,-0.4,-0.2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="34" Width="279">
             <Button Name="OkBtn" Height="25" Width="80" Canvas.Left="28" Command="self:KGPcommands.ApplyChangesCAW" CommandParameter="{Binding ElementName=OkBtn}" Canvas.Top="-1">Ok</Button>
             <Button Name="ApplyBtn" Height="25" Width="80" Canvas.Left="108" Canvas.Top="-1" Command="self:KGPcommands.ApplyChangesCAW" CommandParameter="{Binding ElementName=ApplyBtn}">Zastosuj</Button>
             <Button Name="CancelBtn" Height="25" Width="80" Canvas.Left="188" Canvas.Top="-1"  Command="self:KGPcommands.CancelCAW">Anuluj</Button>
         </Canvas>
-        <!--wstaw istniejaca-->
-        <Grid Name="ExistingBranchAdditionGrid" Width="270" Margin="0,30,10,10" HorizontalAlignment="Right" Visibility="Collapsed">
-
-            <TextBlock Margin="70,10,70,250.8">Wybierz strukture z listy</TextBlock>
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" Margin="30,30,30,30" Background="DarkGray">
-                <StackPanel>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-                    <TextBlock>Struktura 1</TextBlock>
-
-                </StackPanel>
-            </ScrollViewer>
-        </Grid>
 
     </Grid>
 </Window>

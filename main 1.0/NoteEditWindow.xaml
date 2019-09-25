@@ -5,17 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:self="clr-namespace:main_1._0"
         mc:Ignorable="d"
-        Title="NoteEditWindow" Height="200" Width="300">
+        Title="NoteEditWindow" Height="250" Width="450" MaxHeight="250" MinHeight="250" MaxWidth="450" MinWidth="450">
 
     <Window.CommandBindings>
         <CommandBinding Command="self:KGPcommands.ApplyChangesNEW" CanExecute="AlwaysTrueForCanExecute" Executed="ApplyChanges_Executed" />
         <CommandBinding Command="self:KGPcommands.CancelNEW" CanExecute="AlwaysTrueForCanExecute" Executed="Cancel_Executed" />
     </Window.CommandBindings>
-    
+
     <Grid Background="LightGray">
-        <TextBox Background="White" Name="DirsNote" Margin="10,10,9.6,55.4" TextWrapping="Wrap">
+        <Canvas Margin="0,0,0,242" Height="30" Background="#FF646464">
+            <TextBlock FontSize="20" Height="26" Canvas.Left="150" Width="237" Foreground="White" VerticalAlignment="Top">Edycja notatki</TextBlock>
+        </Canvas>
+        <TextBox Background="White" Name="DirsNote" Margin="9,35,10.2,55" TextWrapping="Wrap">
         </TextBox>
-        <Button Margin="54,120,144.6,19.4" Command="self:KGPcommands.ApplyChangesNEW">Zapisz notatke</Button>
-        <Button Margin="149,120,59.6,19.4" Command="self:KGPcommands.CancelNEW">Anuluj</Button>
+        <WrapPanel Margin="129,170,0.2,0">
+            <Button Height="30" Width="90" Command="self:KGPcommands.ApplyChangesNEW">Zapisz notatke</Button>
+            <Button Width="90" Command="self:KGPcommands.CancelNEW">Anuluj</Button>
+        </WrapPanel>
     </Grid>
 </Window>

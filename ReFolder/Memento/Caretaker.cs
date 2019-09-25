@@ -4,20 +4,37 @@ using System.Text;
 using ReFolder.Dir;
 namespace ReFolder.Memento
 {
-    public static class Caretaker
+    public class Caretaker
     {
+        /// <summary>
+        /// memento counter
+        /// </summary>
         private static int currentMemento = -1;
-        public static int CurrentMemento {
+
+        /// <summary>
+        /// returns memento couter
+        /// </summary>
+        public int CurrentMemento {
             get{
                 return currentMemento;
             }
         }
-        private static List<Memento> Mementos = new List<Memento>();
-        public static int CountMemento()
+        private List<Memento> Mementos = new List<Memento>();
+
+        /// <summary>
+        /// Returns the number of elements in memento list
+        /// </summary>
+        /// <returns></returns>
+        public int CountMemento()
         {
             return Mementos.Count;
         }
-        public static void AddMemento(Memento memento)
+
+        /// <summary>
+        /// adds new memento to memento list
+        /// </summary>
+        /// <param name="memento"></param>
+        public void AddMemento(Memento memento)
         {
             if (memento == null) throw new ArgumentNullException("memento is null");
 
@@ -35,14 +52,30 @@ namespace ReFolder.Memento
             }
 
         }
-        public static Memento GetMemento(int index)
+
+        /// <summary>
+        /// returns specified memento 
+        /// </summary>
+        /// <param name="index">specified memento numver</param>
+        /// <returns></returns>
+        public Memento GetMemento(int index)
         {
             if (index < 0 && index >= Mementos.Count) throw new ArgumentException("index is too big/ small");
-
             currentMemento = index;          
             return Mementos[currentMemento];
         }
-        internal static string GenerateMementoName()
+
+
+        /// <summary>
+        /// reset memento list and returns reference to it 
+        /// </summary>
+        /// <returns> memento list </returns>
+        public List<Memento> ResetMementoList()
+        {
+            Mementos = new List<Memento>();
+            return Mementos;
+        }
+        internal string GenerateMementoName()
         {
             return $"memento~{Mementos.Count}";
         }

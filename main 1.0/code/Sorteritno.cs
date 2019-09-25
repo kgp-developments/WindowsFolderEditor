@@ -20,17 +20,18 @@ namespace main_1._0
             public float GetTextFolderWidth(string testedName)
         {
             float width = 0;
+            float halvedfontsize = fontsize / 2f;
             foreach (char c in testedName)
             {
-                if (width < 80*scale)
+                if (width < 80)
                 {
-                    if (char.IsWhiteSpace(c))
+                    if (!char.IsWhiteSpace(c))
                     {
-                        width += 0.6f*fontsize/2;
+                        width += halvedfontsize;
                     }
                     else
                     {
-                        width+=fontsize/2f;
+                        width+= 0.6f *halvedfontsize;
                     }
                 }
                 else
@@ -112,8 +113,9 @@ namespace main_1._0
                                 // Ustawienia obrazka
                 Image Icon = new Image();
             //string temporary = Folder.Description.IconAddress.Replace(".ico",".png");
-                Icon.Source = new BitmapImage(new Uri(Folder.Description.IconAddress + ".png", UriKind.Relative));
-                Icon.Margin = new Thickness(3 * scale);
+                Icon.Source = new BitmapImage(new Uri(Folder.Description.IconAddress, UriKind.Relative));
+            //Console.WriteLine("+++++++++++++++++" +Folder.Description.IconAddress);
+            Icon.Margin = new Thickness(3 * scale);
             Icon.Width = 30 * scale;
             Icon.Height = 30 * scale;
                                 // Ustawienia glownej warstwy (podswietlenia)

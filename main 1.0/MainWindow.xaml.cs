@@ -44,7 +44,14 @@ namespace main_1._0
         public CreateNewTreeWindow CNTW;
         public LoadTreeWindow LTW;
         public string thisStructureName;
+
+        public Caretaker careTakerGlobal = new Caretaker();
+        public Orginator orginatorGlobal;
+
+
         // zawiera inicjalizację Dirów do testu
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -58,9 +65,10 @@ namespace main_1._0
             settings.GetMWSize();
             settings.ApplyStyleMW();
 
-
+            orginatorGlobal = new Orginator(careTakerGlobal);
             IEditableDirWithChildren Assistant = DirManagement.GetDefaultInstance().GetFolderAsNewMainDir(@"C:\Users\lenovo\Desktop\gui testowe\AppTest");
             Seed = Assistant;
+
 
             ZoomSlider.Value = 1;
             AddMemento();
@@ -88,8 +96,7 @@ namespace main_1._0
         }
         private void AddMemento()
         {
-            Orginator.State = Seed;
-            Caretaker.AddMemento(Orginator.Save());
+            careTakerGlobal.AddMemento(orginatorGlobal.Save(Seed));
 
         }
         public void HorizontalStyleSwitch(bool check)
@@ -148,15 +155,16 @@ namespace main_1._0
 
             TextBlock DisplayedName = new TextBlock();
             DisplayedName.Text = folderFound.Description.Name;
+            DisplayedName.Foreground = EdycjaDrzewaTextBlock.Foreground;
             DisplayedName.FontSize = 20;
             MainLayer.Children.Add(DisplayedName);
 
             Button Clicker = new Button();
-            Thickness thickness = new Thickness();
-            thickness.Right = -500;
-            Clicker.Margin = thickness;
+            //Thickness thickness = new Thickness(0);
+            //thickness.Right = -500;
+            //Clicker.Margin = thickness;
             Clicker.Opacity = 0.2f;
-            Clicker.Width = MainLayer.Width;
+            Clicker.Width = 280;
             Clicker.Height = 30;
             Clicker.Command = KGPcommands.HighlightFoundAndChosen;
             Clicker.CommandParameter = Clicker;
@@ -214,7 +222,7 @@ namespace main_1._0
             {
                 CurrentlyChosenDir.IsMarked = true;
             }
-
+            HideAllPanels();
         }
         private void NEWshow_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -245,7 +253,7 @@ namespace main_1._0
 
             CurrentlyChosenDir = (IEditableDirWithChildren)Layer.Tag;
             CurrentlyChosenDir.IsMarked = true;
-            //sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+            sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
             HideAllPanels();
         }
 
@@ -253,27 +261,39 @@ namespace main_1._0
         {
             LTW = new LoadTreeWindow();
             LTW.ShowDialog();
+            HideAllPanels();
         }
 
         private void ViewWindowShow_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             VW = new ViewWindow();
             VW.ShowDialog();
+            HideAllPanels();
         }
+        // TUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU
         private void UndoChanges_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Seed = Orginator.Restore(Caretaker.GetMemento(Caretaker.CurrentMemento - 1));
+
+
+            Seed = orginatorGlobal.Restore(careTakerGlobal.GetMemento(careTakerGlobal.CurrentMemento - 1));
+            
+            //Seed = Orginator.Restore(Caretaker.GetMemento(Caretaker.CurrentMemento - 1));
             sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+            HideAllPanels();
         }
+        // TUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU
         private void RedoChanges_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Seed = Orginator.Restore(Caretaker.GetMemento(Caretaker.CurrentMemento + 1));
+            // Seed = Orginator.Restore(Caretaker.GetMemento(Caretaker.CurrentMemento + 1));
+            Seed = orginatorGlobal.Restore(careTakerGlobal.GetMemento(careTakerGlobal.CurrentMemento + 1));
             sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+            HideAllPanels();
         }
         private void CNTWshow_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             CNTW = new CreateNewTreeWindow();
             CNTW.ShowDialog();
+            HideAllPanels();
         }
         private void DeleteDir_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -430,9 +450,9 @@ namespace main_1._0
             }
             MainLayer.Background = Brushes.Blue;
             CurrentlyChosen = MainLayer;
-
-                CurrentlyChosenDir = (IEditableDirWithChildren)CurrentlyChosen.Tag;
-                CurrentlyChosenDir.IsMarked = true;
+            CurrentlyChosenDir = (IEditableDirWithChildren)CurrentlyChosen.Tag;
+            CurrentlyChosenDir.IsMarked = true;
+            HideAllPanels();
 
         }
         private void ResetHighlight_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -444,6 +464,10 @@ namespace main_1._0
                 CurrentlyChosenDir.IsMarked = false;
                 CurrentlyChosen = null;
                 CurrentlyChosenDir = null;
+            }
+            if (FolderSearchTB.Text.Length == 0)
+            {
+                FoundFoldersSV.Visibility = Visibility.Collapsed;
             }
             HideAllPanels();
 
@@ -488,7 +512,7 @@ namespace main_1._0
         }
         private void UndoChanges_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (Caretaker.CurrentMemento > 0)
+            if (careTakerGlobal.CurrentMemento > 0)
             {
                 e.CanExecute = true;
             }
@@ -499,7 +523,7 @@ namespace main_1._0
         }
         private void RedoChanges_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if(Caretaker.CurrentMemento +1< Caretaker.CountMemento())
+            if(careTakerGlobal.CurrentMemento +1< careTakerGlobal.CountMemento())
             {
                 e.CanExecute = true;
             }

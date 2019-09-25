@@ -53,22 +53,16 @@ namespace main_1._0
 
         }
 
-       /* private  void FormatBtn_Executed(object sender, ExecutedRoutedEventArgs e)
+       private  void RestoreDefault_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Button Clicked = (Button)e.Parameter;
-            if (Clicked.Name == "side")
-            {
-                RHVtxtBlock.Visibility = Visibility.Visible;
-                lefthanded.Visibility = Visibility.Visible;
-                righthanded.Visibility = Visibility.Visible;
-            }
-            else if(Clicked.Name == "up")
-            {
-                RHVtxtBlock.Visibility = Visibility.Collapsed;
-                lefthanded.Visibility = Visibility.Collapsed;
-                righthanded.Visibility = Visibility.Collapsed;
-            }
-        }*/
+            BrushConverter bc = new BrushConverter();
+            righthanded.Background = Brushes.LightGray;
+            lefthanded.Background = (Brush)bc.ConvertFrom("#FF7A7878");
+            rightHandedView = "true";
+            FontSizeCB.SelectedItem = fourteen;
+            OYdisCB.SelectedItem = mid;
+            colorCB.SelectedItem = dark;
+        }
 
         private void ApplyChanges_Executed(object sender, ExecutedRoutedEventArgs e)
         {

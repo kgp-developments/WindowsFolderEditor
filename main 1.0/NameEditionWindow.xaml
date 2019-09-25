@@ -5,18 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:self="clr-namespace:main_1._0"
         mc:Ignorable="d"
-        Title="Edycja nazwy" Height="150" Width="300" MinHeight="150" MaxHeight="150" MinWidth="300" MaxWidth="300">
+        Title="Edycja nazwy" Height="175" Width="300" MinHeight="175" MaxHeight="175" MinWidth="300" MaxWidth="300">
 
     <Window.CommandBindings>
         <CommandBinding Command="self:KGPcommands.NewNameCommand" Executed="NewNameCommand_Executed" CanExecute="AlwaysTrueForCanExecute"/>
     </Window.CommandBindings>
-    
+
     <Grid Background="LightGray">
-        <Canvas Background="White" Height="20" Width="200">
-            <TextBlock Canvas.Left="35" Canvas.Top="-21">Wprowadź nową nazwe:</TextBlock>
-            <TextBox Name="NewNameTB" Height="20" Width="200"/>
-            <Button Name="OK"  Width="60" Height="20" Canvas.Left="41" Canvas.Top="37" Command="self:KGPcommands.NewNameCommand" CommandParameter="{Binding ElementName=OK}">Zastosuj</Button>
-            <Button Name="Cancel" Height="20"  Width="60" Canvas.Left="101" Canvas.Top="37" Command="self:KGPcommands.NewNameCommand" CommandParameter="{Binding ElementName=Cancel}">Anuluj</Button>
+        <Canvas Background="White" Height="30" Width="200" Margin="46,36,47.6,54.8">
+            <TextBlock Canvas.Left="16" Canvas.Top="-32" FontSize="16">Wprowadź nową nazwe:</TextBlock>
+            <TextBox Name="NewNameTB" Height="30" Width="200" FontSize="16"/>
         </Canvas>
+        <WrapPanel Margin="69,95,-0.4,-0.4">
+            <Button Name="OK"  Width="80" Height="30" Canvas.Left="41" Canvas.Top="37" Command="self:KGPcommands.NewNameCommand" CommandParameter="{Binding ElementName=OK}">Zastosuj</Button>
+            <Button Name="Cancel" Height="30"  Width="80" Canvas.Left="101" Canvas.Top="37" Command="self:KGPcommands.NewNameCommand" CommandParameter="{Binding ElementName=Cancel}">Anuluj</Button>
+        </WrapPanel>
     </Grid>
 </Window>

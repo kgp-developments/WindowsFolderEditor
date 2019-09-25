@@ -10,17 +10,28 @@
         <CommandBinding Command="self:KGPcommands.CancelLTW" CanExecute="AlwaysTrueForCanExecute" Executed="CanceLTW_Executed" />
         <CommandBinding Command="self:KGPcommands.LoadLTW" CanExecute="LoadLTW_CanExecute" Executed="LoadLTW_Executed" />
         <CommandBinding Command="self:KGPcommands.SetChosenLTW" CanExecute="AlwaysTrueForCanExecute" Executed="SetChosenLTW_Executed" />
-
+        <CommandBinding Command="self:KGPcommands.LTWWayChoose" CanExecute="AlwaysTrueForCanExecute" Executed="LTWWayChoose_Executed" />
     </Window.CommandBindings>
     
     <Grid Background="#FFCDCDCD">
-        <TextBlock FontSize="20" Margin="87,5,67.2,232.4">Wczytywanie zapisanej struktury</TextBlock>
+        <Canvas Margin="0,0,0,242" Height="30" Background="#FF646464">
+            <TextBlock FontSize="20" Height="26" Canvas.Left="87" Width="300" Foreground="White" VerticalAlignment="Top">Wczytywanie zapisanej struktury</TextBlock>
+        </Canvas>
         <TextBlock Margin="46,38,226.2,205.4" FontSize="15">Lista zapisanych struktur</TextBlock>
         <ScrollViewer Height="140" Width="350">
             <StackPanel Name="SavedStructuresList" Background="White">
             </StackPanel>
         </ScrollViewer>
-        <Button Margin="261,214,101.2,20.4" Content="Wczytaj" Command="self:KGPcommands.LoadLTW"/>
-        <Button Margin="342,214,20,20" Content="Analuj" Command="self:KGPcommands.CancelLTW"/>
+        <WrapPanel Margin="260,224,0.2,0.4">
+            <Button Height="30" Width="80" Content="Wczytaj" Command="self:KGPcommands.LoadLTW"/>
+            <Button  Width="80" Content="Analuj" Command="self:KGPcommands.CancelLTW"/>
+        </WrapPanel>
+        <Canvas Name="ImportantQuestionCanvas" Background="DarkGray" Margin="40,38,40.2,51.4" Visibility="Collapsed">
+            <TextBlock FontSize="14" Canvas.Left="10">Wczytać strukturę z adresem bieżącego ziarna,</TextBlock>
+            <TextBlock FontSize="14" Canvas.Top="19" Canvas.Left="10">czy wczytać z zachowaniem zapisanego adresu ziarna?</TextBlock>
+            <Button Name="Newbtn" Canvas.Left="52" Height="30" Canvas.Top="130" Command="self:KGPcommands.LTWWayChoose" CommandParameter="{Binding ElementName=Newbtn}">Bieżące ziarno</Button>
+            <Button Name="Oldbtn" Canvas.Left="213" Height="30" Canvas.Top="130" Command="self:KGPcommands.LTWWayChoose" CommandParameter="{Binding ElementName=Oldbtn}">Stare, zapisane ziarno</Button>
+            <Button Name="Backbtn" Height="30" Canvas.Left="153" Canvas.Top="130" Width="39" Command="self:KGPcommands.LTWWayChoose" CommandParameter="{Binding ElementName=Backbtn}">Cofnij</Button>
+        </Canvas>
     </Grid>
 </Window>

@@ -12,12 +12,11 @@
         <CommandBinding Command="self:KGPcommands.CreateCNTW" Executed="CreateCNTW_Executed" CanExecute="CreateCNTW_CanExecute"/>
         <CommandBinding Command="self:KGPcommands.BrowseCNTW" Executed="BrowseCNTW_Executed" CanExecute="AlwaysTrueForCanExecute"/>
     </Window.CommandBindings>
-    
+
     <Grid Background="#FFCDCDCD">
-        <Canvas Margin="0,0,0,242" Background="#FF646464">
-            <!--To możesz usunąć bo zapomniałem się spytać czy trzeba tytuł-->
-            <!--Z tymi nazwami przycisków to ja nw , to sb zmienisz-->
-            <TextBlock FontSize="15" Height="26" Canvas.Left="149" Width="156" Foreground="White" VerticalAlignment="Top"><Run Text="Stwórz nowe drzewo"/></TextBlock>
+        <Canvas Margin="0,0,0.2,244.4" Height="30" Background="#FF646464">
+
+            <TextBlock FontSize="20" Height="26" Canvas.Left="133" Width="191" Foreground="White" VerticalAlignment="Top">Stwórz nowe drzewo</TextBlock>
         </Canvas>
         <TextBlock Margin="53,41,274.2,203.4" FontSize="15">Nazwa struktury</TextBlock>
 
@@ -28,16 +27,12 @@
         <TextBox Name="SeedLocation" Margin="53,141,201,98" Background="#FFF1F1F1">
 
         </TextBox>
-        <Button Margin="262,141,117.2,98.4" Content="Wyszukaj" Command="self:KGPcommands.BrowseCNTW">
+        <Button Margin="262,141,117.2,98.4" Content="Wyszukaj" Command="self:KGPcommands.BrowseCNTW"/>
 
-        </Button>
-        <Button Margin="262,214,100.2,20.4" Content="Utwórz" Command="self:KGPcommands.CreateCNTW">
-
-        </Button>
-
-        <Button Margin="343,214,19.2,20.4" Content="Anuluj" Command="self:KGPcommands.CancelCNTW">
-
-        </Button>
+        <WrapPanel Margin="262,217,0.2,0.4">
+            <Button Height="30" Width="80" Content="Utwórz" Command="self:KGPcommands.CreateCNTW"/>
+            <Button  Width="80" Content="Anuluj" Command="self:KGPcommands.CancelCNTW"/>
+        </WrapPanel>
 
     </Grid>
 </Window>

@@ -5,13 +5,18 @@ namespace ReFolder.Memento
 {
     public class Memento
     {
-        public IEditableDirWithChildren State { get; }
-        public string FilePath { get; } = $"..\\..\\..\\TemporaryFiles\\Mementos\\{Caretaker.GenerateMementoName()}";
+        Caretaker caretaker;
 
-        internal Memento(IEditableDirWithChildren state)
+        public IEditableDirWithChildren State { get; }
+        public string FilePath { get; }
+
+        internal Memento(IEditableDirWithChildren state, Caretaker caretaker)
         {
-            if (state == null) throw new ArgumentNullException("state is null ");
-            State = state;
+            this.caretaker = caretaker ?? throw new ArgumentNullException("caretaker is null");
+            State = state ?? throw new ArgumentNullException("state is null ");
+
+            FilePath = $"..\\..\\..\\TemporaryFiles\\Mementos\\{caretaker.GenerateMementoName()}";
+
             SaveAndReadElementInBinaryFile.GetDefaultInstance().WriteToBinaryFile<IEditableDirWithChildren>(FilePath, state);
         }
 

@@ -9,6 +9,18 @@ namespace main_1._0
 {
     public static class KGPcommands
     {
+        public static readonly RoutedUICommand LTWWayChoose = new RoutedUICommand
+(
+"LTWWayChoose",
+"LTWWayChoose",
+typeof(KGPcommands)
+);
+        public static readonly RoutedUICommand RestoreDefault = new RoutedUICommand
+   (
+    "RestoreDefault",
+    "RestoreDefault",
+    typeof(KGPcommands)
+   );
         public static readonly RoutedUICommand HorizontalStyleSwitch = new RoutedUICommand
            (
             "HorizontalStyleSwitch",

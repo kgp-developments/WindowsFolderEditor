@@ -10,7 +10,7 @@ namespace ReFolder.Dir.Description
     {
         private string fullName;
         private string name;
-        private string iconAddress= @"C:\Users\Klakier\Downloads\Hopstarter-Soft-Scraps-Folder-Generic-Green.ico";
+        private string iconAddress= @"..\..\images\icons8-folder-48.ico";
 
 
         public DirDescription(String fullName, String name)

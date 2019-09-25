@@ -22,10 +22,21 @@ namespace main_1._0
     {
         static MainWindow AppMW = (MainWindow)Application.Current.MainWindow;
         string NewText;
-        public bool IsItBeingSaved;
+        public bool IsItBeingSaved = false;
         public NameEditionWindow()
         {
             InitializeComponent();
+            if (IsItBeingSaved)
+            {
+                NewNameTB.Text = AppMW.thisStructureName;
+            }
+            else if (IsItBeingSaved == false)
+            {
+                if (AppMW.CurrentlyChosenDir != null)
+                {
+                    NewNameTB.Text = AppMW.CurrentlyChosenDir.Description.Name;
+                }
+            }
         }
 
         private void NEWchanger()
@@ -115,8 +126,7 @@ namespace main_1._0
 
         private void AddMemento()
         {
-            Orginator.State = AppMW.Seed;
-            Caretaker.AddMemento(Orginator.Save());
+            AppMW.careTakerGlobal.AddMemento(AppMW.orginatorGlobal.Save(AppMW.Seed));
 
         }
 
