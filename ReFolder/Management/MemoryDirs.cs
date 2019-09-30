@@ -8,6 +8,7 @@ namespace ReFolder.Management
     ///MemoryDirs implements IMemoryDirs.
     ///contains methods for generating Dirs to memory and managing Dirs in memory
     ///</summary>
+    [Serializable]
     public class MemoryDirs: IMemoryDirs
     {
         #region singleton
@@ -25,14 +26,17 @@ namespace ReFolder.Management
         /// <summary>
         /// List of all folders to generate except MainDir
         /// </summary>
-        public static List<IEditableDirWithChildrenAndParent> AllCreatedDirs { get; } = new List<IEditableDirWithChildrenAndParent>();
+        public static HashSet<IEditableDirWithChildrenAndParent> AllCreatedDirs { get; private set; }
         /// <summary>
         /// Initialize AllCreatedDirs with dir children
         /// </summary>
         /// <param name="dir"></param>
         public void InitializeAllChildren(IEditableDirWithChildren dir)
         {
+
             if (dir == null) throw new ArgumentNullException("dir is null ");
+            AllCreatedDirs = new HashSet<IEditableDirWithChildrenAndParent>();
+
             foreach (IEditableDirWithChildrenAndParent childDir in dir.Children)
             {
                 MemoryDirs.AllCreatedDirs.Add(childDir);

@@ -8,6 +8,7 @@ namespace ReFolder.Management
     ///FileRead implements IFileRead.
     ///Contains methods for reading files
     ///</summary>
+    [Serializable]
     public class FileRead: IFileRead
     {
         #region singleton

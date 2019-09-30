@@ -10,14 +10,14 @@ namespace ReFolder.Memento
         public IEditableDirWithChildren State { get; }
         public string FilePath { get; }
 
-        internal Memento(IEditableDirWithChildren state, Caretaker caretaker)
+        public Memento(IEditableDirWithChildren state, Caretaker caretaker)
         {
             this.caretaker = caretaker ?? throw new ArgumentNullException("caretaker is null");
             State = state ?? throw new ArgumentNullException("state is null ");
 
             FilePath = $"..\\..\\..\\TemporaryFiles\\Mementos\\{caretaker.GenerateMementoName()}";
 
-            SaveAndReadElementInBinaryFile.GetDefaultInstance().WriteToBinaryFile<IEditableDirWithChildren>(FilePath, state);
+            SaveAndReadElementInBinaryFile.GetDefaultInstance().WriteToBinaryFile(FilePath, state);
         }
 
 

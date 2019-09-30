@@ -9,6 +9,7 @@ namespace ReFolder.Management
     ///DirWrite implements IDirWrite.
     ///Contains methods for creating folders from MemoryDirs and deleting existing folders
     ///</summary>
+    [Serializable]
     public class DirWrite: IDirWrite
     {
         #region singleton

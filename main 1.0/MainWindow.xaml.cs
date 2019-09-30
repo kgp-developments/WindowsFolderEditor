@@ -66,7 +66,8 @@ namespace main_1._0
             settings.ApplyStyleMW();
 
             orginatorGlobal = new Orginator(careTakerGlobal);
-            IEditableDirWithChildren Assistant = DirManagement.GetDefaultInstance().GetFolderAsNewMainDir(@"C:\Users\lenovo\Desktop\gui testowe\AppTest");
+            // kurfa co to jest przemek
+            IEditableDirWithChildren Assistant = DirManagement.GetDefaultInstance().GetFolderAsNewMainDir(@"C:\Users\Klakier\Desktop\generator struktury drzewiastej");
             Seed = Assistant;
 
 
@@ -372,13 +373,13 @@ namespace main_1._0
 
                 if (validate.IsDirExistingAsFolderAndChild(CurrentlyChosenDir, child.Description.Name))
                 {
-                    child.Description.Name = DirManagement.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir,1,child.Description.Name);
+                    child.Description.Name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir,1,child.Description.Name);
                 }
 
                 child.ParentDir = CurrentlyChosenDir;
             }
             CurrentlyChosenDir.AddChildrenToChildrenList(CopyOfChildren);
-            MainDir.AutoGenerateChildrenFullName(CurrentlyChosenDir);
+            DirManagement.GetDefaultInstance().AutoGenerateChildrenFullName(CurrentlyChosenDir);
             AddMemento();
             sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
         }
@@ -393,13 +394,13 @@ namespace main_1._0
 
                 if (validate.IsDirExistingAsFolderAndChild(CurrentlyChosenDir, childDir.Description.Name))
                 {
-                    childDir.Description.Name = DirManagement.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir,1, childDir.Description.Name);
+                    childDir.Description.Name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir,1, childDir.Description.Name);
                 }
 
                 childDir.ParentDir = CurrentlyChosenDir;
             
             CurrentlyChosenDir.AddChildToChildrenList(childDir);
-            MainDir.AutoGenerateChildrenFullName(CurrentlyChosenDir);
+            DirManagement.GetDefaultInstance().AutoGenerateChildrenFullName(CurrentlyChosenDir);
             AddMemento();
             sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
 
@@ -490,7 +491,7 @@ namespace main_1._0
         }
         private void DefaultAddition_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            string name= DirManagement.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir);
+            string name= DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir);
             IEditableDirWithChildrenAndParent NewDir = new ChildDir(name, CurrentlyChosenDir);
             CurrentlyChosenDir.AddChildToChildrenList(NewDir);
             AddMemento();

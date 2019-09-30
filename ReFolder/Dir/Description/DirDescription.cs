@@ -6,6 +6,7 @@ using System.Text;
 namespace ReFolder.Dir.Description
 {
     [Serializable]
+
     public class DirDescription : IMutableSystemObjectDescription
     {
         private string fullName;

@@ -18,6 +18,7 @@ using ReFolder.Memento;
 using System.IO;
 
 
+
 namespace main_1._0
 {
     /// <summary>
@@ -29,6 +30,7 @@ namespace main_1._0
         IEditableDirWithChildren NewSeed;
         public static Canvas CurrentlyChosenCAW = null;
         public IEditableDirWithChildren CurrentlyChosenDir = null;
+
         static string saved_path = @"..\..\saved\";
 
 
@@ -116,19 +118,19 @@ namespace main_1._0
 
             if (check == Default)
             {
-                return DirManagement.GetDefaultInstance().GeneratetName_Default(Parent, namesToIgnore: namesToIgnore);
+                return DirNameGenerator.GetDefaultInstance().GeneratetName_Default(Parent, namesToIgnore: namesToIgnore);
             }
             else if (check == Numbers)
             {
-                return DirManagement.GetDefaultInstance().GenerateName_Number(Parent, 1, namesToIgnore: namesToIgnore);
+                return DirNameGenerator.GetDefaultInstance().GenerateName_Number(Parent, 1, namesToIgnore: namesToIgnore);
             }
             else if (check == NumSiPar)
             {
-                return DirManagement.GetDefaultInstance().GenerateName_Number_Text_ParentName(Parent, SignTB.Text, namesToIgnore: namesToIgnore);
+                return DirNameGenerator.GetDefaultInstance().GenerateName_Number_Text_ParentName(Parent, SignTB.Text, namesToIgnore: namesToIgnore);
             }
             else if (check == ParSiNum)
             {
-                return DirManagement.GetDefaultInstance().GenerateName_ParentName_Text_Number(Parent, SignTB.Text, namesToIgnore: namesToIgnore);
+                return DirNameGenerator.GetDefaultInstance().GenerateName_ParentName_Text_Number(Parent, SignTB.Text, namesToIgnore: namesToIgnore);
             }
             return "If you see this message - report us an error";
         }
@@ -267,7 +269,7 @@ namespace main_1._0
 
 
             AppMW.CurrentlyChosenDir.AddChildrenToChildrenList(children);
-            MainDir.AutoGenerateChildrenFullName(AppMW.CurrentlyChosenDir);
+            DirManagement.GetDefaultInstance().AutoGenerateChildrenFullName(AppMW.CurrentlyChosenDir);
 
             AppMW.sorteritno.scale = (float)AppMW.ZoomSlider.Value;
             AppMW.sorteritno.ResetTree(AppMW.ResTree, AppMW.ResetHighlight, AppMW.Seed, AppMW.drzewo, "MW");

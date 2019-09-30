@@ -3,6 +3,7 @@ using System.IO;
 using ReFolder.Dir.Description;
 using System;
 using System.Collections.Generic;
+using ReFolder.Management.Interfaces;
 
 namespace ReFolder.Management
 {
@@ -11,7 +12,8 @@ namespace ReFolder.Management
     ///DirRead 
     ///Contains method for reading existing folders in system
     ///</summary>
-    public class DirRead
+    [Serializable]
+    public class DirRead: IDirRead
     {
         #region singleton
         private static DirRead InstanceDirRead { get; set; }

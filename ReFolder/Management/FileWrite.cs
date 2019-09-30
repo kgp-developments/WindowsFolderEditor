@@ -1,4 +1,5 @@
-﻿  using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 
@@ -8,6 +9,7 @@ namespace ReFolder.Management
     ///FileWrite implements IFileWrite.
     ///Contains methods for writing to file and creating files 
     ///</summary>
+    [Serializable]
     public class FileWrite: IFileWrite
     {
         #region singleton

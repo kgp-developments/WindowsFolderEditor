@@ -4,195 +4,178 @@ using ReFolder.Dir;
 using ReFolder.Dir.Description;
 using System;
 using System.Collections.Generic;
+using ReFolder.Management;
 
 namespace ReFolder.Tests
 {
+    [TestFixture]
     class MainDir_Tests
     {
-
-        [Test]
-        public void DeleteChildDirFromList_ThrowsArgumentNullException_WhenChildIsNull()
+        MainDir mainDir;
+        [SetUp]
+        public void onSetUp()
         {
-            //arrange
-            var Descr = Mock.Of<IMutableSystemObjectDescription>();
-            IEditableDirWithChildren mainDir = new MainDir(Descr);
-            //act
-            TestDelegate action = () => mainDir.DeleteChildDirFromList(null);
-
-            //assert    
-            Assert.Throws<ArgumentNullException>(action);
-        }
-        
-        [Test]
-        public void DeleteChildDirFromList_DeleteChild_WhenAcceptableObjectIsDelivered()
-        {
-            //arrange
-            var Descr = Mock.Of<IMutableSystemObjectDescription>(x=>
-                x.FullName== "kot");
-
-            IEditableDirWithChildren mainDir = new MainDir(Descr);
-            IEditableDirWithChildrenAndParent child = new ChildDir("kot", mainDir);
-            IEditableDirWithChildrenAndParent child1 = new ChildDir("koot", mainDir);
-            List<IEditableDirWithChildrenAndParent> list = new List<IEditableDirWithChildrenAndParent>();
-            list.Add(child);
-            list.Add(child1);
-
-            mainDir.AddChildrenToChildrenList(list);
-
-            mainDir.DeleteChildDirFromList(child);
-            mainDir.DeleteChildDirFromList(child1);
-
-            //act
-            int num = mainDir.Children.Count;
-
-            //assert    
-            Assert.AreEqual(0,num);
+            DirDescription desc = new DirDescription("cats/are/great/mainDir", "mainDir");
+            mainDir = new MainDir(desc);
         }
 
+        #region AddChildToChildrenList_tests
         [Test]
-        public void DeleteChildrenDirFromList_ThrowsArgumentNullException_WhenChildIsNull()
+        public void AddChildToChildrenList_WhenChildIsNull_ThrowArgumentNullException()
         {
-            //arrange
-            var Descr = Mock.Of<IMutableSystemObjectDescription>();
-            IEditableDirWithChildren mainDir = new MainDir(Descr);
-            //act
-            TestDelegate action = () => mainDir.DeleteChildrenDirsFromList(null);
-
-            //assert    
-            Assert.Throws<ArgumentNullException>(action);
-        }
-        [Test]
-        public void DeleteChildrenDirFromList_DeleteChildren_WhenAcceptableObjectIsDelivered()
-        {
-            //arrange
-            var Descr = Mock.Of<IMutableSystemObjectDescription>(x =>
-                x.FullName == "kot");
-
-            IEditableDirWithChildren mainDir = new MainDir(Descr);
-            IEditableDirWithChildrenAndParent child = new ChildDir("kot", mainDir);
-            IEditableDirWithChildrenAndParent child1 = new ChildDir("koot", mainDir);
-            List<IEditableDirWithChildrenAndParent> list = new List<IEditableDirWithChildrenAndParent>();
-            list.Add(child);
-            list.Add(child1);
-
-            mainDir.AddChildrenToChildrenList(list);
-            mainDir.DeleteChildrenDirsFromList(list);
-
-
-            //act
-            int num = mainDir.Children.Count;
-
-            //assert    
-            Assert.AreEqual(0, num);
-        }
-
-        [Test]
-        public void AddChildToChildrenList_ThrowsArgumentNullException_WhenChildIsNull()
-        {
-            //arrange
-            var Descr = Mock.Of<IMutableSystemObjectDescription>();
-            IEditableDirWithChildren mainDir = new MainDir(Descr);
-            //act
+            var child = new ChildDir("child", mainDir);
             TestDelegate action = () => mainDir.AddChildToChildrenList(null);
-
-            //assert    
             Assert.Throws<ArgumentNullException>(action);
         }
         [Test]
-        public void AddChildToChildrenList_AddsChild_WhenAcceptableObjectIsDelivered()
+        public void AddChildToChildrenList_WhenIsNameExistingInChildrenDirsReturnsFalse_AddsChild()
         {
-            //arrange
-            var Descr = Mock.Of<IMutableSystemObjectDescription>(x=>
-            x.FullName=="kotek");
-            IEditableDirWithChildren mainDir = new MainDir(Descr);
-            IEditableDirWithChildrenAndParent child = new ChildDir("kot", mainDir);
-            IEditableDirWithChildrenAndParent child1= new ChildDir("koot", mainDir);
+            var child = new ChildDir("child", mainDir);
+            var dirValidateMock = new Mock<IDirValidate>();
+            dirValidateMock.Setup(s => s.IsNameExistingInChildrenDirs((It.IsAny<IEditableDirWithChildren>()), (It.IsAny<String>())))
+                .Returns(false);
+            dirValidateMock.Setup(s => s.IsfolderExisting(It.IsAny<string>()))
+                .Returns(false);
+
+            mainDir.DirValidate = dirValidateMock.Object;
             mainDir.AddChildToChildrenList(child);
-            mainDir.AddChildToChildrenList(child1);
-            //act
-            int size = mainDir.Children.Count;
-            //assert    
-            Assert.AreEqual(2,size) ;
+
+            var result = mainDir.Children[0];
+
+            Assert.That(result, Is.TypeOf<ChildDir>());
         }
+        [Test]
+        public void AddChildToChildrenList_WhenIsNameExistingInChildrenDirsReturnsTrue_ThrowsInvalidOperationException()
+        {
+            var child = new ChildDir("child", mainDir);
+            var dirValidateMock = new Mock<IDirValidate>();
+            dirValidateMock.Setup(s => s.IsNameExistingInChildrenDirs((It.IsAny<IEditableDirWithChildren>()), (It.IsAny<String>())))
+                .Returns(true);
+            dirValidateMock.Setup(s => s.IsfolderExisting(It.IsAny<string>()))
+                .Returns(false);
+            mainDir.DirValidate = dirValidateMock.Object;
+
+            TestDelegate result = () => mainDir.AddChildToChildrenList(child);
+
+            Assert.Throws<InvalidOperationException>(result);
+        }
+        [Test]
+        public void AddChildToChildrenList_WhenFolderExistInSystem_ThrowsInvalidOperationException()
+        {
+            var child = new ChildDir("child", mainDir);
+            var dirValidateMock = new Mock<IDirValidate>();
+            dirValidateMock.Setup(s => s.IsfolderExisting(It.IsAny<string>()))
+                .Returns(true);
+            dirValidateMock.Setup(s => s.IsNameExistingInChildrenDirs(It.IsAny<IEditableDirWithChildren>(), It.IsAny<string>()))
+                .Returns(false);
+            mainDir.DirValidate = dirValidateMock.Object;
+
+            TestDelegate result = () => mainDir.AddChildToChildrenList(child);
+
+            Assert.Throws<InvalidOperationException>(result);
+        }
+        [Test]
+        public void AddChildToChildrenList_WhenFolderDontExistInSystem_AddsChild()
+        {
+            var child = new ChildDir("child", mainDir);
+            var dirValidateMock = new Mock<IDirValidate>();
+            dirValidateMock.Setup(s => s.IsfolderExisting(It.IsAny<string>()))
+                .Returns(false);
+            dirValidateMock.Setup(s => s.IsNameExistingInChildrenDirs(It.IsAny<IEditableDirWithChildren>(), It.IsAny<string>()))
+                .Returns(false);
+
+            mainDir.DirValidate = dirValidateMock.Object;
+            mainDir.AddChildToChildrenList(child);
+
+            var result = mainDir.Children[0];
+
+            Assert.That(result, Is.TypeOf<ChildDir>());
+        }
+        #endregion
+
+        #region AddChildrenToChildrenList
 
         [Test]
-        public void AddChildrenToChildrenList_ThrowsArgumentNullException_WhenChildIsNull()
+        public void AddChildrenToChildrenList_WhenCalled_AddsChildren()
         {
-            //arrange
-            var Descr = Mock.Of<IMutableSystemObjectDescription>();
-            IEditableDirWithChildren mainDir = new MainDir(Descr);
-            //act
+            List<IEditableDirWithChildrenAndParent> children = new List<IEditableDirWithChildrenAndParent>();
+            children.Add(new ChildDir("mirek", mainDir));
+            children.Add(new ChildDir("firek", mainDir));
+
+            mainDir.AddChildrenToChildrenList(children);
+
+            Assert.AreEqual(children, mainDir.Children);
+        }
+        [Test]
+        public void AddChildrenToChildrenList_WhenParamIsNull_ThrowArgumentNullException()
+        {
             TestDelegate action = () => mainDir.AddChildrenToChildrenList(null);
 
-            //assert    
+            Assert.Throws<ArgumentNullException>(action);
+        }
+
+        [Test]
+        public void AddChildrenToChildrenList_WhenListIsEmpty_AddsList()
+        {
+            List<IEditableDirWithChildrenAndParent> children = new List<IEditableDirWithChildrenAndParent>();
+
+            mainDir.AddChildrenToChildrenList(children);
+
+            Assert.AreEqual(children, mainDir.Children);
+        }
+
+        #endregion
+
+        #region DeleteChildDirFromList
+        [Test]
+        public void DeleteChildDirFromList_WhenParamIsNull_ThrowsArgumentNullException()
+        {
+            TestDelegate action = () => mainDir.DeleteChildDirFromList(null);
+
             Assert.Throws<ArgumentNullException>(action);
         }
         [Test]
-        public void AddChildrenToChildrenList_AddsChildren_WhenAcceptableObjectIsDelivered()
+        public void DeleteChildDirFromList_WhenCalled_DeleteChild()
         {
-            //arrange
-            var Descr = Mock.Of<IMutableSystemObjectDescription>(x =>
-            x.FullName == "kotek");
-            IEditableDirWithChildren mainDir = new MainDir(Descr);
-            IEditableDirWithChildrenAndParent child = new ChildDir("kot", mainDir);
-            IEditableDirWithChildrenAndParent child1 = new ChildDir("koot", mainDir);
+            ChildDir child1 = new ChildDir("child1", mainDir);
+            ChildDir child2 = new ChildDir("child2", mainDir);
+            mainDir.AddChildToChildrenList(child1);
+            mainDir.AddChildToChildrenList(child2);
 
+            mainDir.DeleteChildDirFromList(child1);
+
+            Assert.IsTrue(mainDir.Children.Contains(child2) && !(mainDir.Children.Contains(child1)));
+        }
+        #endregion
+
+        #region DeleteChildrenDirsFromList
+        [Test]
+        public void DeleteChildrenDirsFromList_WhenParamIsNull_ThrowsArgumentNullException()
+        {
+            TestDelegate action = () => mainDir.DeleteChildrenDirsFromList(null);
+
+            Assert.Throws<ArgumentNullException>(action);
+        }
+        [Test]
+        public void DeleteChildrenDirsFromList_WhenCalled_DeleteChildren()
+        {
+            ChildDir child1 = new ChildDir("child1", mainDir);
+            ChildDir child2 = new ChildDir("child2", mainDir);
+            ChildDir child3 = new ChildDir("child3", mainDir);
+            mainDir.AddChildToChildrenList(child1);
+            mainDir.AddChildToChildrenList(child2);
+            mainDir.AddChildToChildrenList(child3);
             List<IEditableDirWithChildrenAndParent> list = new List<IEditableDirWithChildrenAndParent>();
-
-            list.Add(child);
             list.Add(child1);
-            mainDir.AddChildrenToChildrenList(list);
-            //act
-            int size = mainDir.Children.Count;
-            //assert    
-            Assert.AreEqual(2, size);
-        }
-        [Test]
-        public void AutoGenerateChildrenFullName_ChangeChildrenFullName_WhenParentFullNameChange()
-        {
-            string fullName = "c:\\cats\\RedCats";
-            string[] nameList = new string[] { "kuszek", "puszek", "muszek" };
-            //arange
-            IEditableDirWithChildren mainDir = new MainDir(new DirDescription("c:\\cats\\BlueCats", "BlueCats"));
-            ChildDir child1 = new ChildDir(nameList[0], mainDir);
-            ChildDir child11 = new ChildDir(nameList[1], child1);
-            ChildDir child12 = new ChildDir(nameList[2], child1);
-            mainDir.AddChildToChildrenList(child1);
-            child1.AddChildToChildrenList(child11);
-            child1.AddChildToChildrenList(child12);
-            //act
-            mainDir.Description.FullName = fullName;
+            list.Add(child2);
 
-            MainDir.AutoGenerateChildrenFullName(mainDir);
-            //assert
-            Assert.AreEqual($"{fullName}\\{nameList[0]}", child1.Description.FullName);
-            Assert.AreEqual($"{fullName}\\{nameList[0]}\\{nameList[1]}", child11.Description.FullName);
-            Assert.AreEqual($"{fullName}\\{nameList[0]}\\{nameList[2]}", child12.Description.FullName);
-        }
-        [Test]
-        public void AutoGenerateChildrenFullName_ChangeChildrenFullName_WhenParentFullNameNotChange()
-        {
-            string fullName = "c:\\cats\\BlueCats";
-            string[] nameList = new string[] { "kuszek", "puszek", "muszek" };
-            //arange
-            IEditableDirWithChildren mainDir = new MainDir(new DirDescription(fullName, "BlueCats"));
-            ChildDir child1 = new ChildDir(nameList[0], mainDir);
-            ChildDir child11 = new ChildDir(nameList[1], child1);
-            ChildDir child12 = new ChildDir(nameList[2], child1);
-            mainDir.AddChildToChildrenList(child1);
-            child1.AddChildToChildrenList(child11);
-            child1.AddChildToChildrenList(child12);
-            //act
-            MainDir.AutoGenerateChildrenFullName(mainDir);
-            //assert
-            Assert.AreEqual($"{fullName}\\{nameList[0]}", child1.Description.FullName);
-            Assert.AreEqual($"{fullName}\\{nameList[0]}\\{nameList[1]}", child11.Description.FullName);
-            Assert.AreEqual($"{fullName}\\{nameList[0]}\\{nameList[2]}", child12.Description.FullName);
+            mainDir.DeleteChildrenDirsFromList(list);
+
+            Assert.IsTrue(!mainDir.Children.Contains(child1) &&
+                !mainDir.Children.Contains(child2) &&
+                 mainDir.Children.Contains(child3));
         }
 
-
-
-
-
+        #endregion
     }
 }

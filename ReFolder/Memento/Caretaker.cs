@@ -73,6 +73,7 @@ namespace ReFolder.Memento
         public List<Memento> ResetMementoList()
         {
             Mementos = new List<Memento>();
+            currentMemento = -1;
             return Mementos;
         }
         internal string GenerateMementoName()

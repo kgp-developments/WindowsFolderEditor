@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace ReFolder.Dir.Description
 {
    public interface IMutableSystemObjectDescription

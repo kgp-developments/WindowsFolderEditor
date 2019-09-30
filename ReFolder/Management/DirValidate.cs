@@ -8,6 +8,7 @@ namespace ReFolder.Management
     ///DirValidate implements IDirValidate 
     ///Contains method for validating existence of existing folders and Dirs
     ///</summary>
+    [Serializable]
     public class DirValidate: IDirValidate
     {
         #region singleton
