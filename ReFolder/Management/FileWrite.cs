@@ -80,8 +80,9 @@ namespace ReFolder.Management
         /// <param name="IconAddress"></param>
         internal void AddIconAndNoteToFileSystem(string fullName, string note, string IconAddress)
         {
-
-            string[] lines = { "[.ShellClassInfo]", $"IconResource={IconAddress},0", $"IconFile={IconAddress}", $"IconIndex=0", $"InfoTip={note}" };
+            IconAddress = Path.GetFullPath(IconAddress);
+            if (!File.Exists(IconAddress)) throw new ArgumentException(IconAddress + "File Don't exist");
+            string[] lines = { "[.ShellClassInfo]", $"IconResource={IconAddress},0", $"IconFile={IconAddress}", $"IconIndex=0", $"InfoTip={note}"};
             foreach (var item in lines)
 
             File.WriteAllLines(fullName + @"\desktop.ini", lines);

@@ -454,7 +454,6 @@ namespace main_1._0
             CurrentlyChosenDir = (IEditableDirWithChildren)CurrentlyChosen.Tag;
             CurrentlyChosenDir.IsMarked = true;
             HideAllPanels();
-
         }
         private void ResetHighlight_Executed(object sender, ExecutedRoutedEventArgs e)
         {

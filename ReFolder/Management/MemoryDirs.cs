@@ -26,7 +26,8 @@ namespace ReFolder.Management
         /// <summary>
         /// List of all folders to generate except MainDir
         /// </summary>
-        public static HashSet<IEditableDirWithChildrenAndParent> AllCreatedDirs { get; private set; }
+        public static HashSet<IEditableDirWithChildrenAndParent> AllCreatedDirs { get; set; }=
+        new HashSet<IEditableDirWithChildrenAndParent>();
         /// <summary>
         /// Initialize AllCreatedDirs with dir children
         /// </summary>
@@ -35,7 +36,6 @@ namespace ReFolder.Management
         {
 
             if (dir == null) throw new ArgumentNullException("dir is null ");
-            AllCreatedDirs = new HashSet<IEditableDirWithChildrenAndParent>();
 
             foreach (IEditableDirWithChildrenAndParent childDir in dir.Children)
             {
@@ -46,6 +46,7 @@ namespace ReFolder.Management
                 }
                 else continue;
             }
+
         }
        
         /// <summary>

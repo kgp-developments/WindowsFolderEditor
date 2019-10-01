@@ -11,8 +11,7 @@ namespace ReFolder.Dir.Description
     {
         private string fullName;
         private string name;
-        private string iconAddress= @"..\..\images\icons8-folder-48.ico";
-
+        private string iconAddress= @"..\..\..\main 1.0\images\TU WPROWADŹ ADRES!.ico";
 
         public DirDescription(String fullName, String name)
         {
