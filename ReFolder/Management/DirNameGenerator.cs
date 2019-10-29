@@ -1,7 +1,6 @@
 ﻿using ReFolder.Dir;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ReFolder.Management
 {
@@ -14,14 +13,14 @@ namespace ReFolder.Management
         private DirValidate dirValidate;
         private DirRead dirRead;
 
-            public DirNameGenerator(DirValidate dirValidate, DirRead dirRead)
+        public DirNameGenerator(DirValidate dirValidate, DirRead dirRead)
         {
             this.dirValidate = dirValidate;
             this.dirRead = dirRead;
         }
         public static DirNameGenerator GetDefaultInstance()
         {
-            InstanceDirNameGenerator = InstanceDirNameGenerator ?? 
+            InstanceDirNameGenerator = InstanceDirNameGenerator ??
                 new DirNameGenerator(DirValidate.GetDefaultInstance(), DirRead.GetDefaultInstance());
             return InstanceDirNameGenerator;
         }
@@ -36,8 +35,8 @@ namespace ReFolder.Management
         // generuje nazwę wg. prefix_sufix nie sprawdza istnienia folderu w systemie sprawdza istnienie w rodzicu
         public string GeneratetName_Default(IEditableDirWithChildren parentDir, int sufix_minValue = 0, string prefix = const_defaultPrefixForGeneratingNames, params string[] namesToIgnore)
         {
-            prefix= prefix ?? throw new ArgumentNullException("text string is null ");
-            parentDir= parentDir ?? throw new ArgumentNullException("parentDir is null ");
+            prefix = prefix ?? throw new ArgumentNullException("text string is null ");
+            parentDir = parentDir ?? throw new ArgumentNullException("parentDir is null ");
 
             List<string> reservedNames = new List<string>(namesToIgnore);
             List<int> reservedNumbers = new List<int>();
@@ -56,11 +55,16 @@ namespace ReFolder.Management
                 reservedNames.Add(children.Description.Name);
             }
             // wycina numery z nazwy
+
             foreach (var name in reservedNames)
             {
-                int indexOfDash = name.LastIndexOf('_');
-                string numberAsString = name.Substring(++indexOfDash);
-                reservedNumbers.Add(Convert.ToInt32(numberAsString));
+                if (name.Contains(prefix + '_'))
+                {
+                    int indexOfDash = name.LastIndexOf('_');
+                    string numberAsString = name.Substring(++indexOfDash);
+                    reservedNumbers.Add(Convert.ToInt32(numberAsString));
+                }
+
             }
             return $"{prefix}_{GetNextNumber(reservedNumbers, sufix_minValue)}";
         }
@@ -88,7 +92,7 @@ namespace ReFolder.Management
                 placeToStartIteration = i;
                 if (i + 1 <= numbersSize)
                 {
-                    if (!(numbers[i] + 1 == numbers[i + 1]))
+                    if (numbers[i] + 1 != numbers[i + 1])
                     {
                         return numbers[i] + 1;
 
@@ -97,7 +101,6 @@ namespace ReFolder.Management
                     else
                     {
                         placeToStartIteration = i + 1;
-                        continue;
                     }
                 }
 
@@ -161,7 +164,6 @@ namespace ReFolder.Management
             }
             dirValidate.IsNameExistingInChildrenDirs(parentDir, $"{parentDir.Description.Name}{sign}{text}{sign}{sufix}");
             return $"{parentDir.Description.Name}{sign}{text}{sign}{sufix}";
-            ;
         }
         // generuje nazwę wg. Number  sprawdza istnienie folderu w systemie i rodzicu
         public string GenerateName_Number(IEditableDirWithChildren parentDir, int number, params string[] namesToIgnore)

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ReFolder.Management.Interfaces
+﻿namespace ReFolder.Management.Interfaces
 {
     public interface IDirRead
     {

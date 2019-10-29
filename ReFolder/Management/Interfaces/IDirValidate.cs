@@ -9,4 +9,3 @@ namespace ReFolder.Management
         bool IsDirExistingAsFolderAndChild(IEditableDirWithChildren ParentDir, string name);
     }
 }
-  

@@ -1,9 +1,6 @@
 ﻿
 using ReFolder.Dir;
-using ReFolder.Dir.Description;
 using ReFolder.Management;
-using ReFolder.Memento;
-using ReFolder.TxtFileWriter;
 using System;
 
 namespace ConsoleApp1

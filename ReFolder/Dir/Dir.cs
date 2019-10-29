@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using ReFolder.Dir.Description;
+﻿using ReFolder.Dir.Description;
 using ReFolder.Management;
+using System;
+using System.Collections.Generic;
 
 namespace ReFolder.Dir
 {
@@ -9,12 +9,14 @@ namespace ReFolder.Dir
     public abstract class Dir : IDir
     {
         private IMutableSystemObjectDescription description;
-        public IMutableSystemObjectDescription Description {
+        public IMutableSystemObjectDescription Description
+        {
             get
             {
                 return description;
             }
-            set {
+            set
+            {
                 if (value == null) throw new ArgumentNullException("Description is null");
                 description = value;
             }
@@ -24,15 +26,17 @@ namespace ReFolder.Dir
 
         public IDirManagement DirManagement { get; set; } = ReFolder.Management.DirManagement.GetDefaultInstance();
         public IDirValidate DirValidate { get; set; } = ReFolder.Management.DirValidate.GetDefaultInstance();
-        
+
 
         #region constructors
 
-        public Dir() {
+        public Dir()
+        {
 
         }
-        public Dir(IMutableSystemObjectDescription description) {
-            description= description ?? throw new ArgumentNullException("one or more arguments are null");
+        public Dir(IMutableSystemObjectDescription description)
+        {
+            description = description ?? throw new ArgumentNullException("one or more arguments are null");
             Description = description;
         }
 

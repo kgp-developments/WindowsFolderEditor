@@ -1,6 +1,5 @@
 ﻿using ReFolder.Dir;
 using System;
-using System.Collections.Generic;
 
 namespace ReFolder.Management
 {
@@ -8,7 +7,7 @@ namespace ReFolder.Management
     ///DirManagement implements IDirManagement
     ///</summary>
     [Serializable]
-    public class DirManagement: IDirManagement
+    public class DirManagement : IDirManagement
     {
         #region singleton 
 
@@ -53,12 +52,12 @@ namespace ReFolder.Management
         /// <param name="newNote"></param>
         /// <param name="dir"></param>
         /// <param name="iconAddress"></param>
-        public void ChangeCreatedDirSystemValue( string newNote, IDir dir, string iconAddress)
+        public void ChangeCreatedDirSystemValue(string newNote, IDir dir, string iconAddress)
         {
             if (String.IsNullOrWhiteSpace(newNote) && String.IsNullOrWhiteSpace(newNote)) throw new ArgumentException("one or more string is valid");
             dir = dir ?? throw new ArgumentNullException("dir is null");
-           
-             FileWrite.ReplaceSystemFolderInfoFile(dir.Description.FullName, newNote, iconAddress );
+
+            FileWrite.ReplaceSystemFolderInfoFile(dir.Description.FullName, newNote, iconAddress);
             dir.Description.Note = newNote;
             dir.Description.IconAddress = iconAddress;
         }
@@ -85,7 +84,7 @@ namespace ReFolder.Management
             }
         }
 
-    
+
 
 
     }

@@ -1,9 +1,6 @@
-﻿
-using System;
-
-namespace ReFolder.Dir.Description
+﻿namespace ReFolder.Dir.Description
 {
-   public interface IMutableSystemObjectDescription
+    public interface IMutableSystemObjectDescription
     {
         string FullName { get; set; }
         string Name { get; set; }

@@ -9,7 +9,7 @@ namespace ReFolder.Management
     ///Contains methods for reading files
     ///</summary>
     [Serializable]
-    public class FileRead: IFileRead
+    public class FileRead : IFileRead
     {
         #region singleton
         private static FileRead InstanceFileRead { get; set; }
@@ -22,7 +22,7 @@ namespace ReFolder.Management
             return InstanceFileRead;
         }
         #endregion
-     
+
         /// <summary>
         /// Reads all lines of text
         /// </summary>
@@ -34,13 +34,13 @@ namespace ReFolder.Management
                 throw new ArgumentException("path is not valid");
 
             List<string> readedLines = new List<string>();
-            using (StreamReader reader= new StreamReader(path))
+            using (StreamReader reader = new StreamReader(path))
             {
                 while (!reader.EndOfStream)
                 {
                     readedLines.Add(reader.ReadLine());
                 }
-                
+
             }
             return readedLines;
         }

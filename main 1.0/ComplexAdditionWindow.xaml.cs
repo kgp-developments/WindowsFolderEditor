@@ -1,21 +1,12 @@
-﻿using System;
+﻿using ReFolder.Dir;
+using ReFolder.Management;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using ReFolder.Dir;
-using ReFolder.Dir.Description;
-using ReFolder.Management;
-using ReFolder.Memento;
-using System.IO;
 
 
 
@@ -261,7 +252,7 @@ namespace main_1._0
         {
             Button ThisButton = (Button)e.Parameter;
             SaveAndReadElementInBinaryFile.GetDefaultInstance()
-    .WriteToBinaryFile<IEditableDirWithChildren>(@"..\..\..\TemporaryFiles\tempFile~CopyCAW",CurrentlyChosenDir);
+    .WriteToBinaryFile<IEditableDirWithChildren>(@"..\..\..\TemporaryFiles\tempFile~CopyCAW", CurrentlyChosenDir);
             List<IEditableDirWithChildrenAndParent> children =
     SaveAndReadElementInBinaryFile.GetDefaultInstance()
     .ReadFromBinaryFile<IEditableDirWithChildren>(@"C:..\..\..\TemporaryFiles\tempFile~CopyCAW")
@@ -273,7 +264,7 @@ namespace main_1._0
 
             AppMW.sorteritno.scale = (float)AppMW.ZoomSlider.Value;
             AppMW.sorteritno.ResetTree(AppMW.ResTree, AppMW.ResetHighlight, AppMW.Seed, AppMW.drzewo, "MW");
-            if(ThisButton.Name == "OkBtn")
+            if (ThisButton.Name == "OkBtn")
             {
                 this.Close();
             }
@@ -310,7 +301,7 @@ namespace main_1._0
                     {
                         if (AmountOfParallelTB.Text.Length > 0 && AmountOfSerialTB.Text.Length > 0)
                         {
-                            if (ChosenNameSeries.SelectedItem == NumSiPar || ChosenNameSeries.SelectedItem ==  ParSiNum)
+                            if (ChosenNameSeries.SelectedItem == NumSiPar || ChosenNameSeries.SelectedItem == ParSiNum)
                             {
                                 if (SignTB.Text.Length > 0)
                                 {

@@ -10,13 +10,13 @@ namespace ReFolder.Management
     ///Contains methods for creating folders from MemoryDirs and deleting existing folders
     ///</summary>
     [Serializable]
-    public class DirWrite: IDirWrite
+    public class DirWrite : IDirWrite
     {
         #region singleton
-        private static  DirWrite InstanceDirWrite { get; set; }
-        private DirValidate DirValidate{ get; set; }
+        private static DirWrite InstanceDirWrite { get; set; }
+        private DirValidate DirValidate { get; set; }
 
-        public DirWrite( DirValidate dirValidate)
+        public DirWrite(DirValidate dirValidate)
         {
             this.DirValidate = dirValidate;
         }
@@ -31,7 +31,7 @@ namespace ReFolder.Management
             return InstanceDirWrite;
         }
         // cele testów
-        public static DirWrite GetInstance( DirValidate dirValidate)
+        public static DirWrite GetInstance(DirValidate dirValidate)
         {
             if (InstanceDirWrite == null)
             {
@@ -40,21 +40,21 @@ namespace ReFolder.Management
             return InstanceDirWrite;
         }
         #endregion
-       
+
         // tworzy folder
         private void CreateFolder(string fullName, string note, string IconAddress)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(fullName);
             directoryInfo.Create();
-            FileWrite.GetDefaultInstance().ReplaceSystemFolderInfoFile(fullName , note,IconAddress);
+            FileWrite.GetDefaultInstance().ReplaceSystemFolderInfoFile(fullName, note, IconAddress);
         }
         // szykuje adres folderu do zapisu i sprawdza czy dany folder już nie istnieje 
-        private  string ReadyFullName(string fullName)
+        private string ReadyFullName(string fullName)
         {
             if (fullName == null) throw new ArgumentNullException();
             fullName.Trim();
-            if (!fullName.Contains("\\") || fullName.Equals("") ||fullName.EndsWith("\\")) throw new ArgumentException();
-           
+            if (!fullName.Contains("\\") || fullName.Equals("") || fullName.EndsWith("\\")) throw new ArgumentException();
+
             DirectoryInfo directoryInfo = new DirectoryInfo(fullName);
             if (directoryInfo.Exists)
             {
@@ -82,13 +82,15 @@ namespace ReFolder.Management
                 if (fullName != name)
                     throw new ArgumentException("path is not valid");
 
-                CreateFolder(fullName,note, IconAddress);
+                CreateFolder(fullName, note, IconAddress);
                 return true;
             }
-            catch ( InvalidOperationException operE){
+            catch (InvalidOperationException operE)
+            {
                 Console.WriteLine(operE.Message);
                 return false;
-            }catch(IOException IOE)
+            }
+            catch (IOException IOE)
             {
                 Console.WriteLine(IOE.Message);
                 Console.WriteLine(IOE.InnerException);
@@ -101,10 +103,10 @@ namespace ReFolder.Management
         /// deletes folder from system
         /// </summary>
         /// <param name="fullName">Path</param>
-        public  void DeleteFolder(string fullName)
+        public void DeleteFolder(string fullName)
         {
             DirectoryInfo info = new DirectoryInfo(fullName);
-                info.Delete();
+            info.Delete();
         }
         /// <summary>
         /// generates all Dirs from memory(MemoryDirs) if they dont exist in system

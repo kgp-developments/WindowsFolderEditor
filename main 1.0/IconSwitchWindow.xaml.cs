@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.IO;
 
 namespace main_1._0
 {
@@ -43,7 +36,7 @@ namespace main_1._0
 
             foreach (string file in files)
             {
-                if (count%4 == 0)
+                if (count % 4 == 0)
                 {
                     //AppMW.EdycjaDrzewa.Background = Brushes.Red;
                     AddedTo = new WrapPanel();

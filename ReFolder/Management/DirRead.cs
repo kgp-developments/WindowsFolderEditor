@@ -1,9 +1,9 @@
 ﻿using ReFolder.Dir;
-using System.IO;
 using ReFolder.Dir.Description;
+using ReFolder.Management.Interfaces;
 using System;
 using System.Collections.Generic;
-using ReFolder.Management.Interfaces;
+using System.IO;
 
 namespace ReFolder.Management
 {
@@ -13,7 +13,7 @@ namespace ReFolder.Management
     ///Contains method for reading existing folders in system
     ///</summary>
     [Serializable]
-    public class DirRead: IDirRead
+    public class DirRead : IDirRead
     {
         #region singleton
         private static DirRead InstanceDirRead { get; set; }
@@ -72,11 +72,11 @@ namespace ReFolder.Management
             foreach (var directory in directories)
             {
                 names.Add(directory.FullName);
-                if(directory.GetDirectories().Length > 0)
+                if (directory.GetDirectories().Length > 0)
                 {
                     GetAllChildrenFullNames(directory.FullName, names);
                 }
-            }  
+            }
             return names;
         }
         private List<string> GetAllChildrenFullNames(string fullName, List<string> names)
@@ -103,7 +103,7 @@ namespace ReFolder.Management
         internal IEditableDirWithChildren GetMainDirFolder(string fullName)
         {
             if (String.IsNullOrWhiteSpace(fullName)) throw new ArgumentException("fullname is empty/null");
-            DirectoryInfo dir =GetParentFolder(fullName);
+            DirectoryInfo dir = GetParentFolder(fullName);
             DirDescription dirDescription = new DirDescription(dir.FullName, dir.Name);
 
             return new MainDir(dirDescription);

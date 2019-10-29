@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using ReFolder.Dir;
 namespace ReFolder.Memento
 {
     public class Caretaker
@@ -14,8 +12,10 @@ namespace ReFolder.Memento
         /// <summary>
         /// returns memento couter
         /// </summary>
-        public int CurrentMemento {
-            get{
+        public int CurrentMemento
+        {
+            get
+            {
                 return currentMemento;
             }
         }
@@ -38,17 +38,18 @@ namespace ReFolder.Memento
         {
             if (memento == null) throw new ArgumentNullException("memento is null");
 
-            if (currentMemento< Mementos.Count - 1)
+            if (currentMemento < Mementos.Count - 1)
             {
                 int mementosToDelete = Mementos.Count - (currentMemento + 1);
 
                 Mementos.RemoveRange(++currentMemento, mementosToDelete);
                 Mementos.Add(memento);
-            }else
+            }
+            else
             {
                 Mementos.Add(memento);
                 currentMemento++;
-                
+
             }
 
         }
@@ -61,7 +62,7 @@ namespace ReFolder.Memento
         public Memento GetMemento(int index)
         {
             if (index < 0 && index >= Mementos.Count) throw new ArgumentException("index is too big/ small");
-            currentMemento = index;          
+            currentMemento = index;
             return Mementos[currentMemento];
         }
 
@@ -81,8 +82,8 @@ namespace ReFolder.Memento
             return $"memento~{Mementos.Count}";
         }
     }
- 
-        
+
+
 }
 
 

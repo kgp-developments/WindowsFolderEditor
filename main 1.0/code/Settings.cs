@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using ReFolder.Dir;
-using System.Windows.Controls;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace main_1._0
 {
-    
+
     public class Settings
     {
         static MainWindow AppMW = (MainWindow)Application.Current.MainWindow;
@@ -48,7 +40,7 @@ namespace main_1._0
                 AppMW.sorteritno.fontsize = 12;
 
             }
-            else if(fontSize == "fourteen")
+            else if (fontSize == "fourteen")
             {
                 AppMW.sorteritno.fontsize = 14;
 
@@ -80,7 +72,7 @@ namespace main_1._0
                 AppMW.sorteritno.first = 75;
                 AppMW.sorteritno.scnd = 45;
             }
-            else if(OYdis == "far")
+            else if (OYdis == "far")
             {
                 AppMW.sorteritno.oyFolderDistance = 180;
                 AppMW.sorteritno.first = 105;
@@ -105,7 +97,7 @@ namespace main_1._0
         }
         public void ApplyStyleMW()
         {
-                AppMW.HorizontalStyleSwitch(bool.Parse(RHV));
+            AppMW.HorizontalStyleSwitch(bool.Parse(RHV));
             BrushConverter bc = new BrushConverter();
             if (color == "dark")
             {
@@ -158,7 +150,7 @@ namespace main_1._0
                     lgd.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF0F1487"), 1));
                     AppMW.CAW.CAWbackGrid.Background = lgd;
                 }
-                
+
             }
         }
 
@@ -172,7 +164,7 @@ namespace main_1._0
         }
         public void ChangeStyleSettings(string[] newSettings)
         {
-           File.WriteAllLines(path_style, newSettings);
+            File.WriteAllLines(path_style, newSettings);
         }
     }
 }

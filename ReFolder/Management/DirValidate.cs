@@ -1,6 +1,6 @@
 ﻿using ReFolder.Dir;
-using System.IO;
 using System;
+using System.IO;
 
 namespace ReFolder.Management
 {
@@ -9,14 +9,14 @@ namespace ReFolder.Management
     ///Contains method for validating existence of existing folders and Dirs
     ///</summary>
     [Serializable]
-    public class DirValidate: IDirValidate
+    public class DirValidate : IDirValidate
     {
         #region singleton
         private static DirValidate InstanceDirValidate { get; set; }
 
         public static DirValidate GetDefaultInstance()
         {
-            if (InstanceDirValidate== null)
+            if (InstanceDirValidate == null)
             {
                 InstanceDirValidate = new DirValidate();
                 return InstanceDirValidate;
@@ -31,10 +31,10 @@ namespace ReFolder.Management
         /// </summary>
         /// <param name="fullName"></param>
         /// <returns>returns true if folder exist</returns>
-        public bool  IsfolderExisting(string fullName)
+        public bool IsfolderExisting(string fullName)
         {
             IfNullOrWhitespaceThrowException(fullName);
-             DirectoryInfo info = new DirectoryInfo(fullName);
+            DirectoryInfo info = new DirectoryInfo(fullName);
             if (info.Exists)
             {
                 return true;
@@ -54,16 +54,16 @@ namespace ReFolder.Management
             IfNullOrWhitespaceThrowException(name);
             IfNullThrowException(parent);
 
-           
+
             foreach (var child in parent.Children)
             {
                 if (child.Description.Name.Equals(name))
                 {
                     return true;
-                }   
+                }
             }
             return false;
-            
+
         }
         //sprawdza czy istnieje dany dir jako dziecko i folder
         /// <summary>
@@ -90,7 +90,7 @@ namespace ReFolder.Management
             else return false;
         }
 
-        private void IfNullOrWhitespaceThrowException(string str, string msg="value is null/empty")
+        private void IfNullOrWhitespaceThrowException(string str, string msg = "value is null/empty")
         {
             if (string.IsNullOrWhiteSpace(str)) throw new ArgumentException(msg);
         }
@@ -100,4 +100,3 @@ namespace ReFolder.Management
         }
     }
 }
-  

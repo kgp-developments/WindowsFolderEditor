@@ -1,10 +1,10 @@
-﻿using NUnit.Framework;
-using Moq;
+﻿using Moq;
+using NUnit.Framework;
 using ReFolder.Dir;
 using ReFolder.Dir.Description;
+using ReFolder.Management;
 using System;
 using System.Collections.Generic;
-using ReFolder.Management;
 
 namespace ReFolder.Tests
 {

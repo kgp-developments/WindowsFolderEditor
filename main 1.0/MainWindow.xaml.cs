@@ -1,30 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using ReFolder.Dir;
-using ReFolder.Dir.Description;
+﻿using ReFolder.Dir;
 using ReFolder.Management;
 using ReFolder.Memento;
 using ReFolder.TxtFileWriter;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace main_1._0
 {
     /// <summary>
     /// Logika interakcji dla klasy MainWindow.xaml
     /// </summary>
-    
-        
+
+
     public partial class MainWindow : Window
     {
         // folder główny z którego rozpoczyna się dziedziczenie 
@@ -203,9 +193,9 @@ namespace main_1._0
                 if (thisStructureName != temporary)
                 {
                     if (CurrentlyChosenDir != null)
-                        {
-                            CurrentlyChosenDir.IsMarked = false;
-                        }
+                    {
+                        CurrentlyChosenDir.IsMarked = false;
+                    }
                     string filePath = @"..\..\saved\" + thisStructureName;
                     SaveAndReadElementInBinaryFile.GetDefaultInstance().WriteToBinaryFile<IEditableDirWithChildren>(filePath, Seed);
                 }
@@ -277,7 +267,7 @@ namespace main_1._0
 
 
             Seed = orginatorGlobal.Restore(careTakerGlobal.GetMemento(careTakerGlobal.CurrentMemento - 1));
-            
+
             //Seed = Orginator.Restore(Caretaker.GetMemento(Caretaker.CurrentMemento - 1));
             sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
             HideAllPanels();
@@ -341,15 +331,15 @@ namespace main_1._0
             settings.ApplyStyleCAW();
             CAW.ShowDialog();
         }
-        private void GenerateDirs_Executed(object sender,ExecutedRoutedEventArgs e)
+        private void GenerateDirs_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            
+
             DirManagement management = DirManagement.GetDefaultInstance();
             MemoryDirs memoryDirs = MemoryDirs.GetDefaultInstance();
             memoryDirs.InitializeAllChildren(Seed);
             DirWrite.GetDefaultInstance().GenerateAllChildrenDirsAsFolders();
             TxtFileWriter writer = TxtFileWriter.GetDefaultInstance();
-            List<string> editedFullNames= writer.TxtFileEditor.GetMainDirChildrenNamesAndAddStringWithNote(Seed);
+            List<string> editedFullNames = writer.TxtFileEditor.GetMainDirChildrenNamesAndAddStringWithNote(Seed);
             writer.WriteListToFile(Seed.Description.FullName, editedFullNames);
         }
         private void CopyChildrenDirs_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -367,13 +357,13 @@ namespace main_1._0
                 .ReadFromBinaryFile<IEditableDirWithChildren>(@"C:..\..\..\TemporaryFiles\tempFile~Copy")
                 .Children;
 
-            var validate= DirValidate.GetDefaultInstance();
+            var validate = DirValidate.GetDefaultInstance();
             foreach (IEditableDirWithChildrenAndParent child in CopyOfChildren)
             {
 
                 if (validate.IsDirExistingAsFolderAndChild(CurrentlyChosenDir, child.Description.Name))
                 {
-                    child.Description.Name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir,1,child.Description.Name);
+                    child.Description.Name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir, 1, child.Description.Name);
                 }
 
                 child.ParentDir = CurrentlyChosenDir;
@@ -389,16 +379,16 @@ namespace main_1._0
                SaveAndReadElementInBinaryFile.GetDefaultInstance()
                .ReadFromBinaryFile<IEditableDirWithChildrenAndParent>(@"C:..\..\..\TemporaryFiles\tempFile~Copy");
 
-            var validate= DirValidate.GetDefaultInstance();
+            var validate = DirValidate.GetDefaultInstance();
 
 
-                if (validate.IsDirExistingAsFolderAndChild(CurrentlyChosenDir, childDir.Description.Name))
-                {
-                    childDir.Description.Name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir,1, childDir.Description.Name);
-                }
+            if (validate.IsDirExistingAsFolderAndChild(CurrentlyChosenDir, childDir.Description.Name))
+            {
+                childDir.Description.Name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir, 1, childDir.Description.Name);
+            }
 
-                childDir.ParentDir = CurrentlyChosenDir;
-            
+            childDir.ParentDir = CurrentlyChosenDir;
+
             CurrentlyChosenDir.AddChildToChildrenList(childDir);
             DirManagement.GetDefaultInstance().AutoGenerateChildrenFullName(CurrentlyChosenDir);
             AddMemento();
@@ -426,7 +416,7 @@ namespace main_1._0
             else
             {
                 PanelGiven.Visibility = Visibility.Visible;
-                foreach(StackPanel element in Panels)
+                foreach (StackPanel element in Panels)
                 {
                     if (element.Name != PanelGiven.Name)
                     {
@@ -438,10 +428,10 @@ namespace main_1._0
         private void HighlightChosen_Executed(object sender, ExecutedRoutedEventArgs e)
         {
 
-                
+
             Button HiddenButton = (Button)e.Parameter;
             Canvas MainLayer = (Canvas)HiddenButton.Parent;
-            if(CurrentlyChosen != null )
+            if (CurrentlyChosen != null)
             {
 
                 CurrentlyChosen.Background = Brushes.LightGray;
@@ -457,7 +447,7 @@ namespace main_1._0
         }
         private void ResetHighlight_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if(CurrentlyChosen != null)
+            if (CurrentlyChosen != null)
             {
                 CurrentlyChosen.Background = Brushes.LightGray;
                 CurrentlyChosenDir = (IEditableDirWithChildren)CurrentlyChosen.Tag;
@@ -490,7 +480,7 @@ namespace main_1._0
         }
         private void DefaultAddition_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            string name= DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir);
+            string name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir);
             IEditableDirWithChildrenAndParent NewDir = new ChildDir(name, CurrentlyChosenDir);
             CurrentlyChosenDir.AddChildToChildrenList(NewDir);
             AddMemento();
@@ -523,7 +513,7 @@ namespace main_1._0
         }
         private void RedoChanges_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if(careTakerGlobal.CurrentMemento +1< careTakerGlobal.CountMemento())
+            if (careTakerGlobal.CurrentMemento + 1 < careTakerGlobal.CountMemento())
             {
                 e.CanExecute = true;
             }
@@ -547,7 +537,7 @@ namespace main_1._0
 
         private void ChosenNotNullDepended(object sender, CanExecuteRoutedEventArgs e)
         {
-            if(CurrentlyChosenDir == null)
+            if (CurrentlyChosenDir == null)
             {
                 e.CanExecute = false;
             }
@@ -570,7 +560,8 @@ namespace main_1._0
                 e.CanExecute = true;
             }
         }
-        private void CopyChildrenDirs_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
+        private void CopyChildrenDirs_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
             if (CurrentlyChosen == null) e.CanExecute = false;
             else
             {
@@ -578,11 +569,11 @@ namespace main_1._0
             }
 
         }
-        
+
         private void PasteChildrenDirs_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-            {
+        {
             if (CurrentlyChosenDir == null && (CopyOfChildren == null || CopyOfChildren.Count == 0)) e.CanExecute = false;
-            else e.CanExecute= true;
+            else e.CanExecute = true;
         }
         private void AlwaysTrueForExecuted(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -600,7 +591,7 @@ namespace main_1._0
             if (ZoomSlider != null && FolderSearchTB != null && thisStructureName != null)
             {
                 FolderSearchTB.Text = ZoomSlider.Value.ToString();
-               
+
                 sorteritno.scale = (float)ZoomSlider.Value;
                 sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
             }

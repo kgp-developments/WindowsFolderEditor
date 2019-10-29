@@ -1,15 +1,12 @@
-﻿using ReFolder.Dir.Description;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace ReFolder.Dir
 {
-    public interface IEditableDirWithChildren: IDir
+    public interface IEditableDirWithChildren : IDir
 
     {
         List<IEditableDirWithChildrenAndParent> Children { get; set; }
-      
+
         void DeleteChildDirFromList(IEditableDirWithChildrenAndParent child);
         void DeleteChildrenDirsFromList(List<IEditableDirWithChildrenAndParent> children);
         void AddChildToChildrenList(IEditableDirWithChildrenAndParent child);

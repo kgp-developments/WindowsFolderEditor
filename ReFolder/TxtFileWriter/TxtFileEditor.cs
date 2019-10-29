@@ -22,10 +22,10 @@ namespace ReFolder.TxtFileWriter
         {
             if (mainDir == null)
                 throw new ArgumentNullException("mainDir is null");
-            List<string> childrenNamesWithDateAndString = new  List<string>();
+            List<string> childrenNamesWithDateAndString = new List<string>();
             foreach (string fullName in dirRead.GetAllChildrenFullNames(mainDir.Description.FullName))
             {
-                childrenNamesWithDateAndString.Add(fullName + " => "+ FindDescription(fullName));
+                childrenNamesWithDateAndString.Add(fullName + " => " + FindDescription(fullName));
 
             }
 
@@ -42,10 +42,10 @@ namespace ReFolder.TxtFileWriter
             }
             else
             {
-                string line =fileRead.ReadLineThatContainsValue(desktopIniPath, "InfoTip");
-                infoTip= GetDataFromString(line, '=');
+                string line = fileRead.ReadLineThatContainsValue(desktopIniPath, "InfoTip");
+                infoTip = GetDataFromString(line, '=');
             }
-                return infoTip;
+            return infoTip;
         }
 
         private string GetDataFromString(string value, char separator)

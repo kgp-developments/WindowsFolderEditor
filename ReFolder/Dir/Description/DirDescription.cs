@@ -1,7 +1,4 @@
-﻿using ReFolder.Management;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace ReFolder.Dir.Description
 {
@@ -11,7 +8,7 @@ namespace ReFolder.Dir.Description
     {
         private string fullName;
         private string name;
-        private string iconAddress= @"..\..\..\main 1.0\images\TU WPROWADŹ ADRES!.ico";
+        private string iconAddress = @"..\..\..\main 1.0\images\TU WPROWADŹ ADRES!.ico";
 
         public DirDescription(String fullName, String name)
         {
@@ -19,7 +16,7 @@ namespace ReFolder.Dir.Description
             this.Name = name;
 
         }
-        public DirDescription(String fullName, String name, string photoAddress):this(fullName, name)
+        public DirDescription(String fullName, String name, string photoAddress) : this(fullName, name)
         {
             this.IconAddress = photoAddress;
         }
@@ -39,14 +36,14 @@ namespace ReFolder.Dir.Description
                 else
                 {
                     this.fullName = value;
-                }             
+                }
             }
         }
         public string Name
         {
             get
             {
-                return this.name;              
+                return this.name;
             }
             set
             {
@@ -55,9 +52,9 @@ namespace ReFolder.Dir.Description
                     throw new ArgumentException("name is empty/null");
                 }
                 {
-                     this.name = value;
+                    this.name = value;
                 }
-                
+
             }
         }
         public string IconAddress

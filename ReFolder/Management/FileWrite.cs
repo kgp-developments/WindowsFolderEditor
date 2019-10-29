@@ -10,7 +10,7 @@ namespace ReFolder.Management
     ///Contains methods for writing to file and creating files 
     ///</summary>
     [Serializable]
-    public class FileWrite: IFileWrite
+    public class FileWrite : IFileWrite
     {
         #region singleton
         private static FileWrite InstanceFileWrite { get; set; }
@@ -19,7 +19,7 @@ namespace ReFolder.Management
         {
             if (InstanceFileWrite == null)
             {
-                InstanceFileWrite = new FileWrite( DirWrite.GetDefaultInstance());
+                InstanceFileWrite = new FileWrite(DirWrite.GetDefaultInstance());
             }
             return InstanceFileWrite;
         }
@@ -36,9 +36,9 @@ namespace ReFolder.Management
         /// <param name="path"></param>
         /// <param name="lines">list of lines to write</param>
         /// <returns> list of lines to write</returns>
-        public List<string> WriteAllLines(string path, List<string> lines, bool append= false)
+        public List<string> WriteAllLines(string path, List<string> lines, bool append = false)
         {
-            using (StreamWriter writer= new StreamWriter(path, append))
+            using (StreamWriter writer = new StreamWriter(path, append))
             {
                 foreach (string line in lines)
                 {
@@ -47,7 +47,7 @@ namespace ReFolder.Management
                 return lines;
             }
         }
-       
+
         // jeśli desktop.ini istnieje to ReplaceSystemFolderInfoFile usuwa go i tworzy nowy a jeśli nie istnieje tworzy nowy
         /// <summary>
         /// overwrites desktop.ini
@@ -56,7 +56,7 @@ namespace ReFolder.Management
         /// <param name="note">Existing Folder new note</param>
         /// <param name="iconAddress">Existing Folder new IconAddress</param>
         internal void ReplaceSystemFolderInfoFile(string path, string note, string iconAddress)
-        {        
+        {
             DirectoryInfo dir = new DirectoryInfo(path);
             dir.Attributes = FileAttributes.Normal;
 
@@ -65,12 +65,13 @@ namespace ReFolder.Management
             if (!file.Exists)
             {
                 AddIconAndNoteToFileSystem(path, note, iconAddress);
-            }else
+            }
+            else
             {
                 file.Delete();
                 AddIconAndNoteToFileSystem(path, note, iconAddress);
             }
-                
+
         }
         /// <summary>
         /// creates desktop.ini
@@ -82,10 +83,10 @@ namespace ReFolder.Management
         {
             IconAddress = Path.GetFullPath(IconAddress);
             if (!File.Exists(IconAddress)) throw new ArgumentException(IconAddress + "File Don't exist");
-            string[] lines = { "[.ShellClassInfo]", $"IconResource={IconAddress},0", $"IconFile={IconAddress}", $"IconIndex=0", $"InfoTip={note}"};
+            string[] lines = { "[.ShellClassInfo]", $"IconResource={IconAddress},0", $"IconFile={IconAddress}", $"IconIndex=0", $"InfoTip={note}" };
             foreach (var item in lines)
 
-            File.WriteAllLines(fullName + @"\desktop.ini", lines);
+                File.WriteAllLines(fullName + @"\desktop.ini", lines);
             File.SetAttributes(fullName + @"\desktop.ini", FileAttributes.Hidden | FileAttributes.System);
             File.SetAttributes(fullName, FileAttributes.System);
 

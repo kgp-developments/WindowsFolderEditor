@@ -6,7 +6,7 @@ using System;
 namespace ReFolder.Memento
 {
 
-    public  class Orginator
+    public class Orginator
     {
         private Caretaker caretaker;
         public IEditableDirWithChildren State { get; private set; }

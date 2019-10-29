@@ -1,6 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System;
 
 
 namespace ReFolder.Management
@@ -28,7 +28,7 @@ namespace ReFolder.Management
         /// <typeparam name="T">type of Class to create/update</typeparam>
         /// <param name="filePath">path to file</param>
         /// <param name="objectToWrite">objectToWrite</param>
-        public  void WriteToBinaryFile<T>(string filePath, T objectToWrite)
+        public void WriteToBinaryFile<T>(string filePath, T objectToWrite)
         {
             if (String.IsNullOrWhiteSpace(filePath)) throw new ArgumentException(" filepath is null/empty/whitespace");
             if (objectToWrite == null) throw new ArgumentNullException("object to write is null");

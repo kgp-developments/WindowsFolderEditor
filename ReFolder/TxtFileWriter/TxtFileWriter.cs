@@ -54,7 +54,7 @@ namespace ReFolder.TxtFileWriter
                 throw new ArgumentException("folder path isn't valid ");
 
             string systemUserName = Environment.UserName;
-            
+
             if (!File.Exists(path + fileName))
             {
                 using (StreamWriter writer = new StreamWriter(path + fileName))
@@ -75,7 +75,7 @@ namespace ReFolder.TxtFileWriter
                     writer.WriteLine(DateTime.Now + ": edited by: " + systemUserName);
                     writer.WriteLine();
                     foreach (var txt in stringToWrite)
-                    {                
+                    {
                         writer.WriteLine(txt);
                     }
 

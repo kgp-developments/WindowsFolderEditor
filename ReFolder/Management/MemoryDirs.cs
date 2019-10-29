@@ -9,7 +9,7 @@ namespace ReFolder.Management
     ///contains methods for generating Dirs to memory and managing Dirs in memory
     ///</summary>
     [Serializable]
-    public class MemoryDirs: IMemoryDirs
+    public class MemoryDirs : IMemoryDirs
     {
         #region singleton
         private static MemoryDirs InstanceMemoryDirs { get; set; }
@@ -26,7 +26,7 @@ namespace ReFolder.Management
         /// <summary>
         /// List of all folders to generate except MainDir
         /// </summary>
-        public static HashSet<IEditableDirWithChildrenAndParent> AllCreatedDirs { get; set; }=
+        public static HashSet<IEditableDirWithChildrenAndParent> AllCreatedDirs { get; set; } =
         new HashSet<IEditableDirWithChildrenAndParent>();
         /// <summary>
         /// Initialize AllCreatedDirs with dir children
@@ -48,7 +48,7 @@ namespace ReFolder.Management
             }
 
         }
-       
+
         /// <summary>
         /// Checks if the dir exist in AllCreatedDirs
         /// </summary>
@@ -68,7 +68,7 @@ namespace ReFolder.Management
             }
             return flag;
         }
-      
+
         /// <summary>
         /// Deletes folder from AllCreatedDirs 
         /// </summary>

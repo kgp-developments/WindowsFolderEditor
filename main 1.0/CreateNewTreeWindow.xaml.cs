@@ -1,18 +1,8 @@
 ﻿using ReFolder.Dir;
 using ReFolder.Management;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 
 namespace main_1._0
@@ -36,7 +26,7 @@ namespace main_1._0
             AppMW.Seed = DirManagement.GetDefaultInstance().GetFolderAsNewMainDir(SeedLocation.Text);
             if (AppMW.Seed != null) //warunek zbey nie wypierdalalo bledu, ponizej rysowanie
             {
-                AppMW.sorteritno.ResetTree(AppMW.ResTree, AppMW.ResetHighlight,AppMW.Seed, AppMW.drzewo, "MW" );
+                AppMW.sorteritno.ResetTree(AppMW.ResTree, AppMW.ResetHighlight, AppMW.Seed, AppMW.drzewo, "MW");
             }
             string filePath = @"..\..\saved\" + StructureName.Text;
             SaveAndReadElementInBinaryFile.GetDefaultInstance().WriteToBinaryFile<IEditableDirWithChildren>(filePath, AppMW.Seed);
@@ -56,7 +46,7 @@ namespace main_1._0
             SeedLocation.Text = x.SelectedPath;
         }
         //warunek sprawdzajacy czy podana sciezka istnieje/ jest poprawna    
-        public void CreateCNTW_CanExecute(object sender, CanExecuteRoutedEventArgs e) 
+        public void CreateCNTW_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             bool flag = false;
             try
@@ -65,8 +55,8 @@ namespace main_1._0
 
             }
             catch (Exception)
-            {  }
-            if (flag && StructureName.Text.Length >0)
+            { }
+            if (flag && StructureName.Text.Length > 0)
             {
                 e.CanExecute = true;
             }
