@@ -15,6 +15,10 @@ namespace main_1._0
         public float scnd;
         public float fontsize;
         public float scale = 1f;
+        public int dir_counter = 0;
+        public int caw_dir_counter = 0;
+        public int dir_count_max = 100;
+
 
         #region składowe funkcji Create (cele optymalizacyjne)
         public float icon_and_hlrbtn_size;
@@ -44,13 +48,46 @@ namespace main_1._0
             canvas_setleft_half_size = mainLayer_size / 2f;
             line_size = 2 * scale;
             folder_text_half__size = folder_text_maxwidth_size / 2f;
-            fontsize_halved_size = fontsize_size / 2f;
+            fontsize_halved_size = fontsize / 2f;
             length_checker = (int)(folder_text_maxwidth_size / fontsize_halved_size);
             icon_margin_size = 3 * scale;
             folder_width_size = 90 * scale;
             folder_doubled_width_size = folder_width_size * 2;
         }
         #endregion
+
+        #region składowe do kontroli focusu
+
+        public double sv_width;
+        public void SetTreeSVSize(string window)
+        {
+            if (window == "MW")
+            {
+                sv_width = ((MainWindow)Application.Current.MainWindow).Width - 200f;
+                //sv.Width = ((MainWindow)Application.Current.MainWindow).Width - 200f;
+                //SwitchedGrid.Width = sv.Width - 80f;
+                //((MainWindow)Application.Current.MainWindow).FolderSearchTB.Text = sv.Width.ToString() + "   " + SwitchedGrid.Width.ToString();
+            }
+            else
+            {
+
+            }
+        }
+        #endregion
+
+        public int GetDirCount(IEditableDirWithChildren dir)
+        {
+            int total = 0;
+            if (dir.Children.Count > 0)
+            {
+                foreach (ChildDir childdir in dir.Children)
+                {
+                    GetDirCount(childdir);
+                    total++;
+                }
+            }
+            return total;
+        }
 
         public float GetTextFolderWidth(string testedName)
         {
@@ -81,8 +118,11 @@ namespace main_1._0
 
         public void ResetTree(Grid SwitchedGrid, Button ResetButton, IEditableDirWithChildren Seed, ScrollViewer TreeSV, string window)
         {
-
             Recalibration();
+            if (window == "MW")
+            {
+                dir_counter = 0;
+            }
             //TreeSV.Content;
             SwitchedGrid.Children.Clear();
 
@@ -96,7 +136,7 @@ namespace main_1._0
 
             Create(SwitchedGrid, 30, 0, Seed, window);
             Sort(Seed, SwitchedGrid, 0, 30, window);
-
+            //AppMW.drzewo.ScrollToHorizontalOffset(0);
         }
 
         public void Pionowa(float start, float end, Grid TheGrid, float parX)
@@ -149,7 +189,7 @@ namespace main_1._0
         {
             // Ustawienia obrazka
             Image Icon = new Image();
-            Icon.Source = new BitmapImage(new Uri(Folder.Description.IconAddress, UriKind.Relative));
+            Icon.Source = new BitmapImage(new Uri(System.IO.Path.GetFullPath(Folder.Description.IconAddress), UriKind.Absolute));
             Icon.Margin = new Thickness(icon_margin_size);
             Icon.Width = icon_and_hlrbtn_size;
             Icon.Height = icon_and_hlrbtn_size;
@@ -219,6 +259,14 @@ namespace main_1._0
             }
             SwitchedGrid.Children.Add(MainLayer);
             MainLayer.Tag = Folder;
+            if (window == "MW")
+            {
+                dir_counter++;
+            }
+            else if (window == "CAW")
+            {
+                caw_dir_counter++;
+            }
         }
 
         public float GetSize(IEditableDirWithChildren Folder) //szerokosc galezi 
@@ -318,6 +366,7 @@ namespace main_1._0
                         {
                             k += folder_doubled_width_size;
                         }
+
                     }
                     x = GetSideSize(IEditableDirWithChildren.Children[0], 0);
                     Create(Switched, parY + oyFolderDistance + fontsize / 2, x + k, IEditableDirWithChildren.Children[0], window);

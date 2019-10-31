@@ -60,7 +60,6 @@ namespace main_1._0
             IEditableDirWithChildren Assistant = DirManagement.GetDefaultInstance().GetFolderAsNewMainDir(@"C:\Users\Klakier\Desktop\generator struktury drzewiastej");
             Seed = Assistant;
 
-
             ZoomSlider.Value = 1;
             AddMemento();
         }
@@ -261,7 +260,6 @@ namespace main_1._0
             VW.ShowDialog();
             HideAllPanels();
         }
-        // TUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU
         private void UndoChanges_Executed(object sender, ExecutedRoutedEventArgs e)
         {
 
@@ -272,7 +270,6 @@ namespace main_1._0
             sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
             HideAllPanels();
         }
-        // TUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU
         private void RedoChanges_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             // Seed = Orginator.Restore(Caretaker.GetMemento(Caretaker.CurrentMemento + 1));
@@ -326,6 +323,7 @@ namespace main_1._0
 
         private void ComplexAdditionWindowShow_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            sorteritno.caw_dir_counter = 0;
             CAW = new ComplexAdditionWindow();
             settings.GetCAWsize();
             settings.ApplyStyleCAW();
@@ -356,44 +354,58 @@ namespace main_1._0
                 SaveAndReadElementInBinaryFile.GetDefaultInstance()
                 .ReadFromBinaryFile<IEditableDirWithChildren>(@"C:..\..\..\TemporaryFiles\tempFile~Copy")
                 .Children;
+            int dirCount = 0;
+            foreach (ChildDir childdir in CopyOfChildren)
+            {
+                dirCount += sorteritno.GetDirCount(childdir);
+            }
+            if (dirCount + sorteritno.dir_counter < sorteritno.dir_count_max)
+            {
+                var validate = DirValidate.GetDefaultInstance();
+                foreach (IEditableDirWithChildrenAndParent child in CopyOfChildren)
+                {
 
-            var validate = DirValidate.GetDefaultInstance();
-            foreach (IEditableDirWithChildrenAndParent child in CopyOfChildren)
+                    if (validate.IsDirExistingAsFolderAndChild(CurrentlyChosenDir, child.Description.Name))
+                    {
+                        child.Description.Name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir, 1, child.Description.Name);
+                    }
+
+                    child.ParentDir = CurrentlyChosenDir;
+                }
+                CurrentlyChosenDir.AddChildrenToChildrenList(CopyOfChildren);
+                DirManagement.GetDefaultInstance().AutoGenerateChildrenFullName(CurrentlyChosenDir);
+                AddMemento();
+                sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+            }
+            else             //wyswietl info o zbyt duzej ilosci dirow
             {
 
-                if (validate.IsDirExistingAsFolderAndChild(CurrentlyChosenDir, child.Description.Name))
-                {
-                    child.Description.Name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir, 1, child.Description.Name);
-                }
-
-                child.ParentDir = CurrentlyChosenDir;
             }
-            CurrentlyChosenDir.AddChildrenToChildrenList(CopyOfChildren);
-            DirManagement.GetDefaultInstance().AutoGenerateChildrenFullName(CurrentlyChosenDir);
-            AddMemento();
-            sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
         }
         private void PasteDir_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             IEditableDirWithChildrenAndParent childDir =
                SaveAndReadElementInBinaryFile.GetDefaultInstance()
                .ReadFromBinaryFile<IEditableDirWithChildrenAndParent>(@"C:..\..\..\TemporaryFiles\tempFile~Copy");
-
-            var validate = DirValidate.GetDefaultInstance();
-
-
-            if (validate.IsDirExistingAsFolderAndChild(CurrentlyChosenDir, childDir.Description.Name))
+            if (sorteritno.GetDirCount(childDir) + sorteritno.dir_counter < sorteritno.dir_count_max)
             {
-                childDir.Description.Name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir, 1, childDir.Description.Name);
+
+                var validate = DirValidate.GetDefaultInstance();
+
+
+                if (validate.IsDirExistingAsFolderAndChild(CurrentlyChosenDir, childDir.Description.Name))
+                {
+                    childDir.Description.Name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir, 1, childDir.Description.Name);
+                }
+
+                childDir.ParentDir = CurrentlyChosenDir;
+
+                CurrentlyChosenDir.AddChildToChildrenList(childDir);
+                DirManagement.GetDefaultInstance().AutoGenerateChildrenFullName(CurrentlyChosenDir);
+                AddMemento();
+                sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+
             }
-
-            childDir.ParentDir = CurrentlyChosenDir;
-
-            CurrentlyChosenDir.AddChildToChildrenList(childDir);
-            DirManagement.GetDefaultInstance().AutoGenerateChildrenFullName(CurrentlyChosenDir);
-            AddMemento();
-            sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
-
         }
 
         private void CopyDir_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -428,7 +440,6 @@ namespace main_1._0
         private void HighlightChosen_Executed(object sender, ExecutedRoutedEventArgs e)
         {
 
-
             Button HiddenButton = (Button)e.Parameter;
             Canvas MainLayer = (Canvas)HiddenButton.Parent;
             if (CurrentlyChosen != null)
@@ -444,6 +455,7 @@ namespace main_1._0
             CurrentlyChosenDir = (IEditableDirWithChildren)CurrentlyChosen.Tag;
             CurrentlyChosenDir.IsMarked = true;
             HideAllPanels();
+            FolderSearchTB.Text = CurrentlyChosenDir.Description.FullName.Length.ToString();
         }
         private void ResetHighlight_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -480,11 +492,34 @@ namespace main_1._0
         }
         private void DefaultAddition_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            string name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir);
-            IEditableDirWithChildrenAndParent NewDir = new ChildDir(name, CurrentlyChosenDir);
-            CurrentlyChosenDir.AddChildToChildrenList(NewDir);
-            AddMemento();
-            sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+            if (sorteritno.dir_counter < sorteritno.dir_count_max)
+            {
+                string name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir);
+                IEditableDirWithChildrenAndParent NewDir = new ChildDir(name, CurrentlyChosenDir);
+                CurrentlyChosenDir.AddChildToChildrenList(NewDir);
+                AddMemento();
+                sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+                if (CurrentlyChosen.Margin.Left > 0)
+                {
+                    //sorteritno.SetTreeSVSize("MW");
+                    //Point relativeLocation = CurrentlyChosen.TranslatePoint(new Point(0, 0), ResTree);
+                    drzewo.ScrollToHorizontalOffset(drzewo.ScrollableWidth + 80);
+                    //FolderSearchTB.Text = relativeLocation.X.ToString();
+                }
+                else
+                {
+                    // Point relativeLocation = CurrentlyChosen.TranslatePoint(new Point(0, 0), ResTree);
+                    drzewo.ScrollToHorizontalOffset(drzewo.ScrollableWidth);
+                    //FolderSearchTB.Text = relativeLocation.X.ToString();
+
+                }
+
+            }
+            else                //wyswietlenie informacji o zbyt duzej ilosci folderow w drzewie
+            {
+
+            }
+
         }
         #endregion
 

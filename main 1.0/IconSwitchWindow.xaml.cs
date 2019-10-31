@@ -52,7 +52,7 @@ namespace main_1._0
                 MainLayer.Height = 90;
                 MainLayer.Width = 90;
                 MainLayer.Tag = file;
-                if (file == chosenIcon)
+                if (System.IO.Path.GetFullPath(file) == System.IO.Path.GetFullPath(chosenIcon))
                 {
                     MainLayer.Background = Brushes.Blue;
                     ChosenCanvas = MainLayer;
@@ -60,7 +60,7 @@ namespace main_1._0
                 //MainLayer.Background = Brushes.Brown;
 
                 Image Icon = new Image();
-                Icon.Source = new BitmapImage(new Uri(file, UriKind.Relative));
+                Icon.Source = new BitmapImage(new Uri(System.IO.Path.GetFullPath(file), UriKind.Absolute));
                 Icon.Height = 80;
                 Icon.Width = 80;
                 marg.Top = 5;

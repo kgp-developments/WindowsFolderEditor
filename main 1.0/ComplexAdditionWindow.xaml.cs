@@ -250,25 +250,28 @@ namespace main_1._0
         }
         private void ApplyChangesCAW_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Button ThisButton = (Button)e.Parameter;
-            SaveAndReadElementInBinaryFile.GetDefaultInstance()
-    .WriteToBinaryFile<IEditableDirWithChildren>(@"..\..\..\TemporaryFiles\tempFile~CopyCAW", CurrentlyChosenDir);
-            List<IEditableDirWithChildrenAndParent> children =
-    SaveAndReadElementInBinaryFile.GetDefaultInstance()
-    .ReadFromBinaryFile<IEditableDirWithChildren>(@"C:..\..\..\TemporaryFiles\tempFile~CopyCAW")
-    .Children;
-
-
-            AppMW.CurrentlyChosenDir.AddChildrenToChildrenList(children);
-            DirManagement.GetDefaultInstance().AutoGenerateChildrenFullName(AppMW.CurrentlyChosenDir);
-
-            AppMW.sorteritno.scale = (float)AppMW.ZoomSlider.Value;
-            AppMW.sorteritno.ResetTree(AppMW.ResTree, AppMW.ResetHighlight, AppMW.Seed, AppMW.drzewo, "MW");
-            if (ThisButton.Name == "OkBtn")
+            if (AppMW.sorteritno.GetDirCount(NewSeed) + AppMW.sorteritno.dir_counter < AppMW.sorteritno.dir_count_max)
             {
-                this.Close();
+                Button ThisButton = (Button)e.Parameter;
+                SaveAndReadElementInBinaryFile.GetDefaultInstance()
+        .WriteToBinaryFile<IEditableDirWithChildren>(@"..\..\..\TemporaryFiles\tempFile~CopyCAW", CurrentlyChosenDir);
+                List<IEditableDirWithChildrenAndParent> children =
+        SaveAndReadElementInBinaryFile.GetDefaultInstance()
+        .ReadFromBinaryFile<IEditableDirWithChildren>(@"C:..\..\..\TemporaryFiles\tempFile~CopyCAW")
+        .Children;
+
+
+                AppMW.CurrentlyChosenDir.AddChildrenToChildrenList(children);
+                DirManagement.GetDefaultInstance().AutoGenerateChildrenFullName(AppMW.CurrentlyChosenDir);
+
+                AppMW.sorteritno.scale = (float)AppMW.ZoomSlider.Value;
+                AppMW.sorteritno.ResetTree(AppMW.ResTree, AppMW.ResetHighlight, AppMW.Seed, AppMW.drzewo, "MW");
+                if (ThisButton.Name == "OkBtn")
+                {
+                    this.Close();
+                }
+                AddMemento();
             }
-            AddMemento();
         }
         private void CancelCAW_Executed(object sender, ExecutedRoutedEventArgs e)
         {
