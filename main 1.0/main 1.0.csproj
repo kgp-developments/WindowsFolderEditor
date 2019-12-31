@@ -60,6 +60,9 @@
     <Compile Include="CreateNewTreeWindow.xaml.cs">
       <DependentUpon>CreateNewTreeWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ErrorMessageWindow.xaml.cs">
+      <DependentUpon>ErrorMessageWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IconSwitchWindow.xaml.cs">
       <DependentUpon>IconSwitchWindow.xaml</DependentUpon>
     </Compile>
@@ -77,6 +80,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CreateNewTreeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ErrorMessageWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

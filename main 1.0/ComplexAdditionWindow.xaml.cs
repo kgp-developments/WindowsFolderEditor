@@ -1,12 +1,21 @@
-﻿using ReFolder.Dir;
-using ReFolder.Management;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using ReFolder.Dir;
+using ReFolder.Dir.Description;
+using ReFolder.Management;
+using ReFolder.Memento;
+using System.IO;
 
 
 
@@ -71,18 +80,27 @@ namespace main_1._0
                     break;
                 }
         }
-        private void SetComplexHelper(int steps, IEditableDirWithChildren Targeted)
+        private int SetComplexHelper(int steps, IEditableDirWithChildren Targeted)
         {
-            if (steps < int.Parse(AmountOfSerialTB.Text))
+            int result = 0;
+            if (Targeted.Description.FullName.Length < AppMW.sorteritno.path_max_length)
             {
-                //Target = AppMW.CurrentlyChosenDir;
-                for (int j = 0; j < int.Parse(AmountOfParallelTB.Text); j++)
+                if (steps < int.Parse(AmountOfSerialTB.Text))
                 {
-                    ChildDir NewDir = new ChildDir(SetGeneratedName(ChosenNameSeries.SelectedItem, Targeted), Targeted);
-                    Targeted.Children.Add(NewDir);
-                    SetComplexHelper(steps + 1, NewDir);
+                    //Target = AppMW.CurrentlyChosenDir;
+                    for (int j = 0; j < int.Parse(AmountOfParallelTB.Text); j++)
+                    {
+                        ChildDir NewDir = new ChildDir(SetGeneratedName(ChosenNameSeries.SelectedItem, Targeted), Targeted);
+                        Targeted.AddChildToChildrenList(NewDir);
+                        result += SetComplexHelper(steps + 1, NewDir);
+                    }
                 }
             }
+            else
+            {
+                result++;
+            }
+            return result;
         }
 
         string SetGeneratedName(object check, IEditableDirWithChildren Parent)
@@ -216,45 +234,106 @@ namespace main_1._0
         private void SetComplexAddition_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             IEditableDirWithChildren Target = CurrentlyChosenDir;
-
-
-
-            int i;
-            //string generateName;
-            if (TypeOfSeries.SelectedItem == Serial)
-            {
-                for (i = 0; i < int.Parse(AmountInSeriesTB.Text); i++)
+                int i;
+                //string generateName;
+                if (TypeOfSeries.SelectedItem == Serial)
                 {
-                    ChildDir NewDir = new ChildDir(SetGeneratedName(ChosenNameSeries.SelectedItem, Target), Target);
-                    Target.Children.Add(NewDir);
-                    Target = NewDir;
-                }
-            }
-            else if (TypeOfSeries.SelectedItem == Parallel)
-            {
-                for (i = 0; i < int.Parse(AmountInSeriesTB.Text); i++)
+                if ((AppMW.sorteritno.GetDirCount(NewSeed) + AppMW.sorteritno.dir_counter + int.Parse(AmountInSeriesTB.Text) < AppMW.sorteritno.dir_count_max))
                 {
-                    ChildDir NewDir = new ChildDir(SetGeneratedName(ChosenNameSeries.SelectedItem, Target), Target);
-                    Target.Children.Add(NewDir);
+                    for (i = 0; i < int.Parse(AmountInSeriesTB.Text); i++)
+                    {
+                        if (Target.Description.FullName.Length < AppMW.sorteritno.path_max_length)
+                        {
+                            ChildDir NewDir = new ChildDir(SetGeneratedName(ChosenNameSeries.SelectedItem, Target), Target);
+                            Target.AddChildToChildrenList(NewDir);
+                            Target = NewDir;
+                        }
+                        else
+                        {
+                            AppMW.EMW = new ErrorMessageWindow();
+                            AppMW.EMW.SetMessage(4);
+                            AppMW.EMW.ShowDialog();
+                            break;
+                        }
+                    }
                 }
-            }
-            else if (TypeOfSeries.SelectedItem == Complex)
-            {
-                for (i = 0; i < int.Parse(AmountInSeriesTB.Text); i++)
+                else
                 {
-                    int k = 0; //steps to match with AmountOfSerialTB
-                    SetComplexHelper(k, Target);
+                    AppMW.EMW = new ErrorMessageWindow();
+                    AppMW.EMW.SetMessage(2);
+                    AppMW.EMW.ShowDialog();
                 }
-            }
-            AppMW.sorteritno.ResetTree(DisplayedBranchGrid, ResetHighlight, NewSeed, drzewo, "CAW");
+                }
+                else if (TypeOfSeries.SelectedItem == Parallel)
+                {
+                    if (Target.Description.FullName.Length < AppMW.sorteritno.path_max_length)
+                    {
+                        if ((AppMW.sorteritno.GetDirCount(NewSeed) + AppMW.sorteritno.dir_counter + int.Parse(AmountInSeriesTB.Text) < AppMW.sorteritno.dir_count_max))
+                        {
+                            for (i = 0; i < int.Parse(AmountInSeriesTB.Text); i++)
+                            {
+                                ChildDir NewDir = new ChildDir(SetGeneratedName(ChosenNameSeries.SelectedItem, Target), Target);
+                                Target.AddChildToChildrenList(NewDir);
+                            }
+                        }
+                        else
+                        {
+                            AppMW.EMW = new ErrorMessageWindow();
+                            AppMW.EMW.SetMessage(2);
+                            AppMW.EMW.ShowDialog();
+                        }
+                    }
+                    else
+                    {
+                        AppMW.EMW = new ErrorMessageWindow();
+                        AppMW.EMW.SetMessage(4);
+                        AppMW.EMW.ShowDialog();
+                    }
+                }
+                else if (TypeOfSeries.SelectedItem == Complex)
+                {
+               // int numberOfAdded = int.Parse(AmountInSeriesTB.Text);
+                if (true /*(AppMW.sorteritno.GetDirCount(NewSeed) + AppMW.sorteritno.dir_counter + int.Parse(AmountInSeriesTB.Text) < AppMW.sorteritno.dir_count_max)*/)
+                {
+                    int k;
+                    int result = 0;
+                    for (i = 0; i < int.Parse(AmountInSeriesTB.Text); i++)
+                    {
+                        k = 0; //steps to match with AmountOfSerialTB
+                        result = SetComplexHelper(k, Target);
+                    }
+                    if(result != 0)
+                    {
+                        AppMW.EMW = new ErrorMessageWindow();
+                        AppMW.EMW.SetMessage(4);
+                        AppMW.EMW.ShowDialog();
+                    }
+                }
+                else
+                {
+                    AppMW.EMW = new ErrorMessageWindow();
+                    AppMW.EMW.SetMessage(2);
+                    AppMW.EMW.ShowDialog();
+                }
+                }
+                AppMW.sorteritno.ResetTree(DisplayedBranchGrid, ResetHighlight, NewSeed, drzewo, "CAW");
+
+          
         }
         private void ApplyChangesCAW_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (AppMW.sorteritno.GetDirCount(NewSeed) + AppMW.sorteritno.dir_counter < AppMW.sorteritno.dir_count_max)
+            if (AppMW.sorteritno.GetDirCount(NewSeed)+ AppMW.sorteritno.dir_counter < AppMW.sorteritno.dir_count_max)
             {
+
+                CurrentlyChosenCAW.Background = Brushes.LightGray;
+                CurrentlyChosenDir = (IEditableDirWithChildren)CurrentlyChosenCAW.Tag;
+                CurrentlyChosenDir.IsMarked = false;
+                CurrentlyChosenCAW = null;
+                CurrentlyChosenDir = null;
+
                 Button ThisButton = (Button)e.Parameter;
                 SaveAndReadElementInBinaryFile.GetDefaultInstance()
-        .WriteToBinaryFile<IEditableDirWithChildren>(@"..\..\..\TemporaryFiles\tempFile~CopyCAW", CurrentlyChosenDir);
+        .WriteToBinaryFile<IEditableDirWithChildren>(@"..\..\..\TemporaryFiles\tempFile~CopyCAW", NewSeed);
                 List<IEditableDirWithChildrenAndParent> children =
         SaveAndReadElementInBinaryFile.GetDefaultInstance()
         .ReadFromBinaryFile<IEditableDirWithChildren>(@"C:..\..\..\TemporaryFiles\tempFile~CopyCAW")
@@ -304,7 +383,7 @@ namespace main_1._0
                     {
                         if (AmountOfParallelTB.Text.Length > 0 && AmountOfSerialTB.Text.Length > 0)
                         {
-                            if (ChosenNameSeries.SelectedItem == NumSiPar || ChosenNameSeries.SelectedItem == ParSiNum)
+                            if (ChosenNameSeries.SelectedItem == NumSiPar || ChosenNameSeries.SelectedItem ==  ParSiNum)
                             {
                                 if (SignTB.Text.Length > 0)
                                 {

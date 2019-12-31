@@ -20,7 +20,13 @@ namespace ReFolder.Tests
         }
 
         #region AddChildToChildrenList_tests
-
+        [Test]
+        public void AddChildToChildrenList_WhenChildIsNull_ThrowArgumentNullException()
+        {
+            var child = new ChildDir("child", mainDir);
+            TestDelegate action = () => mainDir.AddChildToChildrenList(null);
+            Assert.Throws<ArgumentNullException>(action);
+        }
         [Test]
         public void AddChildToChildrenList_WhenIsNameExistingInChildrenDirsReturnsFalse_AddsChild()
         {
@@ -100,7 +106,13 @@ namespace ReFolder.Tests
 
             Assert.AreEqual(children, mainDir.Children);
         }
-        
+        [Test]
+        public void AddChildrenToChildrenList_WhenParamIsNull_ThrowArgumentNullException()
+        {
+            TestDelegate action = () => mainDir.AddChildrenToChildrenList(null);
+
+            Assert.Throws<ArgumentNullException>(action);
+        }
 
         [Test]
         public void AddChildrenToChildrenList_WhenListIsEmpty_AddsList()
@@ -115,7 +127,13 @@ namespace ReFolder.Tests
         #endregion
 
         #region DeleteChildDirFromList
+        [Test]
+        public void DeleteChildDirFromList_WhenParamIsNull_ThrowsArgumentNullException()
+        {
+            TestDelegate action = () => mainDir.DeleteChildDirFromList(null);
 
+            Assert.Throws<ArgumentNullException>(action);
+        }
         [Test]
         public void DeleteChildDirFromList_WhenCalled_DeleteChild()
         {
@@ -131,6 +149,13 @@ namespace ReFolder.Tests
         #endregion
 
         #region DeleteChildrenDirsFromList
+        [Test]
+        public void DeleteChildrenDirsFromList_WhenParamIsNull_ThrowsArgumentNullException()
+        {
+            TestDelegate action = () => mainDir.DeleteChildrenDirsFromList(null);
+
+            Assert.Throws<ArgumentNullException>(action);
+        }
         [Test]
         public void DeleteChildrenDirsFromList_WhenCalled_DeleteChildren()
         {

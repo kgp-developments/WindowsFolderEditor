@@ -1,7 +1,16 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace main_1._0
 {
@@ -44,7 +53,7 @@ namespace main_1._0
 
         }
 
-        private void RestoreDefault_Executed(object sender, ExecutedRoutedEventArgs e)
+       private  void RestoreDefault_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             BrushConverter bc = new BrushConverter();
             righthanded.Background = Brushes.LightGray;
@@ -70,7 +79,7 @@ namespace main_1._0
             settings.ApplyStyleMW();
 
             AppMW.RestoreMainLayout();
-            if (Clicked.Name == "OkBtn")
+            if(Clicked.Name == "OkBtn")
             {
                 this.Close();
             }
@@ -84,7 +93,7 @@ namespace main_1._0
         {
             BrushConverter bc = new BrushConverter();
             Button Clicked = (Button)e.Parameter;
-            if (Clicked.Name == "righthanded")
+            if(Clicked.Name == "righthanded")
             {
                 righthanded.Background = Brushes.LightGray;
                 lefthanded.Background = (Brush)bc.ConvertFrom("#FF7A7878");

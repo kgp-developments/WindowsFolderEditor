@@ -1,9 +1,20 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
 //CopyDir
 namespace main_1._0
 {
     public static class KGPcommands
     {
+        public static readonly RoutedUICommand EMWconfirm = new RoutedUICommand
+(
+"EMWconfirm",
+"EMWconfirm",
+typeof(KGPcommands)
+);
         public static readonly RoutedUICommand LTWWayChoose = new RoutedUICommand
 (
 "LTWWayChoose",

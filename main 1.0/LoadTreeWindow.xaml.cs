@@ -1,10 +1,19 @@
 ﻿using ReFolder.Dir;
 using ReFolder.Management;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace main_1._0
 {
@@ -29,7 +38,7 @@ namespace main_1._0
             DisplayAll();
         }
         private void DisplayAll()
-        {
+        { 
             string[] files = Directory.GetFiles(saved_path);
             foreach (string file in files)
             {
@@ -54,7 +63,7 @@ namespace main_1._0
 
             MainLayer.Tag = path;
             MainLayer.Children.Add(Clicker);
-
+            
             SavedStructuresList.Children.Add(MainLayer);
         }
 
@@ -88,12 +97,12 @@ namespace main_1._0
             }
             else if (wayChosed == "new")
             {
-                for (int i = AppMW.Seed.Children.Count - 1; i >= 0; i--)
+                for (int i = AppMW.Seed.Children.Count -1 ; i >= 0; i--)
                 {
                     AppMW.Seed.Children.RemoveAt(i);
                 }
                 IEditableDirWithChildren temporary = SaveAndReadElementInBinaryFile.GetDefaultInstance().ReadFromBinaryFile<MainDir>((string)ChosenCanvas.Tag);
-                foreach (ChildDir child in temporary.Children)
+                foreach  (ChildDir child in temporary.Children)
                 {
                     child.ParentDir = AppMW.Seed;
                     AppMW.Seed.Children.Add(child);

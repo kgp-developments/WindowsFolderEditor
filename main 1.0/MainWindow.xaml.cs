@@ -1,20 +1,30 @@
-﻿using ReFolder.Dir;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using ReFolder.Dir;
+using ReFolder.Dir.Description;
 using ReFolder.Management;
 using ReFolder.Memento;
 using ReFolder.TxtFileWriter;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
 
 namespace main_1._0
 {
     /// <summary>
     /// Logika interakcji dla klasy MainWindow.xaml
     /// </summary>
-
-
+    
+        
     public partial class MainWindow : Window
     {
         // folder główny z którego rozpoczyna się dziedziczenie 
@@ -29,6 +39,7 @@ namespace main_1._0
         NameEditionWindow NEW;
         NoteEditWindow NtEW;
         IconSwitchWindow ISW;
+        public ErrorMessageWindow EMW;
         public ViewWindow VW;
         public Settings settings;
         public CreateNewTreeWindow CNTW;
@@ -66,6 +77,31 @@ namespace main_1._0
 
 
         #region funkcje składowe komend
+
+        public int PasteFullNameControl(IEditableDirWithChildren tested)
+        {
+            int result = 0;
+            IEditableDirWithChildrenAndParent child;
+            for(int i = 0; i < tested.Children.Count; i++)
+            {
+                child = tested.Children[i];
+                
+                if (child.Description.FullName.Length > sorteritno.path_max_length)
+                {
+                    if (child.Children.Count != 0)
+                    {
+                        child.DeleteChildrenDirsFromList(child.Children);
+                        result++;
+                    }
+                }
+                else
+                {
+                    result += PasteFullNameControl(child);
+                }
+
+            }
+            return result;
+        }
         private void SaveSize()
         {
             string[] size = new string[2];
@@ -192,9 +228,9 @@ namespace main_1._0
                 if (thisStructureName != temporary)
                 {
                     if (CurrentlyChosenDir != null)
-                    {
-                        CurrentlyChosenDir.IsMarked = false;
-                    }
+                        {
+                            CurrentlyChosenDir.IsMarked = false;
+                        }
                     string filePath = @"..\..\saved\" + thisStructureName;
                     SaveAndReadElementInBinaryFile.GetDefaultInstance().WriteToBinaryFile<IEditableDirWithChildren>(filePath, Seed);
                 }
@@ -265,7 +301,7 @@ namespace main_1._0
 
 
             Seed = orginatorGlobal.Restore(careTakerGlobal.GetMemento(careTakerGlobal.CurrentMemento - 1));
-
+            
             //Seed = Orginator.Restore(Caretaker.GetMemento(Caretaker.CurrentMemento - 1));
             sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
             HideAllPanels();
@@ -323,21 +359,39 @@ namespace main_1._0
 
         private void ComplexAdditionWindowShow_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            sorteritno.caw_dir_counter = 0;
-            CAW = new ComplexAdditionWindow();
-            settings.GetCAWsize();
-            settings.ApplyStyleCAW();
-            CAW.ShowDialog();
+            if (sorteritno.dir_counter < sorteritno.dir_count_max)
+            {
+                if (CurrentlyChosenDir.Description.FullName.Length < sorteritno.path_max_length)
+                {
+                    sorteritno.caw_dir_counter = 0;
+                    CAW = new ComplexAdditionWindow();
+                    settings.GetCAWsize();
+                    settings.ApplyStyleCAW();
+                    CAW.ShowDialog();
+                }
+                else
+                {
+                    EMW = new ErrorMessageWindow();
+                    EMW.SetMessage(3);
+                    EMW.ShowDialog();
+                }
+            }
+            else
+            {
+                EMW = new ErrorMessageWindow();
+                EMW.SetMessage(1);
+                EMW.ShowDialog();
+            }
         }
-        private void GenerateDirs_Executed(object sender, ExecutedRoutedEventArgs e)
+        private void GenerateDirs_Executed(object sender,ExecutedRoutedEventArgs e)
         {
-
+            
             DirManagement management = DirManagement.GetDefaultInstance();
             MemoryDirs memoryDirs = MemoryDirs.GetDefaultInstance();
             memoryDirs.InitializeAllChildren(Seed);
             DirWrite.GetDefaultInstance().GenerateAllChildrenDirsAsFolders();
             TxtFileWriter writer = TxtFileWriter.GetDefaultInstance();
-            List<string> editedFullNames = writer.TxtFileEditor.GetMainDirChildrenNamesAndAddStringWithNote(Seed);
+            List<string> editedFullNames= writer.TxtFileEditor.GetMainDirChildrenNamesAndAddStringWithNote(Seed);
             writer.WriteListToFile(Seed.Description.FullName, editedFullNames);
         }
         private void CopyChildrenDirs_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -350,61 +404,104 @@ namespace main_1._0
 
         private void PasteChildrenDirs_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            List<IEditableDirWithChildrenAndParent> CopyOfChildren =
+            if (CurrentlyChosenDir.Description.FullName.Length < sorteritno.path_max_length )
+            {
+                List<IEditableDirWithChildrenAndParent> CopyOfChildren =
                 SaveAndReadElementInBinaryFile.GetDefaultInstance()
                 .ReadFromBinaryFile<IEditableDirWithChildren>(@"C:..\..\..\TemporaryFiles\tempFile~Copy")
                 .Children;
-            int dirCount = 0;
-            foreach (ChildDir childdir in CopyOfChildren)
-            {
-                dirCount += sorteritno.GetDirCount(childdir);
-            }
-            if (dirCount + sorteritno.dir_counter < sorteritno.dir_count_max)
-            {
-                var validate = DirValidate.GetDefaultInstance();
-                foreach (IEditableDirWithChildrenAndParent child in CopyOfChildren)
+                int dirCount = 0;
+                foreach (ChildDir childdir in CopyOfChildren)
                 {
-
-                    if (validate.IsDirExistingAsFolderAndChild(CurrentlyChosenDir, child.Description.Name))
-                    {
-                        child.Description.Name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir, 1, child.Description.Name);
-                    }
-
-                    child.ParentDir = CurrentlyChosenDir;
+                    dirCount += sorteritno.GetDirCount(childdir);
                 }
-                CurrentlyChosenDir.AddChildrenToChildrenList(CopyOfChildren);
-                DirManagement.GetDefaultInstance().AutoGenerateChildrenFullName(CurrentlyChosenDir);
-                AddMemento();
-                sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
-            }
-            else             //wyswietl info o zbyt duzej ilosci dirow
-            {
+                if (dirCount + sorteritno.dir_counter < sorteritno.dir_count_max)
+                {
+                    var validate = DirValidate.GetDefaultInstance();
+                    foreach (IEditableDirWithChildrenAndParent child in CopyOfChildren)
+                    {
 
+                        if (validate.IsDirExistingAsFolderAndChild(CurrentlyChosenDir, child.Description.Name))
+                        {
+                            child.Description.Name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir, 1, child.Description.Name);
+                        }
+
+                        child.ParentDir = CurrentlyChosenDir;
+                    }
+                    CurrentlyChosenDir.AddChildrenToChildrenList(CopyOfChildren);
+                    DirManagement.GetDefaultInstance().AutoGenerateChildrenFullName(CurrentlyChosenDir);
+                    int result = PasteFullNameControl(CurrentlyChosenDir);
+                    if (result > 0)
+                    {
+                        EMW = new ErrorMessageWindow();
+                        EMW.SetMessage(4);
+                        EMW.ShowDialog();
+                    }
+                    AddMemento();
+                    sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+                }
+                else             //wyswietl info o zbyt duzej ilosci dirow
+                {
+                    EMW = new ErrorMessageWindow();
+                    EMW.SetMessage(2);
+                    EMW.ShowDialog();
+                }
+            }
+            else
+            {
+                EMW = new ErrorMessageWindow();
+                EMW.SetMessage(3);
+                EMW.ShowDialog();
             }
         }
         private void PasteDir_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            IEditableDirWithChildrenAndParent childDir =
-               SaveAndReadElementInBinaryFile.GetDefaultInstance()
-               .ReadFromBinaryFile<IEditableDirWithChildrenAndParent>(@"C:..\..\..\TemporaryFiles\tempFile~Copy");
-            if (sorteritno.GetDirCount(childDir) + sorteritno.dir_counter < sorteritno.dir_count_max)
+            if (CurrentlyChosenDir.Description.FullName.Length < sorteritno.path_max_length)
             {
-
-                var validate = DirValidate.GetDefaultInstance();
-
-
-                if (validate.IsDirExistingAsFolderAndChild(CurrentlyChosenDir, childDir.Description.Name))
+                IEditableDirWithChildrenAndParent childDir =
+                               SaveAndReadElementInBinaryFile.GetDefaultInstance()
+                               .ReadFromBinaryFile<IEditableDirWithChildrenAndParent>(@"C:..\..\..\TemporaryFiles\tempFile~Copy");
+                if (sorteritno.GetDirCount(childDir) + sorteritno.dir_counter < sorteritno.dir_count_max)
                 {
-                    childDir.Description.Name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir, 1, childDir.Description.Name);
+
+                    var validate = DirValidate.GetDefaultInstance();
+
+
+                    if (validate.IsDirExistingAsFolderAndChild(CurrentlyChosenDir, childDir.Description.Name))
+                    {
+                        childDir.Description.Name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir, 1, childDir.Description.Name);
+                    }
+
+                    childDir.ParentDir = CurrentlyChosenDir;
+
+                    CurrentlyChosenDir.AddChildToChildrenList(childDir);
+                    DirManagement.GetDefaultInstance().AutoGenerateChildrenFullName(CurrentlyChosenDir);
+
+                    int result = PasteFullNameControl(CurrentlyChosenDir);
+                    if(result > 0)
+                    {
+                        EMW = new ErrorMessageWindow();
+                        EMW.SetMessage(4);
+                        EMW.ShowDialog();
+                    }
+
+
+
+                    AddMemento();
+                    sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
                 }
-
-                childDir.ParentDir = CurrentlyChosenDir;
-
-                CurrentlyChosenDir.AddChildToChildrenList(childDir);
-                DirManagement.GetDefaultInstance().AutoGenerateChildrenFullName(CurrentlyChosenDir);
-                AddMemento();
-                sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
-
+                else
+                {
+                    EMW = new ErrorMessageWindow();
+                    EMW.SetMessage(2);
+                    EMW.ShowDialog();
+                }
+            }
+            else
+            {
+                EMW = new ErrorMessageWindow();
+                EMW.SetMessage(3);
+                EMW.ShowDialog();
             }
         }
 
@@ -428,7 +525,7 @@ namespace main_1._0
             else
             {
                 PanelGiven.Visibility = Visibility.Visible;
-                foreach (StackPanel element in Panels)
+                foreach(StackPanel element in Panels)
                 {
                     if (element.Name != PanelGiven.Name)
                     {
@@ -442,7 +539,7 @@ namespace main_1._0
 
             Button HiddenButton = (Button)e.Parameter;
             Canvas MainLayer = (Canvas)HiddenButton.Parent;
-            if (CurrentlyChosen != null)
+            if(CurrentlyChosen != null )
             {
 
                 CurrentlyChosen.Background = Brushes.LightGray;
@@ -459,7 +556,7 @@ namespace main_1._0
         }
         private void ResetHighlight_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (CurrentlyChosen != null)
+            if(CurrentlyChosen != null)
             {
                 CurrentlyChosen.Background = Brushes.LightGray;
                 CurrentlyChosenDir = (IEditableDirWithChildren)CurrentlyChosen.Tag;
@@ -492,32 +589,43 @@ namespace main_1._0
         }
         private void DefaultAddition_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (sorteritno.dir_counter < sorteritno.dir_count_max)
+            if (CurrentlyChosenDir.Description.FullName.Length < sorteritno.path_max_length)
             {
-                string name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir);
-                IEditableDirWithChildrenAndParent NewDir = new ChildDir(name, CurrentlyChosenDir);
-                CurrentlyChosenDir.AddChildToChildrenList(NewDir);
-                AddMemento();
-                sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
-                if (CurrentlyChosen.Margin.Left > 0)
+                if (sorteritno.dir_counter < sorteritno.dir_count_max)
                 {
-                    //sorteritno.SetTreeSVSize("MW");
-                    //Point relativeLocation = CurrentlyChosen.TranslatePoint(new Point(0, 0), ResTree);
-                    drzewo.ScrollToHorizontalOffset(drzewo.ScrollableWidth + 80);
-                    //FolderSearchTB.Text = relativeLocation.X.ToString();
-                }
-                else
-                {
-                    // Point relativeLocation = CurrentlyChosen.TranslatePoint(new Point(0, 0), ResTree);
-                    drzewo.ScrollToHorizontalOffset(drzewo.ScrollableWidth);
-                    //FolderSearchTB.Text = relativeLocation.X.ToString();
+                    string name = DirNameGenerator.GetDefaultInstance().GeneratetName_Default(CurrentlyChosenDir);
+                    IEditableDirWithChildrenAndParent NewDir = new ChildDir(name, CurrentlyChosenDir);
+                    CurrentlyChosenDir.AddChildToChildrenList(NewDir);
+                    AddMemento();
+                    sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
+                    if (CurrentlyChosen.Margin.Left > 0)
+                    {
+                        //sorteritno.SetTreeSVSize("MW");
+                        //Point relativeLocation = CurrentlyChosen.TranslatePoint(new Point(0, 0), ResTree);
+                        drzewo.ScrollToHorizontalOffset(drzewo.ScrollableWidth + 80);
+                        //FolderSearchTB.Text = relativeLocation.X.ToString();
+                    }
+                    else
+                    {
+                        // Point relativeLocation = CurrentlyChosen.TranslatePoint(new Point(0, 0), ResTree);
+                        drzewo.ScrollToHorizontalOffset(drzewo.ScrollableWidth);
+                        //FolderSearchTB.Text = relativeLocation.X.ToString();
+
+                    }
 
                 }
-
+                else                //wyswietlenie informacji o zbyt duzej ilosci folderow w drzewie
+                {
+                    EMW = new ErrorMessageWindow();
+                    EMW.SetMessage(1);
+                    EMW.ShowDialog();
+                }
             }
-            else                //wyswietlenie informacji o zbyt duzej ilosci folderow w drzewie
+            else
             {
-
+                EMW = new ErrorMessageWindow();
+                EMW.SetMessage(3);
+                EMW.ShowDialog();
             }
 
         }
@@ -548,7 +656,7 @@ namespace main_1._0
         }
         private void RedoChanges_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (careTakerGlobal.CurrentMemento + 1 < careTakerGlobal.CountMemento())
+            if(careTakerGlobal.CurrentMemento +1< careTakerGlobal.CountMemento())
             {
                 e.CanExecute = true;
             }
@@ -572,7 +680,7 @@ namespace main_1._0
 
         private void ChosenNotNullDepended(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (CurrentlyChosenDir == null)
+            if(CurrentlyChosenDir == null)
             {
                 e.CanExecute = false;
             }
@@ -595,8 +703,7 @@ namespace main_1._0
                 e.CanExecute = true;
             }
         }
-        private void CopyChildrenDirs_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
+        private void CopyChildrenDirs_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
             if (CurrentlyChosen == null) e.CanExecute = false;
             else
             {
@@ -604,11 +711,11 @@ namespace main_1._0
             }
 
         }
-
+        
         private void PasteChildrenDirs_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
+            {
             if (CurrentlyChosenDir == null && (CopyOfChildren == null || CopyOfChildren.Count == 0)) e.CanExecute = false;
-            else e.CanExecute = true;
+            else e.CanExecute= true;
         }
         private void AlwaysTrueForExecuted(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -626,7 +733,7 @@ namespace main_1._0
             if (ZoomSlider != null && FolderSearchTB != null && thisStructureName != null)
             {
                 FolderSearchTB.Text = ZoomSlider.Value.ToString();
-
+               
                 sorteritno.scale = (float)ZoomSlider.Value;
                 sorteritno.ResetTree(ResTree, ResetHighlight, Seed, drzewo, "MW");
             }

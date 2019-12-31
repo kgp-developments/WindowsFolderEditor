@@ -29,10 +29,11 @@ namespace ReFolder.Dir
         //usuwa childrenDiry
         public void DeleteChildrenDirsFromList(List<IEditableDirWithChildrenAndParent> children)
         {
-            foreach (IEditableDirWithChildrenAndParent child in children)
+            for (int i = 0; i < children.Count; i++)
             {
-                DeleteChildDirFromList(child);
+                DeleteChildDirFromList(children[i]);
             }
+
         }
         // dodaje childDir
         public void AddChildToChildrenList(IEditableDirWithChildrenAndParent child)
