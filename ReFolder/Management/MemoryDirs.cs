@@ -28,6 +28,7 @@ namespace ReFolder.Management
         /// </summary>
         public static HashSet<IEditableDirWithChildrenAndParent> AllCreatedDirs { get; set; } =
         new HashSet<IEditableDirWithChildrenAndParent>();
+
         /// <summary>
         /// Initialize AllCreatedDirs with dir children
         /// </summary>

@@ -386,7 +386,6 @@ namespace main_1._0
         private void GenerateDirs_Executed(object sender,ExecutedRoutedEventArgs e)
         {
             
-            DirManagement management = DirManagement.GetDefaultInstance();
             MemoryDirs memoryDirs = MemoryDirs.GetDefaultInstance();
             memoryDirs.InitializeAllChildren(Seed);
             DirWrite.GetDefaultInstance().GenerateAllChildrenDirsAsFolders();

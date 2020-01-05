@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReFolder.Management;
+using System;
 
 namespace ReFolder.Dir.Description
 {
